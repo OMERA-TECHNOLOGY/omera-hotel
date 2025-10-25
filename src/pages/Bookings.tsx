@@ -1,11 +1,18 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Calendar } from "@/components/ui/calendar"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Calendar as CalendarIcon, Users, Search } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Calendar as CalendarIcon, Users, Search } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Dialog,
   DialogContent,
@@ -13,19 +20,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Bookings = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
-  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    new Date()
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useLanguage();
 
   const bookings = [
     {
@@ -61,39 +71,43 @@ const Bookings = () => {
       guests: 3,
       totalPrice: 6000,
     },
-  ]
+  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Confirmed":
-        return "bg-primary/10 text-primary"
+        return "bg-primary/10 text-primary";
       case "Pending":
-        return "bg-accent/10 text-accent"
+        return "bg-accent/10 text-accent";
       case "Cancelled":
-        return "bg-destructive/10 text-destructive"
+        return "bg-destructive/10 text-destructive";
       default:
-        return "bg-muted"
+        return "bg-muted";
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Bookings & Reservations</h1>
-          <p className="text-muted-foreground">Manage all hotel bookings and reservations</p>
+          <h1 className="text-3xl font-bold">{t.bookings}</h1>
+          <p className="text-muted-foreground">
+            Manage all hotel bookings and reservations
+          </p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              New Booking
+              {t.newBooking}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle>Create New Booking</DialogTitle>
-              <DialogDescription>Enter booking details for a new reservation</DialogDescription>
+              <DialogDescription>
+                Enter booking details for a new reservation
+              </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-4">
@@ -109,11 +123,20 @@ const Bookings = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="guestEmail">Email</Label>
-                  <Input id="guestEmail" type="email" placeholder="guest@example.com" />
+                  <Input
+                    id="guestEmail"
+                    type="email"
+                    placeholder="guest@example.com"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="numberOfGuests">Number of Guests</Label>
-                  <Input id="numberOfGuests" type="number" min="1" defaultValue="1" />
+                  <Input
+                    id="numberOfGuests"
+                    type="number"
+                    min="1"
+                    defaultValue="1"
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -134,10 +157,18 @@ const Bookings = () => {
                       <SelectValue placeholder="Select room type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="single">Single - 1,500 ETB/night</SelectItem>
-                      <SelectItem value="deluxe">Deluxe - 2,500 ETB/night</SelectItem>
-                      <SelectItem value="suite">Suite - 4,500 ETB/night</SelectItem>
-                      <SelectItem value="presidential">Presidential - 8,500 ETB/night</SelectItem>
+                      <SelectItem value="single">
+                        Single - 1,500 ETB/night
+                      </SelectItem>
+                      <SelectItem value="deluxe">
+                        Deluxe - 2,500 ETB/night
+                      </SelectItem>
+                      <SelectItem value="suite">
+                        Suite - 4,500 ETB/night
+                      </SelectItem>
+                      <SelectItem value="presidential">
+                        Presidential - 8,500 ETB/night
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -159,7 +190,10 @@ const Bookings = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="specialRequests">Special Requests</Label>
-                <Input id="specialRequests" placeholder="Any special requirements or notes" />
+                <Input
+                  id="specialRequests"
+                  placeholder="Any special requirements or notes"
+                />
               </div>
             </div>
             <div className="flex justify-end gap-2">
@@ -206,13 +240,18 @@ const Bookings = () => {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-lg">{booking.guestName}</CardTitle>
+                      <CardTitle className="text-lg">
+                        {booking.guestName}
+                      </CardTitle>
                       <CardDescription>
-                        Room {booking.room} • {booking.guests} {booking.guests === 1 ? "Guest" : "Guests"}
+                        Room {booking.room} • {booking.guests}{" "}
+                        {booking.guests === 1 ? "Guest" : "Guests"}
                       </CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+                      <Badge className={getStatusColor(booking.status)}>
+                        {booking.status}
+                      </Badge>
                       <Badge variant="outline">{booking.source}</Badge>
                     </div>
                   </div>
@@ -229,11 +268,17 @@ const Bookings = () => {
                     </div>
                     <div>
                       <p className="text-muted-foreground">Total Price</p>
-                      <p className="font-medium">{booking.totalPrice.toLocaleString()} ETB</p>
+                      <p className="font-medium">
+                        {booking.totalPrice.toLocaleString()} ETB
+                      </p>
                     </div>
                     <div className="flex justify-end gap-2">
-                      <Button variant="outline" size="sm">Edit</Button>
-                      <Button variant="outline" size="sm">Cancel</Button>
+                      <Button variant="outline" size="sm">
+                        Edit
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        Cancel
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -271,12 +316,19 @@ const Bookings = () => {
               <CardContent>
                 <div className="space-y-3">
                   {bookings.slice(0, 3).map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                    <div
+                      key={booking.id}
+                      className="flex items-center justify-between p-3 border border-border rounded-lg"
+                    >
                       <div>
                         <p className="font-medium">{booking.guestName}</p>
-                        <p className="text-sm text-muted-foreground">Room {booking.room}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Room {booking.room}
+                        </p>
                       </div>
-                      <Badge className={getStatusColor(booking.status)}>{booking.status}</Badge>
+                      <Badge className={getStatusColor(booking.status)}>
+                        {booking.status}
+                      </Badge>
                     </div>
                   ))}
                 </div>
@@ -286,7 +338,7 @@ const Bookings = () => {
         </TabsContent>
       </Tabs>
     </div>
-  )
-}
+  );
+};
 
-export default Bookings
+export default Bookings;

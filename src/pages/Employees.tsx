@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Search, UserCog, Clock } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Employees = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useLanguage();
 
   const employees = [
     {
@@ -119,7 +121,7 @@ const Employees = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Employee Management</h1>
+          <h1 className="text-3xl font-bold">{t.employees}</h1>
           <p className="text-muted-foreground">
             Manage staff, roles, and work schedules
           </p>

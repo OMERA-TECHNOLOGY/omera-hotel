@@ -1,10 +1,17 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { UserPlus, UserCheck, Search, Key, Clock } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserPlus, UserCheck, Search, Key, Clock } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Dialog,
   DialogContent,
@@ -12,56 +19,92 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const FrontDesk = () => {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useLanguage();
 
   const currentGuests = [
-    { id: 1, name: "John Smith", room: "204", checkIn: "2025-10-20", checkOut: "2025-10-25", status: "Active" },
-    { id: 2, name: "Sarah Johnson", room: "315", checkIn: "2025-10-21", checkOut: "2025-10-24", status: "Active" },
-    { id: 3, name: "Michael Brown", room: "102", checkIn: "2025-10-19", checkOut: "2025-10-23", status: "Checking Out" },
-  ]
+    {
+      id: 1,
+      name: "John Smith",
+      room: "204",
+      checkIn: "2025-10-20",
+      checkOut: "2025-10-25",
+      status: "Active",
+    },
+    {
+      id: 2,
+      name: "Sarah Johnson",
+      room: "315",
+      checkIn: "2025-10-21",
+      checkOut: "2025-10-24",
+      status: "Active",
+    },
+    {
+      id: 3,
+      name: "Michael Brown",
+      room: "102",
+      checkIn: "2025-10-19",
+      checkOut: "2025-10-23",
+      status: "Checking Out",
+    },
+  ];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Front Desk</h1>
-          <p className="text-muted-foreground">Manage check-ins, check-outs, and guest services</p>
+          <h1 className="text-3xl font-bold">{t.frontDesk}</h1>
+          <p className="text-muted-foreground">
+            Manage check-ins, check-outs, and guest services
+          </p>
         </div>
         <div className="flex gap-2">
           <Dialog>
             <DialogTrigger asChild>
               <Button>
                 <UserPlus className="h-4 w-4 mr-2" />
-                New Check-in
+                {t.newCheckIn}
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Guest Check-in</DialogTitle>
-                <DialogDescription>Complete the check-in process for a new guest</DialogDescription>
+                <DialogTitle>{t.guestCheckIn}</DialogTitle>
+                <DialogDescription>
+                  Complete the check-in process for a new guest
+                </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName">{t.name}</Label>
                     <Input id="firstName" placeholder="Enter first name" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName">{t.name}</Label>
                     <Input id="lastName" placeholder="Enter last name" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="guest@example.com" />
+                    <Label htmlFor="email">{t.email}</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="guest@example.com"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
+                    <Label htmlFor="phone">{t.phone}</Label>
                     <Input id="phone" placeholder="+251 xxx xxx xxx" />
                   </div>
                 </div>
@@ -95,7 +138,9 @@ const FrontDesk = () => {
                         <SelectItem value="single">Single</SelectItem>
                         <SelectItem value="deluxe">Deluxe</SelectItem>
                         <SelectItem value="suite">Suite</SelectItem>
-                        <SelectItem value="presidential">Presidential</SelectItem>
+                        <SelectItem value="presidential">
+                          Presidential
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -115,17 +160,17 @@ const FrontDesk = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="checkIn">Check-in Date</Label>
+                    <Label htmlFor="checkIn">{t.checkInDate}</Label>
                     <Input id="checkIn" type="date" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="checkOut">Check-out Date</Label>
+                    <Label htmlFor="checkOut">{t.checkOutDate}</Label>
                     <Input id="checkOut" type="date" />
                   </div>
                 </div>
               </div>
               <div className="flex justify-end gap-2">
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline">{t.cancel}</Button>
                 <Button>Complete Check-in</Button>
               </div>
             </DialogContent>
@@ -165,15 +210,15 @@ const FrontDesk = () => {
                     <div className="flex gap-2">
                       <Button variant="outline" size="sm">
                         <Key className="h-4 w-4 mr-2" />
-                        Issue Key
+                        {t.issueKey}
                       </Button>
                       <Button variant="outline" size="sm">
                         <Clock className="h-4 w-4 mr-2" />
-                        Extend Stay
+                        {t.extendStay}
                       </Button>
                       <Button size="sm">
                         <UserCheck className="h-4 w-4 mr-2" />
-                        Check Out
+                        {t.checkOut}
                       </Button>
                     </div>
                   </div>
@@ -202,7 +247,9 @@ const FrontDesk = () => {
         <TabsContent value="checkout">
           <Card className="border-border">
             <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground">3 guests scheduled to check out today</p>
+              <p className="text-center text-muted-foreground">
+                3 guests scheduled to check out today
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -210,13 +257,15 @@ const FrontDesk = () => {
         <TabsContent value="arrivals">
           <Card className="border-border">
             <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground">8 guests expected to arrive today</p>
+              <p className="text-center text-muted-foreground">
+                8 guests expected to arrive today
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
-  )
-}
+  );
+};
 
-export default FrontDesk
+export default FrontDesk;

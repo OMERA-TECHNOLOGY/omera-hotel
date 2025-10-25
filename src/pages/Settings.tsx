@@ -17,6 +17,7 @@ import {
   Shield,
   Bell,
 } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Select,
   SelectContent,
@@ -26,12 +27,14 @@ import {
 } from "@/components/ui/select";
 
 const Settings = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <SettingsIcon className="h-8 w-8" />
         <div>
-          <h1 className="text-3xl font-bold">System Settings</h1>
+          <h1 className="text-3xl font-bold">{t.settings}</h1>
           <p className="text-muted-foreground">
             Configure hotel management system preferences
           </p>
@@ -106,7 +109,7 @@ const Settings = () => {
                   </Select>
                 </div>
               </div>
-              <Button>Save Changes</Button>
+              <Button>{t.save}</Button>
             </CardContent>
           </Card>
         </TabsContent>

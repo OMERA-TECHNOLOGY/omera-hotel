@@ -1,18 +1,33 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DollarSign, Receipt, TrendingUp, CreditCard, Download, Plus, Search } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DollarSign,
+  Receipt,
+  TrendingUp,
+  CreditCard,
+  Download,
+  Plus,
+  Search,
+} from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -20,10 +35,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 const Finance = () => {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useLanguage();
 
   const invoices = [
     {
@@ -59,25 +75,49 @@ const Finance = () => {
       date: "2025-10-22",
       paymentMethod: "Telebirr",
     },
-  ]
+  ];
 
   const expenses = [
-    { id: 1, category: "Utilities", description: "Electricity Bill", amount: 15000, date: "2025-10-20" },
-    { id: 2, category: "Supplies", description: "Cleaning Materials", amount: 3500, date: "2025-10-21" },
-    { id: 3, category: "Maintenance", description: "AC Repair Room 305", amount: 8000, date: "2025-10-22" },
-    { id: 4, category: "Food & Beverage", description: "Restaurant Supplies", amount: 25000, date: "2025-10-23" },
-  ]
+    {
+      id: 1,
+      category: "Utilities",
+      description: "Electricity Bill",
+      amount: 15000,
+      date: "2025-10-20",
+    },
+    {
+      id: 2,
+      category: "Supplies",
+      description: "Cleaning Materials",
+      amount: 3500,
+      date: "2025-10-21",
+    },
+    {
+      id: 3,
+      category: "Maintenance",
+      description: "AC Repair Room 305",
+      amount: 8000,
+      date: "2025-10-22",
+    },
+    {
+      id: 4,
+      category: "Food & Beverage",
+      description: "Restaurant Supplies",
+      amount: 25000,
+      date: "2025-10-23",
+    },
+  ];
 
   const stats = [
     {
-      title: "Today's Revenue",
+      title: t.todayRevenue,
       value: "45,320 ETB",
       change: "+12.5%",
       icon: DollarSign,
       color: "text-primary",
     },
     {
-      title: "Pending Payments",
+      title: t.payments,
       value: "13,800 ETB",
       change: "2 invoices",
       icon: Receipt,
@@ -91,24 +131,28 @@ const Finance = () => {
       color: "text-secondary",
     },
     {
-      title: "Total Expenses",
+      title: t.expenses,
       value: "51,500 ETB",
       change: "This month",
       icon: CreditCard,
       color: "text-muted-foreground",
     },
-  ]
+  ];
 
   const getStatusColor = (status: string) => {
-    return status === "Paid" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"
-  }
+    return status === "Paid"
+      ? "bg-primary/10 text-primary"
+      : "bg-accent/10 text-accent";
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Finance & Payments</h1>
-          <p className="text-muted-foreground">Manage invoices, payments, and financial reports</p>
+          <p className="text-muted-foreground">
+            Manage invoices, payments, and financial reports
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
@@ -125,13 +169,18 @@ const Finance = () => {
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Generate New Invoice</DialogTitle>
-                <DialogDescription>Create an invoice for guest services</DialogDescription>
+                <DialogDescription>
+                  Create an invoice for guest services
+                </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="invoiceGuest">Guest Name</Label>
-                    <Input id="invoiceGuest" placeholder="Select or enter guest name" />
+                    <Input
+                      id="invoiceGuest"
+                      placeholder="Select or enter guest name"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="invoiceRoom">Room Number</Label>
@@ -143,7 +192,9 @@ const Finance = () => {
                   <div className="grid grid-cols-3 gap-2">
                     <Input placeholder="Description" />
                     <Input type="number" placeholder="Amount (ETB)" />
-                    <Button variant="outline" size="sm">Add Line</Button>
+                    <Button variant="outline" size="sm">
+                      Add Line
+                    </Button>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -158,7 +209,12 @@ const Finance = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="total">Total Amount</Label>
-                  <Input id="total" readOnly value="9,775 ETB" className="font-bold text-lg" />
+                  <Input
+                    id="total"
+                    readOnly
+                    value="9,775 ETB"
+                    className="font-bold text-lg"
+                  />
                 </div>
               </div>
               <div className="flex justify-end gap-2">
@@ -175,12 +231,16 @@ const Finance = () => {
         {stats.map((stat) => (
           <Card key={stat.title} className="border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {stat.title}
+              </CardTitle>
               <stat.icon className={`h-4 w-4 ${stat.color}`} />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground mt-1">{stat.change}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {stat.change}
+              </p>
             </CardContent>
           </Card>
         ))}
@@ -227,7 +287,9 @@ const Finance = () => {
                         {invoice.guestName} • Room {invoice.room}
                       </CardDescription>
                     </div>
-                    <Badge className={getStatusColor(invoice.status)}>{invoice.status}</Badge>
+                    <Badge className={getStatusColor(invoice.status)}>
+                      {invoice.status}
+                    </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -238,15 +300,21 @@ const Finance = () => {
                     </div>
                     <div>
                       <p className="text-muted-foreground">Subtotal</p>
-                      <p className="font-medium">{invoice.amount.toLocaleString()} ETB</p>
+                      <p className="font-medium">
+                        {invoice.amount.toLocaleString()} ETB
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">VAT (15%)</p>
-                      <p className="font-medium">{invoice.vat.toLocaleString()} ETB</p>
+                      <p className="font-medium">
+                        {invoice.vat.toLocaleString()} ETB
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Total</p>
-                      <p className="font-bold text-lg">{invoice.total.toLocaleString()} ETB</p>
+                      <p className="font-bold text-lg">
+                        {invoice.total.toLocaleString()} ETB
+                      </p>
                     </div>
                     <div className="flex justify-end gap-2">
                       <Button variant="outline" size="sm">
@@ -265,7 +333,9 @@ const Finance = () => {
           <Card className="border-border">
             <CardHeader>
               <CardTitle>Payment Methods</CardTitle>
-              <CardDescription>Configure payment gateway integrations</CardDescription>
+              <CardDescription>
+                Configure payment gateway integrations
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
@@ -274,7 +344,9 @@ const Finance = () => {
                     <CardTitle className="text-base">Telebirr</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" className="w-full">Configure</Button>
+                    <Button variant="outline" className="w-full">
+                      Configure
+                    </Button>
                   </CardContent>
                 </Card>
                 <Card className="border-border">
@@ -282,7 +354,9 @@ const Finance = () => {
                     <CardTitle className="text-base">CBE Birr</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" className="w-full">Configure</Button>
+                    <Button variant="outline" className="w-full">
+                      Configure
+                    </Button>
                   </CardContent>
                 </Card>
                 <Card className="border-border">
@@ -290,7 +364,9 @@ const Finance = () => {
                     <CardTitle className="text-base">Chapa</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" className="w-full">Configure</Button>
+                    <Button variant="outline" className="w-full">
+                      Configure
+                    </Button>
                   </CardContent>
                 </Card>
                 <Card className="border-border">
@@ -298,7 +374,9 @@ const Finance = () => {
                     <CardTitle className="text-base">Amole</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" className="w-full">Configure</Button>
+                    <Button variant="outline" className="w-full">
+                      Configure
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
@@ -310,10 +388,7 @@ const Finance = () => {
           <div className="flex justify-between items-center">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search expenses..."
-                className="pl-8"
-              />
+              <Input placeholder="Search expenses..." className="pl-8" />
             </div>
             <Dialog>
               <DialogTrigger asChild>
@@ -325,7 +400,9 @@ const Finance = () => {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Record New Expense</DialogTitle>
-                  <DialogDescription>Add a new operational expense</DialogDescription>
+                  <DialogDescription>
+                    Add a new operational expense
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="space-y-2">
@@ -346,12 +423,19 @@ const Finance = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="expenseDesc">Description</Label>
-                    <Input id="expenseDesc" placeholder="Enter expense description" />
+                    <Input
+                      id="expenseDesc"
+                      placeholder="Enter expense description"
+                    />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="expenseAmount">Amount (ETB)</Label>
-                      <Input id="expenseAmount" type="number" placeholder="0.00" />
+                      <Input
+                        id="expenseAmount"
+                        type="number"
+                        placeholder="0.00"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="expenseDate">Date</Label>
@@ -374,11 +458,17 @@ const Finance = () => {
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <p className="font-medium">{expense.description}</p>
-                      <p className="text-sm text-muted-foreground">{expense.category} • {expense.date}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {expense.category} • {expense.date}
+                      </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-bold">{expense.amount.toLocaleString()} ETB</p>
-                      <Button variant="ghost" size="sm">View Details</Button>
+                      <p className="text-xl font-bold">
+                        {expense.amount.toLocaleString()} ETB
+                      </p>
+                      <Button variant="ghost" size="sm">
+                        View Details
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -388,7 +478,7 @@ const Finance = () => {
         </TabsContent>
       </Tabs>
     </div>
-  )
-}
+  );
+};
 
-export default Finance
+export default Finance;

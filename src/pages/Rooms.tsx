@@ -1,83 +1,141 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Filter } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Filter } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
-type RoomStatus = "vacant" | "occupied" | "cleaning" | "maintenance"
+type RoomStatus = "vacant" | "occupied" | "cleaning" | "maintenance";
 
 interface Room {
-  id: number
-  number: string
-  type: string
-  floor: number
-  status: RoomStatus
-  price: number
-  features: string[]
+  id: number;
+  number: string;
+  type: string;
+  floor: number;
+  status: RoomStatus;
+  price: number;
+  features: string[];
 }
 
 const Rooms = () => {
-  const [filterStatus, setFilterStatus] = useState<string>("all")
-  const [filterType, setFilterType] = useState<string>("all")
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterType, setFilterType] = useState<string>("all");
+  const { t } = useLanguage();
 
   const rooms: Room[] = [
-    { id: 1, number: "101", type: "Single", floor: 1, status: "vacant", price: 1500, features: ["WiFi", "TV", "AC"] },
-    { id: 2, number: "102", type: "Single", floor: 1, status: "occupied", price: 1500, features: ["WiFi", "TV", "AC"] },
-    { id: 3, number: "201", type: "Deluxe", floor: 2, status: "cleaning", price: 2500, features: ["WiFi", "TV", "AC", "Mini Bar"] },
-    { id: 4, number: "202", type: "Deluxe", floor: 2, status: "vacant", price: 2500, features: ["WiFi", "TV", "AC", "Mini Bar"] },
-    { id: 5, number: "301", type: "Suite", floor: 3, status: "occupied", price: 4500, features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony"] },
-    { id: 6, number: "401", type: "Presidential", floor: 4, status: "maintenance", price: 8500, features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony", "Jacuzzi"] },
-  ]
+    {
+      id: 1,
+      number: "101",
+      type: "Single",
+      floor: 1,
+      status: "vacant",
+      price: 1500,
+      features: ["WiFi", "TV", "AC"],
+    },
+    {
+      id: 2,
+      number: "102",
+      type: "Single",
+      floor: 1,
+      status: "occupied",
+      price: 1500,
+      features: ["WiFi", "TV", "AC"],
+    },
+    {
+      id: 3,
+      number: "201",
+      type: "Deluxe",
+      floor: 2,
+      status: "cleaning",
+      price: 2500,
+      features: ["WiFi", "TV", "AC", "Mini Bar"],
+    },
+    {
+      id: 4,
+      number: "202",
+      type: "Deluxe",
+      floor: 2,
+      status: "vacant",
+      price: 2500,
+      features: ["WiFi", "TV", "AC", "Mini Bar"],
+    },
+    {
+      id: 5,
+      number: "301",
+      type: "Suite",
+      floor: 3,
+      status: "occupied",
+      price: 4500,
+      features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony"],
+    },
+    {
+      id: 6,
+      number: "401",
+      type: "Presidential",
+      floor: 4,
+      status: "maintenance",
+      price: 8500,
+      features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony", "Jacuzzi"],
+    },
+  ];
 
   const getStatusColor = (status: RoomStatus) => {
     switch (status) {
       case "vacant":
-        return "bg-primary/10 text-primary hover:bg-primary/20"
+        return "bg-primary/10 text-primary hover:bg-primary/20";
       case "occupied":
-        return "bg-secondary/10 text-secondary hover:bg-secondary/20"
+        return "bg-secondary/10 text-secondary hover:bg-secondary/20";
       case "cleaning":
-        return "bg-accent/10 text-accent hover:bg-accent/20"
+        return "bg-accent/10 text-accent hover:bg-accent/20";
       case "maintenance":
-        return "bg-destructive/10 text-destructive hover:bg-destructive/20"
+        return "bg-destructive/10 text-destructive hover:bg-destructive/20";
       default:
-        return "bg-muted"
+        return "bg-muted";
     }
-  }
+  };
 
   const getStatusLabel = (status: RoomStatus) => {
-    return status.charAt(0).toUpperCase() + status.slice(1)
-  }
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
 
-  const filteredRooms = rooms.filter(room => {
-    if (filterStatus !== "all" && room.status !== filterStatus) return false
-    if (filterType !== "all" && room.type !== filterType) return false
-    return true
-  })
+  const filteredRooms = rooms.filter((room) => {
+    if (filterStatus !== "all" && room.status !== filterStatus) return false;
+    if (filterType !== "all" && room.type !== filterType) return false;
+    return true;
+  });
 
   const statusCounts = {
-    vacant: rooms.filter(r => r.status === "vacant").length,
-    occupied: rooms.filter(r => r.status === "occupied").length,
-    cleaning: rooms.filter(r => r.status === "cleaning").length,
-    maintenance: rooms.filter(r => r.status === "maintenance").length,
-  }
+    vacant: rooms.filter((r) => r.status === "vacant").length,
+    occupied: rooms.filter((r) => r.status === "occupied").length,
+    cleaning: rooms.filter((r) => r.status === "cleaning").length,
+    maintenance: rooms.filter((r) => r.status === "maintenance").length,
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Room Management</h1>
-          <p className="text-muted-foreground">View and manage all hotel rooms</p>
+          <h1 className="text-3xl font-bold">{t.roomManagement}</h1>
+          <p className="text-muted-foreground">
+            View and manage all hotel rooms
+          </p>
         </div>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Add Room
+          {t.addRoom}
         </Button>
       </div>
 
@@ -85,34 +143,44 @@ const Rooms = () => {
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Vacant (Clean)</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.vacant}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{statusCounts.vacant}</div>
+            <div className="text-2xl font-bold text-primary">
+              {statusCounts.vacant}
+            </div>
           </CardContent>
         </Card>
         <Card className="border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Occupied</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.occupied}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-secondary">{statusCounts.occupied}</div>
+            <div className="text-2xl font-bold text-secondary">
+              {statusCounts.occupied}
+            </div>
           </CardContent>
         </Card>
         <Card className="border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Cleaning</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.cleaning}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-accent">{statusCounts.cleaning}</div>
+            <div className="text-2xl font-bold text-accent">
+              {statusCounts.cleaning}
+            </div>
           </CardContent>
         </Card>
         <Card className="border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Maintenance</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {t.maintenance}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{statusCounts.maintenance}</div>
+            <div className="text-2xl font-bold text-destructive">
+              {statusCounts.maintenance}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -152,12 +220,17 @@ const Rooms = () => {
       {/* Room Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredRooms.map((room) => (
-          <Card key={room.id} className="border-border hover:border-primary transition-colors">
+          <Card
+            key={room.id}
+            className="border-border hover:border-primary transition-colors"
+          >
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle>Room {room.number}</CardTitle>
-                  <CardDescription>{room.type} • Floor {room.floor}</CardDescription>
+                  <CardDescription>
+                    {room.type} • Floor {room.floor}
+                  </CardDescription>
                 </div>
                 <Badge className={getStatusColor(room.status)}>
                   {getStatusLabel(room.status)}
@@ -178,7 +251,7 @@ const Rooms = () => {
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="flex-1">
-                  Edit
+                  {t.edit}
                 </Button>
                 <Button variant="outline" size="sm" className="flex-1">
                   View Details
@@ -189,7 +262,7 @@ const Rooms = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Rooms
+export default Rooms;

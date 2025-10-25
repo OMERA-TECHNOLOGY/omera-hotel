@@ -23,7 +23,7 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import kerayuLogo from "@/assets/kerayu-logo.png";
+import OmeraLogo from "@/assets/Omera-logo.png";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -47,8 +47,8 @@ export function AppSidebar() {
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center gap-2">
           <img
-            src={kerayuLogo}
-            alt="Kerayu"
+            src={OmeraLogo}
+            alt="Omera"
             className={`transition-all ${
               isCollapsed ? "h-8 w-8" : "h-10 w-auto"
             }`}
@@ -56,7 +56,7 @@ export function AppSidebar() {
           {!isCollapsed && (
             <div>
               <h2 className="text-lg font-semibold text-sidebar-foreground">
-                KERAYU
+                Omera
               </h2>
               <p className="text-xs text-muted-foreground">Hotel Management</p>
             </div>

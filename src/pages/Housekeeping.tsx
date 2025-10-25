@@ -1,8 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { ClipboardList, CheckCircle, AlertCircle, Clock } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ClipboardList, CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Dialog,
   DialogContent,
@@ -10,11 +17,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const Housekeeping = () => {
+  const { t } = useLanguage();
   const tasks = [
     {
       id: 1,
@@ -23,7 +31,12 @@ const Housekeeping = () => {
       status: "pending",
       priority: "high",
       checkOut: "11:00 AM",
-      tasks: ["Change linens", "Restock minibar", "Clean bathroom", "Vacuum floor"],
+      tasks: [
+        "Change linens",
+        "Restock minibar",
+        "Clean bathroom",
+        "Vacuum floor",
+      ],
     },
     {
       id: 2,
@@ -41,9 +54,14 @@ const Housekeeping = () => {
       status: "completed",
       priority: "normal",
       checkOut: "10:00 AM",
-      tasks: ["Change linens", "Restock minibar", "Clean bathroom", "Polish fixtures"],
+      tasks: [
+        "Change linens",
+        "Restock minibar",
+        "Clean bathroom",
+        "Polish fixtures",
+      ],
     },
-  ]
+  ];
 
   const inventory = [
     { item: "Bath Towels", current: 145, minimum: 100, status: "good" },
@@ -51,44 +69,48 @@ const Housekeeping = () => {
     { item: "Shampoo Bottles", current: 45, minimum: 60, status: "low" },
     { item: "Soap Bars", current: 32, minimum: 50, status: "low" },
     { item: "Toilet Paper", current: 156, minimum: 100, status: "good" },
-  ]
+  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-primary/10 text-primary"
+        return "bg-primary/10 text-primary";
       case "in-progress":
-        return "bg-accent/10 text-accent"
+        return "bg-accent/10 text-accent";
       case "pending":
-        return "bg-muted text-muted-foreground"
+        return "bg-muted text-muted-foreground";
       default:
-        return "bg-muted"
+        return "bg-muted";
     }
-  }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "completed":
-        return <CheckCircle className="h-4 w-4" />
+        return <CheckCircle className="h-4 w-4" />;
       case "in-progress":
-        return <Clock className="h-4 w-4" />
+        return <Clock className="h-4 w-4" />;
       case "pending":
-        return <ClipboardList className="h-4 w-4" />
+        return <ClipboardList className="h-4 w-4" />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const getPriorityColor = (priority: string) => {
-    return priority === "high" ? "bg-destructive/10 text-destructive" : "bg-secondary/10 text-secondary"
-  }
+    return priority === "high"
+      ? "bg-destructive/10 text-destructive"
+      : "bg-secondary/10 text-secondary";
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Housekeeping</h1>
-          <p className="text-muted-foreground">Manage cleaning tasks and room maintenance</p>
+          <h1 className="text-3xl font-bold">{t.housekeeping}</h1>
+          <p className="text-muted-foreground">
+            Manage cleaning tasks and room maintenance
+          </p>
         </div>
       </div>
 
@@ -116,7 +138,9 @@ const Housekeeping = () => {
         </Card>
         <Card className="border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Completed Today</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Completed Today
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">
@@ -126,7 +150,9 @@ const Housekeeping = () => {
         </Card>
         <Card className="border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Low Stock Items</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Low Stock Items
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">
@@ -140,7 +166,9 @@ const Housekeeping = () => {
       <Card className="border-border">
         <CardHeader>
           <CardTitle>Today's Cleaning Tasks</CardTitle>
-          <CardDescription>Room cleaning assignments and progress</CardDescription>
+          <CardDescription>
+            Room cleaning assignments and progress
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -149,7 +177,9 @@ const Housekeeping = () => {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-lg">Room {task.room}</CardTitle>
+                      <CardTitle className="text-lg">
+                        Room {task.room}
+                      </CardTitle>
                       <CardDescription>{task.housekeeper}</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
@@ -157,7 +187,9 @@ const Housekeeping = () => {
                         {task.priority === "high" ? "High Priority" : "Normal"}
                       </Badge>
                       <Badge className={getStatusColor(task.status)}>
-                        <span className="mr-1">{getStatusIcon(task.status)}</span>
+                        <span className="mr-1">
+                          {getStatusIcon(task.status)}
+                        </span>
                         {task.status.replace("-", " ").toUpperCase()}
                       </Badge>
                     </div>
@@ -166,12 +198,17 @@ const Housekeeping = () => {
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Guest Check-out: {task.checkOut}</span>
+                      <span className="text-muted-foreground">
+                        Guest Check-out: {task.checkOut}
+                      </span>
                     </div>
                     <div className="space-y-2">
                       <p className="text-sm font-medium">Checklist:</p>
                       {task.tasks.map((item, index) => (
-                        <div key={index} className="flex items-center space-x-2">
+                        <div
+                          key={index}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={`task-${task.id}-${index}`}
                             defaultChecked={task.status === "completed"}
@@ -188,7 +225,9 @@ const Housekeeping = () => {
                     <div className="flex gap-2 pt-2">
                       {task.status !== "completed" && (
                         <Button size="sm" variant="outline">
-                          {task.status === "pending" ? "Start Cleaning" : "Mark Complete"}
+                          {task.status === "pending"
+                            ? "Start Cleaning"
+                            : "Mark Complete"}
                         </Button>
                       )}
                       <Dialog>
@@ -202,7 +241,8 @@ const Housekeeping = () => {
                           <DialogHeader>
                             <DialogTitle>Report Damage or Issue</DialogTitle>
                             <DialogDescription>
-                              Report any damages or maintenance issues found in Room {task.room}
+                              Report any damages or maintenance issues found in
+                              Room {task.room}
                             </DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4 py-4">
@@ -219,7 +259,9 @@ const Housekeeping = () => {
                               </select>
                             </div>
                             <div className="space-y-2">
-                              <Label htmlFor="issueDescription">Description</Label>
+                              <Label htmlFor="issueDescription">
+                                Description
+                              </Label>
                               <Textarea
                                 id="issueDescription"
                                 placeholder="Describe the issue in detail..."
@@ -251,12 +293,17 @@ const Housekeeping = () => {
         <CardContent>
           <div className="space-y-4">
             {inventory.map((item, index) => (
-              <div key={index} className="flex items-center justify-between pb-3 border-b border-border last:border-0">
+              <div
+                key={index}
+                className="flex items-center justify-between pb-3 border-b border-border last:border-0"
+              >
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <p className="font-medium">{item.item}</p>
                     {item.status === "low" && (
-                      <Badge variant="destructive" className="text-xs">Low Stock</Badge>
+                      <Badge variant="destructive" className="text-xs">
+                        Low Stock
+                      </Badge>
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">
@@ -270,11 +317,16 @@ const Housekeeping = () => {
                         item.status === "low" ? "bg-destructive" : "bg-primary"
                       }`}
                       style={{
-                        width: `${Math.min((item.current / item.minimum) * 100, 100)}%`,
+                        width: `${Math.min(
+                          (item.current / item.minimum) * 100,
+                          100
+                        )}%`,
                       }}
                     />
                   </div>
-                  <Button variant="outline" size="sm">Restock</Button>
+                  <Button variant="outline" size="sm">
+                    Restock
+                  </Button>
                 </div>
               </div>
             ))}
@@ -282,7 +334,7 @@ const Housekeeping = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default Housekeeping
+export default Housekeeping;
