@@ -1,5 +1,7 @@
 # Welcome to the OMERA HOTEL Project
 
+![OMERA HOTEL Logo](./src/assets/omera-logo.png)
+
 ## Project Overview
 
 This is the front-end application for the **OMERA HOTEL**, designed to deliver a minimal, elegant, and upscale digital experience. It is built using a modern, scalable stack to ensure performance and maintainability.
