@@ -1,22 +1,28 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import kerayuLogo from "@/assets/kerayu-logo.png"
-import heroHotel from "@/assets/hero-hotel.jpg"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import OmeraLogo from "@/assets/Omera-logo.png";
+import heroHotel from "@/assets/hero-hotel.jpg";
 
 const Login = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // TODO: Implement actual authentication
-    navigate("/dashboard")
-  }
+    navigate("/dashboard");
+  };
 
   return (
     <div className="min-h-screen flex">
@@ -24,10 +30,12 @@ const Login = () => {
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <Card className="w-full max-w-md border-border shadow-lg">
           <CardHeader className="space-y-4 text-center">
-            <img src={kerayuLogo} alt="Kerayu" className="h-16 mx-auto" />
+            <img src={OmeraLogo} alt="Omera" className="h-16 mx-auto" />
             <div>
               <CardTitle className="text-2xl">Welcome Back</CardTitle>
-              <CardDescription>Sign in to Kerayu Hotel Management System</CardDescription>
+              <CardDescription>
+                Sign in to Omera Hotel Management System
+              </CardDescription>
             </div>
           </CardHeader>
           <CardContent>
@@ -72,7 +80,7 @@ const Login = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

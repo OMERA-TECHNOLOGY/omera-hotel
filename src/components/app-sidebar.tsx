@@ -1,15 +1,15 @@
-import { 
-  Home, 
-  Users, 
-  Bed, 
-  Calendar, 
-  CreditCard, 
-  Utensils, 
+import {
+  Home,
+  Users,
+  Bed,
+  Calendar,
+  CreditCard,
+  Utensils,
   Settings,
   ClipboardList,
-  UserCog
-} from "lucide-react"
-import { NavLink } from "react-router-dom"
+  UserCog,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -21,8 +21,8 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   useSidebar,
-} from "@/components/ui/sidebar"
-import kerayuLogo from "@/assets/kerayu-logo.png"
+} from "@/components/ui/sidebar";
+import OmeraLogo from "@/assets/Omera-logo.png";
 
 const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
@@ -34,24 +34,28 @@ const menuItems = [
   { title: "Restaurant", url: "/restaurant", icon: Utensils },
   { title: "Employees", url: "/employees", icon: UserCog },
   { title: "Settings", url: "/settings", icon: Settings },
-]
+];
 
 export function AppSidebar() {
-  const { state } = useSidebar()
-  const isCollapsed = state === "collapsed"
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center gap-2">
-          <img 
-            src={kerayuLogo} 
-            alt="Kerayu" 
-            className={`transition-all ${isCollapsed ? "h-8 w-8" : "h-10 w-auto"}`}
+          <img
+            src={OmeraLogo}
+            alt="Omera"
+            className={`transition-all ${
+              isCollapsed ? "h-8 w-8" : "h-10 w-auto"
+            }`}
           />
           {!isCollapsed && (
             <div>
-              <h2 className="text-lg font-semibold text-sidebar-foreground">KERAYU</h2>
+              <h2 className="text-lg font-semibold text-sidebar-foreground">
+                Omera
+              </h2>
               <p className="text-xs text-muted-foreground">Hotel Management</p>
             </div>
           )}
@@ -85,5 +89,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

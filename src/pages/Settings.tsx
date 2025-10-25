@@ -1,17 +1,29 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Settings as SettingsIcon, Globe, DollarSign, Shield, Bell } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Settings as SettingsIcon,
+  Globe,
+  DollarSign,
+  Shield,
+  Bell,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 const Settings = () => {
   return (
@@ -20,7 +32,9 @@ const Settings = () => {
         <SettingsIcon className="h-8 w-8" />
         <div>
           <h1 className="text-3xl font-bold">System Settings</h1>
-          <p className="text-muted-foreground">Configure hotel management system preferences</p>
+          <p className="text-muted-foreground">
+            Configure hotel management system preferences
+          </p>
         </div>
       </div>
 
@@ -37,17 +51,23 @@ const Settings = () => {
           <Card className="border-border">
             <CardHeader>
               <CardTitle>Hotel Information</CardTitle>
-              <CardDescription>Basic information about your hotel</CardDescription>
+              <CardDescription>
+                Basic information about your hotel
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="hotelName">Hotel Name</Label>
-                  <Input id="hotelName" defaultValue="Kerayu Hotel" />
+                  <Input id="hotelName" defaultValue="Omera Hotel" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="hotelEmail">Contact Email</Label>
-                  <Input id="hotelEmail" type="email" defaultValue="info@kerayuhotel.com" />
+                  <Input
+                    id="hotelEmail"
+                    type="email"
+                    defaultValue="info@Omerahotel.com"
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -57,12 +77,15 @@ const Settings = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="hotelWebsite">Website</Label>
-                  <Input id="hotelWebsite" defaultValue="www.kerayuhotel.com" />
+                  <Input id="hotelWebsite" defaultValue="www.Omerahotel.com" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="hotelAddress">Address</Label>
-                <Input id="hotelAddress" defaultValue="Bole Road, Addis Ababa, Ethiopia" />
+                <Input
+                  id="hotelAddress"
+                  defaultValue="Bole Road, Addis Ababa, Ethiopia"
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -95,7 +118,9 @@ const Settings = () => {
                 <Globe className="h-5 w-5" />
                 <CardTitle>Language & Regional Settings</CardTitle>
               </div>
-              <CardDescription>Configure language and calendar preferences</CardDescription>
+              <CardDescription>
+                Configure language and calendar preferences
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -114,7 +139,9 @@ const Settings = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Multi-language Support</Label>
-                  <p className="text-sm text-muted-foreground">Allow users to switch languages</p>
+                  <p className="text-sm text-muted-foreground">
+                    Allow users to switch languages
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -138,7 +165,9 @@ const Settings = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="eat">East Africa Time (EAT) - UTC+3</SelectItem>
+                    <SelectItem value="eat">
+                      East Africa Time (EAT) - UTC+3
+                    </SelectItem>
                     <SelectItem value="utc">UTC</SelectItem>
                   </SelectContent>
                 </Select>
@@ -155,7 +184,9 @@ const Settings = () => {
                 <DollarSign className="h-5 w-5" />
                 <CardTitle>Financial Configuration</CardTitle>
               </div>
-              <CardDescription>VAT, currency, and payment settings</CardDescription>
+              <CardDescription>
+                VAT, currency, and payment settings
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -178,16 +209,27 @@ const Settings = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="vatNumber">VAT Registration Number</Label>
-                <Input id="vatNumber" placeholder="Enter VAT registration number" />
+                <Input
+                  id="vatNumber"
+                  placeholder="Enter VAT registration number"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="tinNumber">TIN Number</Label>
-                <Input id="tinNumber" placeholder="Enter Tax Identification Number" />
+                <Input
+                  id="tinNumber"
+                  placeholder="Enter Tax Identification Number"
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="exchangeRate">USD to ETB Exchange Rate</Label>
-                  <Input id="exchangeRate" type="number" step="0.01" defaultValue="56.50" />
+                  <Input
+                    id="exchangeRate"
+                    type="number"
+                    step="0.01"
+                    defaultValue="56.50"
+                  />
                 </div>
                 <div className="flex items-center justify-between pt-7">
                   <Label>Auto-update Exchange Rate</Label>
@@ -197,7 +239,9 @@ const Settings = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Multi-Currency Transactions</Label>
-                  <p className="text-sm text-muted-foreground">Accept payments in ETB and USD</p>
+                  <p className="text-sm text-muted-foreground">
+                    Accept payments in ETB and USD
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -208,7 +252,9 @@ const Settings = () => {
           <Card className="border-border">
             <CardHeader>
               <CardTitle>Invoice Configuration</CardTitle>
-              <CardDescription>Invoice format and compliance settings</CardDescription>
+              <CardDescription>
+                Invoice format and compliance settings
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -218,7 +264,9 @@ const Settings = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Ethiopian VAT Compliant Format</Label>
-                  <p className="text-sm text-muted-foreground">Include all required VAT information</p>
+                  <p className="text-sm text-muted-foreground">
+                    Include all required VAT information
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -234,48 +282,62 @@ const Settings = () => {
                 <Bell className="h-5 w-5" />
                 <CardTitle>Notification Preferences</CardTitle>
               </div>
-              <CardDescription>Configure system notifications and alerts</CardDescription>
+              <CardDescription>
+                Configure system notifications and alerts
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>New Booking Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Alert when new booking is created</p>
+                  <p className="text-sm text-muted-foreground">
+                    Alert when new booking is created
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Check-in/Check-out Alerts</Label>
-                  <p className="text-sm text-muted-foreground">Notify front desk of arrivals and departures</p>
+                  <p className="text-sm text-muted-foreground">
+                    Notify front desk of arrivals and departures
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Low Inventory Alerts</Label>
-                  <p className="text-sm text-muted-foreground">Notify when supplies are running low</p>
+                  <p className="text-sm text-muted-foreground">
+                    Notify when supplies are running low
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Maintenance Request Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Alert maintenance team of reported issues</p>
+                  <p className="text-sm text-muted-foreground">
+                    Alert maintenance team of reported issues
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>SMS Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Send SMS alerts (requires integration)</p>
+                  <p className="text-sm text-muted-foreground">
+                    Send SMS alerts (requires integration)
+                  </p>
                 </div>
                 <Switch />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Telegram Notifications</Label>
-                  <p className="text-sm text-muted-foreground">Send alerts via Telegram bot</p>
+                  <p className="text-sm text-muted-foreground">
+                    Send alerts via Telegram bot
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -291,20 +353,26 @@ const Settings = () => {
                 <Shield className="h-5 w-5" />
                 <CardTitle>Security Settings</CardTitle>
               </div>
-              <CardDescription>Authentication and access control</CardDescription>
+              <CardDescription>
+                Authentication and access control
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Two-Factor Authentication (2FA)</Label>
-                  <p className="text-sm text-muted-foreground">Require 2FA for admin accounts</p>
+                  <p className="text-sm text-muted-foreground">
+                    Require 2FA for admin accounts
+                  </p>
                 </div>
                 <Switch />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Session Timeout</Label>
-                  <p className="text-sm text-muted-foreground">Auto logout after inactivity</p>
+                  <p className="text-sm text-muted-foreground">
+                    Auto logout after inactivity
+                  </p>
                 </div>
                 <Select defaultValue="30">
                   <SelectTrigger className="w-[180px]">
@@ -321,13 +389,23 @@ const Settings = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Activity Logging</Label>
-                  <p className="text-sm text-muted-foreground">Track all user actions</p>
+                  <p className="text-sm text-muted-foreground">
+                    Track all user actions
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="minPasswordLength">Minimum Password Length</Label>
-                <Input id="minPasswordLength" type="number" min="6" max="20" defaultValue="8" />
+                <Label htmlFor="minPasswordLength">
+                  Minimum Password Length
+                </Label>
+                <Input
+                  id="minPasswordLength"
+                  type="number"
+                  min="6"
+                  max="20"
+                  defaultValue="8"
+                />
               </div>
               <Button>Save Settings</Button>
             </CardContent>
@@ -335,7 +413,7 @@ const Settings = () => {
         </TabsContent>
       </Tabs>
     </div>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;
