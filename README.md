@@ -1,73 +1,74 @@
-# Welcome to your Lovable project
+# Welcome to the OMERA HOTEL Project
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/a2471c6b-1638-44e9-a2c7-d4d8d0c49a8e
+This is the front-end application for the **OMERA HOTEL**, designed to deliver a minimal, elegant, and upscale digital experience. It is built using a modern, scalable stack to ensure performance and maintainability.
 
-## How can I edit this code?
+## Technologies Used
 
-There are several ways of editing your application.
+This project leverages the following cutting-edge technologies:
 
-**Use Lovable**
+- **Vite**: For extremely fast development and instant code updates.
+- **TypeScript**: Provides static typing to enhance code quality and reduce errors, crucial for a reliable application.
+- **React**: The core library used to build the responsive and modular user interface.
+- **shadcn/ui**: A collection of beautifully designed, reusable UI components, built for elegance and consistency, perfectly suited for an upscale brand.
+- **Tailwind CSS**: A utility-first framework that enables rapid, custom styling while maintaining a clean, minimal aesthetic.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a2471c6b-1638-44e9-a2c7-d4d8d0c49a8e) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+Follow these steps to set up and run the project locally.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+You must have **Node.js** (version 16 or later is recommended) and **npm** installed on your system. Using a version manager like [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) is highly recommended.
 
-Follow these steps:
+### Local Development
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1.  **Clone the repository:**
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+    ```sh
+    git clone https://github.com/OMERA-TECHNOLOGY/omera-hotel.git
+    ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2.  **Navigate to the project directory:**
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+    ```sh
+    cd omera-hotel
+    ```
 
-**Edit a file directly in GitHub**
+3.  **Install dependencies:**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+    ```sh
+    npm install
+    ```
 
-**Use GitHub Codespaces**
+4.  **Start the development server:**
+    This command will launch the development server with live-reloading. The application will typically be accessible at `http://localhost:5173`.
+    ```sh
+    npm run dev
+    ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## Deployment
 
-This project is built with:
+### Building and Deploying
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The project is structured to be easily deployed to standard hosting platforms (like Vercel, Netlify, or AWS Amplify).
 
-## How can I deploy this project?
+1.  **Generate the production build:**
 
-Simply open [Lovable](https://lovable.dev/projects/a2471c6b-1638-44e9-a2c7-d4d8d0c49a8e) and click on Share -> Publish.
+    ```sh
+    npm run build
+    ```
 
-## Can I connect a custom domain to my Lovable project?
+    This command compiles and optimizes the application, placing the final assets in the **`dist`** directory.
 
-Yes, you can!
+2.  **Deploy the `dist` folder:**
+    Upload the contents of the generated **`dist`** folder to your chosen hosting service.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Custom Domain Setup
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+To connect a custom domain (e.g., `www.omerahotel.com`), you will need to configure your domain's DNS settings (A record or CNAME) to point to your hosting provider. Refer to your hosting platform's documentation for the specific steps required to integrate your domain.
