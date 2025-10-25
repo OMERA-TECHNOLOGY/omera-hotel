@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Luxury Hotel Color Palette - Light Mode */
+    --background: 36 10% 96%;  /* Off-white with warmth */
+    --foreground: 0 0% 17%;     /* Deep charcoal */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 17%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 17%;
+
+    --primary: 95 50% 20%;      /* Forest Green */
+    --primary-foreground: 36 10% 96%;
+
+    --secondary: 340 75% 25%;   /* Burgundy */
+    --secondary-foreground: 36 10% 96%;
+
+    --muted: 30 8% 55%;         /* Warm Grey */
+    --muted-foreground: 0 0% 17%;
+
+    --accent: 30 45% 40%;       /* Bronze */
+    --accent-foreground: 36 10% 96%;
+
+    --destructive: 0 75% 40%;
+    --destructive-foreground: 36 10% 96%;
+
+    --border: 30 8% 85%;
+    --input: 30 8% 90%;
+    --ring: 95 50% 20%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 17%;
+    --sidebar-primary: 95 50% 20%;
+    --sidebar-primary-foreground: 36 10% 96%;
+    --sidebar-accent: 30 8% 93%;
+    --sidebar-accent-foreground: 0 0% 17%;
+    --sidebar-border: 30 8% 85%;
+    --sidebar-ring: 95 50% 20%;
+
+    /* Custom tokens */
+    --luxury-gold: 40 80% 50%;
+    --luxury-shadow: 0 0% 0%;
+  }
+
+  .dark {
+    /* Luxury Hotel Color Palette - Dark Mode */
+    --background: 0 0% 10%;     /* Deep charcoal background */
+    --foreground: 36 10% 96%;   /* Off-white text */
+
+    --card: 0 0% 13%;
+    --card-foreground: 36 10% 96%;
+
+    --popover: 0 0% 13%;
+    --popover-foreground: 36 10% 96%;
+
+    --primary: 95 45% 35%;      /* Lighter forest green for dark mode */
+    --primary-foreground: 36 10% 96%;
+
+    --secondary: 340 60% 35%;   /* Lighter burgundy */
+    --secondary-foreground: 36 10% 96%;
+
+    --muted: 30 8% 25%;         /* Dark warm grey */
+    --muted-foreground: 30 8% 70%;
+
+    --accent: 30 45% 45%;       /* Lighter bronze */
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 75% 45%;
+    --destructive-foreground: 36 10% 96%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 95 45% 35%;
+
+    /* Sidebar dark */
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 36 10% 96%;
+    --sidebar-primary: 95 45% 35%;
+    --sidebar-primary-foreground: 36 10% 96%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 36 10% 96%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 95 45% 35%;
+
+    /* Custom tokens */
+    --luxury-gold: 40 80% 55%;
+    --luxury-shadow: 0 0% 0%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .luxury-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  }
+
+  .luxury-shadow {
+    box-shadow: 0 10px 30px -10px hsl(var(--luxury-shadow) / 0.2);
+  }
+
+  .glass-effect {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(10px);
+  }
+}
