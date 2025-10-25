@@ -10,6 +10,7 @@ import {
   UserCog,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Sidebar,
   SidebarContent,
@@ -22,31 +23,32 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import OmeraLogo from "@/assets/Omera-logo.png";
-
-const menuItems = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Front Desk", url: "/front-desk", icon: Users },
-  { title: "Rooms", url: "/rooms", icon: Bed },
-  { title: "Bookings", url: "/bookings", icon: Calendar },
-  { title: "Finance", url: "/finance", icon: CreditCard },
-  { title: "Housekeeping", url: "/housekeeping", icon: ClipboardList },
-  { title: "Restaurant", url: "/restaurant", icon: Utensils },
-  { title: "Employees", url: "/employees", icon: UserCog },
-  { title: "Settings", url: "/settings", icon: Settings },
-];
+import kerayuLogo from "@/assets/kerayu-logo.png";
 
 export function AppSidebar() {
   const { state } = useSidebar();
+  const { t } = useLanguage();
   const isCollapsed = state === "collapsed";
+
+  const menuItems = [
+    { title: t.dashboard, url: "/dashboard", icon: Home },
+    { title: t.frontDesk, url: "/front-desk", icon: Users },
+    { title: t.rooms, url: "/rooms", icon: Bed },
+    { title: t.bookings, url: "/bookings", icon: Calendar },
+    { title: t.finance, url: "/finance", icon: CreditCard },
+    { title: t.housekeeping, url: "/housekeeping", icon: ClipboardList },
+    { title: t.restaurant, url: "/restaurant", icon: Utensils },
+    { title: t.employees, url: "/employees", icon: UserCog },
+    { title: t.settings, url: "/settings", icon: Settings },
+  ];
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center gap-2">
           <img
-            src={OmeraLogo}
-            alt="Omera"
+            src={kerayuLogo}
+            alt="Kerayu"
             className={`transition-all ${
               isCollapsed ? "h-8 w-8" : "h-10 w-auto"
             }`}
@@ -54,7 +56,7 @@ export function AppSidebar() {
           {!isCollapsed && (
             <div>
               <h2 className="text-lg font-semibold text-sidebar-foreground">
-                Omera
+                KERAYU
               </h2>
               <p className="text-xs text-muted-foreground">Hotel Management</p>
             </div>
@@ -64,7 +66,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>{t.dashboard}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (

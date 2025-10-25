@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LanguageProvider } from "@/contexts/language-context";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -22,27 +23,92 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="light">
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-            <Route path="/front-desk" element={<DashboardLayout><FrontDesk /></DashboardLayout>} />
-            <Route path="/rooms" element={<DashboardLayout><Rooms /></DashboardLayout>} />
-            <Route path="/bookings" element={<DashboardLayout><Bookings /></DashboardLayout>} />
-            <Route path="/finance" element={<DashboardLayout><Finance /></DashboardLayout>} />
-            <Route path="/housekeeping" element={<DashboardLayout><Housekeeping /></DashboardLayout>} />
-            <Route path="/restaurant" element={<DashboardLayout><Restaurant /></DashboardLayout>} />
-            <Route path="/employees" element={<DashboardLayout><Employees /></DashboardLayout>} />
-            <Route path="/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <DashboardLayout>
+                    <Dashboard />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/front-desk"
+                element={
+                  <DashboardLayout>
+                    <FrontDesk />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/rooms"
+                element={
+                  <DashboardLayout>
+                    <Rooms />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/bookings"
+                element={
+                  <DashboardLayout>
+                    <Bookings />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/finance"
+                element={
+                  <DashboardLayout>
+                    <Finance />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/housekeeping"
+                element={
+                  <DashboardLayout>
+                    <Housekeeping />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/restaurant"
+                element={
+                  <DashboardLayout>
+                    <Restaurant />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/employees"
+                element={
+                  <DashboardLayout>
+                    <Employees />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <DashboardLayout>
+                    <Settings />
+                  </DashboardLayout>
+                }
+              />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

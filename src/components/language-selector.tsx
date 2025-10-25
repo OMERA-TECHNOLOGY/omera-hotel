@@ -1,24 +1,24 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Languages } from "lucide-react"
-import type { Language } from "@/lib/i18n"
+} from "@/components/ui/dropdown-menu";
+import { Languages } from "lucide-react";
+import type { Language } from "@/lib/i18n";
+import { useLanguage } from "@/contexts/language-context";
 
 export function LanguageSelector() {
-  const [language, setLanguage] = useState<Language>("en")
+  const { language, setLanguage } = useLanguage();
 
   const languages = [
     { code: "en" as Language, name: "English", flag: "🇬🇧" },
     { code: "am" as Language, name: "አማርኛ", flag: "🇪🇹" },
     { code: "om" as Language, name: "Afaan Oromoo", flag: "🇪🇹" },
-  ]
+  ];
 
-  const currentLanguage = languages.find((l) => l.code === language)
+  const currentLanguage = languages.find((l) => l.code === language);
 
   return (
     <DropdownMenu>
@@ -41,5 +41,5 @@ export function LanguageSelector() {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
