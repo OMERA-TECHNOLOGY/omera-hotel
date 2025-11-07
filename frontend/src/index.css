@@ -9,8 +9,8 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Luxury Hotel Color Palette - Light Mode */
-    --background: 36 10% 96%;  /* Off-white with warmth */
-    --foreground: 0 0% 17%;     /* Deep charcoal */
+    --background: 36 10% 96%; /* Off-white with warmth */
+    --foreground: 0 0% 17%; /* Deep charcoal */
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 17%;
@@ -18,16 +18,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 17%;
 
-    --primary: 95 50% 20%;      /* Forest Green */
+    --primary: 95 50% 20%; /* Forest Green */
     --primary-foreground: 36 10% 96%;
 
-    --secondary: 340 75% 25%;   /* Burgundy */
+    --secondary: 340 75% 25%; /* Burgundy */
     --secondary-foreground: 36 10% 96%;
 
-    --muted: 30 8% 55%;         /* Warm Grey */
+    --muted: 30 8% 55%; /* Warm Grey */
     --muted-foreground: 0 0% 17%;
 
-    --accent: 30 45% 40%;       /* Bronze */
+    --accent: 30 45% 40%; /* Bronze */
     --accent-foreground: 36 10% 96%;
 
     --destructive: 0 75% 40%;
@@ -56,8 +56,8 @@ All colors MUST be HSL.
 
   .dark {
     /* Luxury Hotel Color Palette - Dark Mode */
-    --background: 0 0% 10%;     /* Deep charcoal background */
-    --foreground: 36 10% 96%;   /* Off-white text */
+    --background: 0 0% 10%; /* Deep charcoal background */
+    --foreground: 36 10% 96%; /* Off-white text */
 
     --card: 0 0% 13%;
     --card-foreground: 36 10% 96%;
@@ -65,16 +65,16 @@ All colors MUST be HSL.
     --popover: 0 0% 13%;
     --popover-foreground: 36 10% 96%;
 
-    --primary: 95 45% 35%;      /* Lighter forest green for dark mode */
+    --primary: 95 45% 35%; /* Lighter forest green for dark mode */
     --primary-foreground: 36 10% 96%;
 
-    --secondary: 340 60% 35%;   /* Lighter burgundy */
+    --secondary: 340 60% 35%; /* Lighter burgundy */
     --secondary-foreground: 36 10% 96%;
 
-    --muted: 30 8% 25%;         /* Dark warm grey */
+    --muted: 30 8% 25%; /* Dark warm grey */
     --muted-foreground: 30 8% 70%;
 
-    --accent: 30 45% 45%;       /* Lighter bronze */
+    --accent: 30 45% 45%; /* Lighter bronze */
     --accent-foreground: 0 0% 10%;
 
     --destructive: 0 75% 45%;
@@ -109,14 +109,23 @@ All colors MUST be HSL.
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold tracking-tight;
   }
 }
 
 @layer utilities {
   .luxury-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--secondary)) 100%
+    );
   }
 
   .luxury-shadow {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Home,
@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useLanguage } from "@/contexts/language-context";
+import { useSidebar } from "@/components/ui/sidebar";
 
 // Organic floating elements - inspired by nature
 const OrganicFloaters = () => {
@@ -70,22 +71,6 @@ const NaturalTexture = () => (
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-200/5 via-transparent to-emerald-200/5 dark:from-amber-900/5 dark:via-transparent dark:to-emerald-900/5" />
   </div>
 );
-
-// Smart sidebar state
-const useNaturalSidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  return {
-    isCollapsed,
-    setIsCollapsed,
-    isHovered,
-    setIsHovered,
-    activeIndex,
-    setActiveIndex,
-  };
-};
 
 // Earth-toned icon component
 const EarthIcon = ({
@@ -263,15 +248,9 @@ export function NaturalAppSidebar() {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const location = useLocation();
-
-  const {
-    isCollapsed,
-    setIsCollapsed,
-    isHovered,
-    setIsHovered,
-    activeIndex,
-    setActiveIndex,
-  } = useNaturalSidebar();
+  const { state, setOpen } = useSidebar();
+  const [isHovered, setIsHovered] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const menuItems = [
     { title: t.dashboard, url: "/dashboard", icon: Home },
@@ -293,6 +272,8 @@ export function NaturalAppSidebar() {
       setActiveIndex(currentIndex);
     }
   }, [location.pathname]);
+
+  const isCollapsed = state === "collapsed";
 
   return (
     <div
@@ -340,7 +321,7 @@ export function NaturalAppSidebar() {
 
             {/* Organic Collapse Toggle */}
             <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
+              onClick={() => setOpen(!isCollapsed)}
               className={`
                 p-2 rounded-lg transition-all duration-500 group
                 bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm
