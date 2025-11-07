@@ -1,19 +1,19 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageSelector } from "@/components/language-selector"
-import { Bell, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { NaturalAppSidebar } from "@/components/app-sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSelector } from "@/components/language-selector";
+import { Bell, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DashboardLayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AppSidebar />
+        <NaturalAppSidebar />
         <div className="flex-1 flex flex-col">
           {/* Header */}
           <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
@@ -37,5 +37,5 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </div>
     </SidebarProvider>
-  )
+  );
 }
