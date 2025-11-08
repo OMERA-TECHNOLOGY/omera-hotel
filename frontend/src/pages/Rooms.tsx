@@ -8,7 +8,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Filter } from "lucide-react";
+import {
+  Plus,
+  Filter,
+  Zap,
+  Crown,
+  Sparkles,
+  MapPin,
+  Star,
+  Wifi,
+  Tv,
+  Wind,
+  Martini,
+  Home,
+  Edit,
+  Trash2,
+  Eye,
+} from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import {
   Select,
@@ -28,6 +44,9 @@ interface Room {
   status: RoomStatus;
   price: number;
   features: string[];
+  rating: number;
+  size: string;
+  view: string;
 }
 
 const Rooms = () => {
@@ -44,6 +63,9 @@ const Rooms = () => {
       status: "vacant",
       price: 1500,
       features: ["WiFi", "TV", "AC"],
+      rating: 4.2,
+      size: "28m²",
+      view: "Garden",
     },
     {
       id: 2,
@@ -53,6 +75,9 @@ const Rooms = () => {
       status: "occupied",
       price: 1500,
       features: ["WiFi", "TV", "AC"],
+      rating: 4.1,
+      size: "28m²",
+      view: "Garden",
     },
     {
       id: 3,
@@ -60,8 +85,11 @@ const Rooms = () => {
       type: "Deluxe",
       floor: 2,
       status: "cleaning",
-      price: 2500,
-      features: ["WiFi", "TV", "AC", "Mini Bar"],
+      price: 3500,
+      features: ["WiFi", "TV", "AC", "Mini Bar", "Ocean View"],
+      rating: 4.7,
+      size: "45m²",
+      view: "Ocean",
     },
     {
       id: 4,
@@ -69,17 +97,23 @@ const Rooms = () => {
       type: "Deluxe",
       floor: 2,
       status: "vacant",
-      price: 2500,
-      features: ["WiFi", "TV", "AC", "Mini Bar"],
+      price: 3500,
+      features: ["WiFi", "TV", "AC", "Mini Bar", "Ocean View"],
+      rating: 4.8,
+      size: "45m²",
+      view: "Ocean",
     },
     {
       id: 5,
       number: "301",
-      type: "Suite",
+      type: "Executive Suite",
       floor: 3,
       status: "occupied",
-      price: 4500,
-      features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony"],
+      price: 6500,
+      features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony", "Jacuzzi"],
+      rating: 4.9,
+      size: "68m²",
+      view: "Panoramic",
     },
     {
       id: 6,
@@ -87,28 +121,77 @@ const Rooms = () => {
       type: "Presidential",
       floor: 4,
       status: "maintenance",
-      price: 8500,
-      features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony", "Jacuzzi"],
+      price: 12500,
+      features: [
+        "WiFi",
+        "TV",
+        "AC",
+        "Mini Bar",
+        "Balcony",
+        "Jacuzzi",
+        "Butler",
+      ],
+      rating: 5.0,
+      size: "120m²",
+      view: "Penthouse",
     },
   ];
 
   const getStatusColor = (status: RoomStatus) => {
     switch (status) {
       case "vacant":
-        return "bg-primary/10 text-primary hover:bg-primary/20";
+        return "bg-emerald-500";
       case "occupied":
-        return "bg-secondary/10 text-secondary hover:bg-secondary/20";
+        return "bg-amber-500";
       case "cleaning":
-        return "bg-accent/10 text-accent hover:bg-accent/20";
+        return "bg-orange-500";
       case "maintenance":
-        return "bg-destructive/10 text-destructive hover:bg-destructive/20";
+        return "bg-red-500";
       default:
-        return "bg-muted";
+        return "bg-slate-500";
+    }
+  };
+
+  const getStatusGradient = (status: RoomStatus) => {
+    switch (status) {
+      case "vacant":
+        return "from-emerald-500 to-green-500";
+      case "occupied":
+        return "from-amber-500 to-yellow-500";
+      case "cleaning":
+        return "from-orange-500 to-amber-500";
+      case "maintenance":
+        return "from-red-500 to-orange-500";
+      default:
+        return "from-slate-500 to-slate-600";
     }
   };
 
   const getStatusLabel = (status: RoomStatus) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  const getFeatureIcon = (feature: string) => {
+    switch (feature) {
+      case "WiFi":
+        return Wifi;
+      case "TV":
+        return Tv;
+      case "AC":
+        return Wind;
+      case "Mini Bar":
+        return Martini;
+      case "Balcony":
+        return Home;
+      case "Jacuzzi":
+        return Sparkles;
+      case "Butler":
+        return Crown;
+      case "Ocean View":
+        return MapPin;
+      default:
+        return Star;
+    }
   };
 
   const filteredRooms = rooms.filter((room) => {
@@ -124,75 +207,189 @@ const Rooms = () => {
     maintenance: rooms.filter((r) => r.status === "maintenance").length,
   };
 
+  const handleDeleteRoom = (roomId: number) => {
+    // Add delete functionality here
+    console.log("Delete room:", roomId);
+  };
+
+  const handleEditRoom = (roomId: number) => {
+    // Add edit functionality here
+    console.log("Edit room:", roomId);
+  };
+
+  const handleViewDetails = (roomId: number) => {
+    // Add view details functionality here
+    console.log("View details room:", roomId);
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{t.roomManagement}</h1>
-          <p className="text-muted-foreground">
-            View and manage all hotel rooms
-          </p>
+    <div className="space-y-8 p-6">
+      {/* Enhanced Header Section */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-emerald-900 to-amber-900 p-8 text-white">
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
+                {t.roomManagement}
+              </h1>
+              <p className="mt-2 text-emerald-200 text-lg">
+                Premium Room Inventory & Status Management
+              </p>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                <div className="p-2 bg-emerald-400/20 rounded-xl">
+                  <Home className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Room Analytics</p>
+                  <p className="text-xs text-emerald-200">60 total rooms</p>
+                </div>
+              </div>
+              <Button className="bg-gradient-to-r from-emerald-500 to-amber-500 hover:from-emerald-600 hover:to-amber-600 border-0 shadow-2xl">
+                <Plus className="h-5 w-5 mr-2" />
+                {t.addRoom}
+              </Button>
+            </div>
+          </div>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          {t.addRoom}
-        </Button>
+
+        {/* Background Elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-400/20 to-amber-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-amber-400/20 to-emerald-400/20 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Status Overview */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="border-border">
+      {/* Enhanced Status Overview */}
+      <div className="grid gap-6 md:grid-cols-4">
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-slate-800 dark:to-emerald-900/20 shadow-xl group">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">{t.vacant}</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.vacant}
+              </CardTitle>
+              <div className="p-2 bg-emerald-500/10 rounded-xl">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">
+            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
               {statusCounts.vacant}
             </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Ready for check-in
+            </p>
           </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
+            <div
+              className="h-full bg-gradient-to-r from-emerald-500 to-green-500 transition-all duration-1000"
+              style={{
+                width: `${(statusCounts.vacant / rooms.length) * 100}%`,
+              }}
+            ></div>
+          </div>
         </Card>
-        <Card className="border-border">
+
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-amber-50 dark:from-slate-800 dark:to-amber-900/20 shadow-xl group">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">{t.occupied}</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.occupied}
+              </CardTitle>
+              <div className="p-2 bg-amber-500/10 rounded-xl">
+                <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-secondary">
+            <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">
               {statusCounts.occupied}
             </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Currently occupied
+            </p>
           </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
+            <div
+              className="h-full bg-gradient-to-r from-amber-500 to-yellow-500 transition-all duration-1000"
+              style={{
+                width: `${(statusCounts.occupied / rooms.length) * 100}%`,
+              }}
+            ></div>
+          </div>
         </Card>
-        <Card className="border-border">
+
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-orange-50 dark:from-slate-800 dark:to-orange-900/20 shadow-xl group">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">{t.cleaning}</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.cleaning}
+              </CardTitle>
+              <div className="p-2 bg-orange-500/10 rounded-xl">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-accent">
+            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
               {statusCounts.cleaning}
             </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Being prepared
+            </p>
           </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
+            <div
+              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-1000"
+              style={{
+                width: `${(statusCounts.cleaning / rooms.length) * 100}%`,
+              }}
+            ></div>
+          </div>
         </Card>
-        <Card className="border-border">
+
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-red-50 dark:from-slate-800 dark:to-red-900/20 shadow-xl group">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">
-              {t.maintenance}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.maintenance}
+              </CardTitle>
+              <div className="p-2 bg-red-500/10 rounded-xl">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">
+            <div className="text-3xl font-bold text-red-600 dark:text-red-400">
               {statusCounts.maintenance}
             </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Under maintenance
+            </p>
           </CardContent>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
+            <div
+              className="h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-1000"
+              style={{
+                width: `${(statusCounts.maintenance / rooms.length) * 100}%`,
+              }}
+            ></div>
+          </div>
         </Card>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Filters:</span>
+      {/* Enhanced Filters */}
+      <div className="flex items-center gap-4 p-6 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-xl border-0">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-emerald-500/10 rounded-xl">
+            <Filter className="h-5 w-5 text-emerald-500" />
+          </div>
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Advanced Filters:
+          </span>
         </div>
         <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[200px] bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-xl">
             <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
           <SelectContent>
@@ -204,62 +401,157 @@ const Rooms = () => {
           </SelectContent>
         </Select>
         <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[200px] bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-xl">
             <SelectValue placeholder="All Types" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="Single">Single</SelectItem>
-            <SelectItem value="Deluxe">Deluxe</SelectItem>
-            <SelectItem value="Suite">Suite</SelectItem>
-            <SelectItem value="Presidential">Presidential</SelectItem>
+            <SelectItem value="Single">Single Room</SelectItem>
+            <SelectItem value="Deluxe">Deluxe Room</SelectItem>
+            <SelectItem value="Executive Suite">Executive Suite</SelectItem>
+            <SelectItem value="Presidential">Presidential Suite</SelectItem>
           </SelectContent>
         </Select>
+        <Button
+          variant="outline"
+          className="ml-auto border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-xl"
+        >
+          <Zap className="h-4 w-4 mr-2" />
+          Quick Actions
+        </Button>
       </div>
 
-      {/* Room Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredRooms.map((room) => (
-          <Card
-            key={room.id}
-            className="border-border hover:border-primary transition-colors"
-          >
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle>Room {room.number}</CardTitle>
-                  <CardDescription>
-                    {room.type} • Floor {room.floor}
-                  </CardDescription>
-                </div>
-                <Badge className={getStatusColor(room.status)}>
-                  {getStatusLabel(room.status)}
+      {/* Enhanced Room Grid */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredRooms.map((room) => {
+          const FeatureIcon = getFeatureIcon;
+          return (
+            <Card
+              key={room.id}
+              className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105 group"
+            >
+              {/* Status Indicator */}
+              <div
+                className={`absolute top-4 right-4 px-3 py-1 rounded-full text-white text-xs font-semibold bg-gradient-to-r ${getStatusGradient(
+                  room.status
+                )} shadow-lg`}
+              >
+                {getStatusLabel(room.status)}
+              </div>
+
+              {/* Room Type Badge */}
+              <div className="absolute top-4 left-4">
+                <Badge
+                  variant="outline"
+                  className={`backdrop-blur-sm border-slate-300 dark:border-slate-600 ${
+                    room.type === "Presidential"
+                      ? "bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                      : room.type === "Executive Suite"
+                      ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                      : room.type === "Deluxe"
+                      ? "bg-orange-500/10 text-orange-700 dark:text-orange-300"
+                      : "bg-slate-500/10 text-slate-700 dark:text-slate-300"
+                  }`}
+                >
+                  {room.type.includes("Suite") && (
+                    <Crown className="h-3 w-3 mr-1" />
+                  )}
+                  {room.type}
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-2xl font-bold">{room.price} ETB</p>
-                <p className="text-xs text-muted-foreground">per night</p>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {room.features.map((feature, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
-                    {feature}
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="flex-1">
-                  {t.edit}
-                </Button>
-                <Button variant="outline" size="sm" className="flex-1">
-                  View Details
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+
+              <CardHeader className="pb-4 pt-16">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+                      Room {room.number}
+                    </CardTitle>
+                    <CardDescription className="flex items-center gap-2 mt-1">
+                      <MapPin className="h-4 w-4" />
+                      Floor {room.floor} • {room.view} • {room.size}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {/* Price & Rating */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-3xl font-bold text-slate-800 dark:text-white">
+                      {room.price.toLocaleString()} ETB
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      per night
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 bg-amber-500/10 px-3 py-1 rounded-full">
+                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                    <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">
+                      {room.rating}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Features */}
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+                    Premium Features:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {room.features.map((feature, index) => {
+                      const IconComponent = getFeatureIcon(feature);
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center gap-1 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs rounded-full border border-emerald-500/20"
+                        >
+                          <IconComponent className="h-3 w-3" />
+                          {feature}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="grid grid-cols-3 gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-slate-300 dark:border-slate-600 transition-all hover:scale-105"
+                    onClick={() => handleViewDetails(room.id)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400 transition-all hover:scale-105"
+                    onClick={() => handleEditRoom(room.id)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 transition-all hover:scale-105"
+                    onClick={() => handleDeleteRoom(room.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+
+              {/* Hover Effect */}
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${getStatusGradient(
+                  room.status
+                )} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl`}
+              ></div>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

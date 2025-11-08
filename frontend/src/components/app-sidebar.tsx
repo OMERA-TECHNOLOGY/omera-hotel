@@ -64,14 +64,6 @@ const OrganicFloaters = () => {
   );
 };
 
-// Natural texture background
-const NaturalTexture = () => (
-  <div className="absolute inset-0">
-    <div className="absolute inset-0 bg-gradient-to-br from-amber-50/30 via-stone-50/20 to-emerald-50/30 dark:from-stone-900/30 dark:via-stone-800/20 dark:to-emerald-900/20" />
-    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-200/5 via-transparent to-emerald-200/5 dark:from-amber-900/5 dark:via-transparent dark:to-emerald-900/5" />
-  </div>
-);
-
 // Earth-toned icon component
 const EarthIcon = ({
   icon: Icon,
@@ -279,7 +271,7 @@ export function NaturalAppSidebar() {
     <div
       className={`
         relative h-screen transition-all duration-500 ease-in-out overflow-hidden
-        bg-amber-50 dark:bg-stone-900
+        bg-white dark:bg-gray-900
         border-r border-stone-200/80 dark:border-stone-700/80
         backdrop-blur-sm
         ${isCollapsed ? "w-20" : "w-80"}
@@ -287,13 +279,6 @@ export function NaturalAppSidebar() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Natural Background Effects */}
-      <NaturalTexture />
-      <OrganicFloaters />
-
-      {/* Soft overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-amber-50/40 to-stone-50/30 dark:from-stone-900/40 dark:to-stone-800/30 backdrop-blur-sm" />
-
       {/* Sidebar Content */}
       <div className="relative z-10 h-full flex flex-col">
         {/* Header */}

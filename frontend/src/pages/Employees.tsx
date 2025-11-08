@@ -10,7 +10,18 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, UserCog, Clock } from "lucide-react";
+import {
+  Plus,
+  Search,
+  UserCog,
+  Clock,
+  Users,
+  Shield,
+  TrendingUp,
+  Eye,
+  Edit,
+  Key,
+} from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import {
   Dialog,
@@ -43,6 +54,8 @@ const Employees = () => {
       department: "Housekeeping",
       shift: "Morning (6 AM - 2 PM)",
       status: "Active",
+      joinDate: "2023-01-15",
+      performance: "Excellent",
     },
     {
       id: 2,
@@ -53,6 +66,8 @@ const Employees = () => {
       department: "Front Desk",
       shift: "Day (10 AM - 6 PM)",
       status: "Active",
+      joinDate: "2022-08-22",
+      performance: "Good",
     },
     {
       id: 3,
@@ -63,286 +78,587 @@ const Employees = () => {
       department: "Housekeeping",
       shift: "Afternoon (2 PM - 10 PM)",
       status: "Active",
+      joinDate: "2023-03-10",
+      performance: "Excellent",
     },
     {
       id: 4,
       name: "Yonas Bekele",
       email: "yonas.b@Omera.com",
       phone: "+251 91 567 8901",
-      role: "Chef",
+      role: "Executive Chef",
       department: "Restaurant",
       shift: "Split (7 AM - 3 PM, 6 PM - 10 PM)",
       status: "Active",
+      joinDate: "2021-11-05",
+      performance: "Outstanding",
     },
   ];
 
   const activityLogs = [
     {
       user: "Anna Tesfaye",
-      action: "Completed cleaning Room 204",
+      action: "Completed premium cleaning of Suite 204",
       time: "10 mins ago",
+      type: "cleaning",
     },
     {
       user: "Dawit Assefa",
-      action: "Checked in guest John Smith to Room 315",
+      action: "Checked in VIP guest John Smith to Premium Suite 315",
       time: "25 mins ago",
+      type: "checkin",
     },
     {
-      user: "Admin",
-      action: "Generated end-of-day financial report",
+      user: "System Admin",
+      action: "Generated comprehensive financial performance report",
       time: "1 hour ago",
+      type: "system",
     },
     {
       user: "Marta Lemma",
-      action: "Reported maintenance issue in Room 402",
+      action: "Reported maintenance issue in Deluxe Room 402",
       time: "2 hours ago",
+      type: "maintenance",
     },
     {
       user: "Yonas Bekele",
-      action: "Updated restaurant menu items",
+      action: "Updated restaurant menu with seasonal specialties",
       time: "3 hours ago",
+      type: "menu",
     },
   ];
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case "Admin":
-        return "bg-destructive/10 text-destructive";
+      case "Executive Chef":
+        return "bg-orange-100 text-orange-800 border-orange-200";
       case "Manager":
-        return "bg-secondary/10 text-secondary";
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "Receptionist":
-        return "bg-primary/10 text-primary";
+        return "bg-amber-100 text-amber-800 border-amber-200";
+      case "Housekeeper":
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
       default:
-        return "bg-accent/10 text-accent";
+        return "bg-slate-100 text-slate-800 border-slate-200";
+    }
+  };
+
+  const getPerformanceColor = (performance: string) => {
+    switch (performance) {
+      case "Outstanding":
+        return "bg-purple-100 text-purple-800 border-purple-200";
+      case "Excellent":
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
+      case "Good":
+        return "bg-amber-100 text-amber-800 border-amber-200";
+      default:
+        return "bg-slate-100 text-slate-800 border-slate-200";
+    }
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case "cleaning":
+        return "🧹";
+      case "checkin":
+        return "🏨";
+      case "system":
+        return "⚙️";
+      case "maintenance":
+        return "🔧";
+      case "menu":
+        return "🍽️";
+      default:
+        return "📝";
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{t.employees}</h1>
-          <p className="text-muted-foreground">
-            Manage staff, roles, and work schedules
-          </p>
+    <div className="space-y-8 p-6">
+      {/* Unique Header Structure */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800 via-purple-900 to-orange-900 p-8 text-white border border-purple-500/20">
+        <div className="relative z-10">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-purple-500/20 rounded-2xl border border-purple-400/30">
+                  <Users className="h-8 w-8 text-purple-400" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-200 to-orange-200 bg-clip-text text-transparent">
+                    Team Excellence
+                  </h1>
+                  <p className="text-purple-100 text-lg mt-2">
+                    Empower your workforce with precision management and growth
+                    opportunities
+                  </p>
+                </div>
+              </div>
+
+              {/* Stats Row */}
+              <div className="flex items-center gap-6 mt-6">
+                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                  <Shield className="h-6 w-6 text-emerald-400" />
+                  <div>
+                    <p className="text-2xl font-bold">98%</p>
+                    <p className="text-xs text-purple-200">Staff Retention</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                  <TrendingUp className="h-6 w-6 text-orange-400" />
+                  <div>
+                    <p className="text-2xl font-bold">4.7</p>
+                    <p className="text-xs text-purple-200">Avg. Performance</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                  <Clock className="h-6 w-6 text-purple-400" />
+                  <div>
+                    <p className="text-2xl font-bold">24/7</p>
+                    <p className="text-xs text-purple-200">Shift Coverage</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 border-0 shadow-2xl rounded-2xl px-6 py-3">
+                    <Plus className="h-5 w-5 mr-2" />
+                    Onboard Talent
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-3xl">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-3 text-2xl">
+                      <div className="p-3 bg-gradient-to-r from-purple-500 to-orange-500 rounded-2xl">
+                        <Users className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <div>Onboard New Team Member</div>
+                        <div className="text-sm font-normal text-slate-500">
+                          Create comprehensive employee profile and system
+                          access
+                        </div>
+                      </div>
+                    </DialogTitle>
+                  </DialogHeader>
+
+                  <div className="grid gap-6 py-4">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="empFirstName"
+                          className="text-sm font-semibold"
+                        >
+                          First Name
+                        </Label>
+                        <Input
+                          id="empFirstName"
+                          placeholder="Enter first name"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="empLastName"
+                          className="text-sm font-semibold"
+                        >
+                          Last Name
+                        </Label>
+                        <Input
+                          id="empLastName"
+                          placeholder="Enter last name"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="empEmail"
+                          className="text-sm font-semibold"
+                        >
+                          Professional Email
+                        </Label>
+                        <Input
+                          id="empEmail"
+                          type="email"
+                          placeholder="team.member@Omera.com"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="empPhone"
+                          className="text-sm font-semibold"
+                        >
+                          Contact Number
+                        </Label>
+                        <Input
+                          id="empPhone"
+                          placeholder="+251 xxx xxx xxx"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="empRole"
+                          className="text-sm font-semibold"
+                        >
+                          Position & Role
+                        </Label>
+                        <Select>
+                          <SelectTrigger
+                            id="empRole"
+                            className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                          >
+                            <SelectValue placeholder="Select position" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="admin">
+                              System Administrator
+                            </SelectItem>
+                            <SelectItem value="manager">
+                              Department Manager
+                            </SelectItem>
+                            <SelectItem value="receptionist">
+                              Front Desk Receptionist
+                            </SelectItem>
+                            <SelectItem value="housekeeper">
+                              Housekeeping Specialist
+                            </SelectItem>
+                            <SelectItem value="chef">Executive Chef</SelectItem>
+                            <SelectItem value="waiter">
+                              Service Professional
+                            </SelectItem>
+                            <SelectItem value="accountant">
+                              Finance Specialist
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="empDepartment"
+                          className="text-sm font-semibold"
+                        >
+                          Department
+                        </Label>
+                        <Select>
+                          <SelectTrigger
+                            id="empDepartment"
+                            className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                          >
+                            <SelectValue placeholder="Select department" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="administration">
+                              Executive Administration
+                            </SelectItem>
+                            <SelectItem value="front-desk">
+                              Front Desk Operations
+                            </SelectItem>
+                            <SelectItem value="housekeeping">
+                              Housekeeping Excellence
+                            </SelectItem>
+                            <SelectItem value="restaurant">
+                              Culinary Operations
+                            </SelectItem>
+                            <SelectItem value="finance">
+                              Financial Management
+                            </SelectItem>
+                            <SelectItem value="maintenance">
+                              Facility Maintenance
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <Label
+                        htmlFor="empShift"
+                        className="text-sm font-semibold"
+                      >
+                        Work Schedule
+                      </Label>
+                      <Select>
+                        <SelectTrigger
+                          id="empShift"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                        >
+                          <SelectValue placeholder="Select shift pattern" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="morning">
+                            Morning Excellence (6 AM - 2 PM)
+                          </SelectItem>
+                          <SelectItem value="day">
+                            Day Operations (10 AM - 6 PM)
+                          </SelectItem>
+                          <SelectItem value="afternoon">
+                            Afternoon Service (2 PM - 10 PM)
+                          </SelectItem>
+                          <SelectItem value="night">
+                            Night Operations (10 PM - 6 AM)
+                          </SelectItem>
+                          <SelectItem value="split">
+                            Split Shift (Peak Coverage)
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-3">
+                    <Button
+                      variant="outline"
+                      className="border-slate-300 dark:border-slate-600 rounded-xl"
+                    >
+                      Cancel
+                    </Button>
+                    <Button className="bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 rounded-xl">
+                      Onboard Team Member
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Employee
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Add New Employee</DialogTitle>
-              <DialogDescription>
-                Create a new employee account and assign role
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="empFirstName">First Name</Label>
-                  <Input id="empFirstName" placeholder="Enter first name" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="empLastName">Last Name</Label>
-                  <Input id="empLastName" placeholder="Enter last name" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="empEmail">Email</Label>
-                  <Input
-                    id="empEmail"
-                    type="email"
-                    placeholder="employee@Omera.com"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="empPhone">Phone</Label>
-                  <Input id="empPhone" placeholder="+251 xxx xxx xxx" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="empRole">Role</Label>
-                  <Select>
-                    <SelectTrigger id="empRole">
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="manager">Manager</SelectItem>
-                      <SelectItem value="receptionist">Receptionist</SelectItem>
-                      <SelectItem value="housekeeper">Housekeeper</SelectItem>
-                      <SelectItem value="chef">Chef</SelectItem>
-                      <SelectItem value="waiter">Waiter/Waitress</SelectItem>
-                      <SelectItem value="accountant">Accountant</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="empDepartment">Department</Label>
-                  <Select>
-                    <SelectTrigger id="empDepartment">
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="administration">
-                        Administration
-                      </SelectItem>
-                      <SelectItem value="front-desk">Front Desk</SelectItem>
-                      <SelectItem value="housekeeping">Housekeeping</SelectItem>
-                      <SelectItem value="restaurant">Restaurant</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="maintenance">Maintenance</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="empShift">Work Shift</Label>
-                <Select>
-                  <SelectTrigger id="empShift">
-                    <SelectValue placeholder="Select shift" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="morning">
-                      Morning (6 AM - 2 PM)
-                    </SelectItem>
-                    <SelectItem value="day">Day (10 AM - 6 PM)</SelectItem>
-                    <SelectItem value="afternoon">
-                      Afternoon (2 PM - 10 PM)
-                    </SelectItem>
-                    <SelectItem value="night">Night (10 PM - 6 AM)</SelectItem>
-                    <SelectItem value="split">Split Shift</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline">Cancel</Button>
-              <Button>Add Employee</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+
+        {/* Unique Background Elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-500/10 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-orange-500/10 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-500/5 to-orange-500/5 rounded-full blur-3xl"></div>
       </div>
 
-      <Tabs defaultValue="employees" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="employees">All Employees</TabsTrigger>
-          <TabsTrigger value="shifts">Shift Management</TabsTrigger>
-          <TabsTrigger value="activity">Activity Logs</TabsTrigger>
+      {/* Enhanced Search & Filters */}
+      <div className="flex items-center gap-4 p-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <Input
+            placeholder="Search team members by name, role, or department..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-12 pr-4 py-3 text-lg border-0 bg-white dark:bg-slate-700 shadow-lg rounded-2xl"
+          />
+        </div>
+        <Select defaultValue="all">
+          <SelectTrigger className="w-[200px] bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-xl">
+            <SelectValue placeholder="Filter by department" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Departments</SelectItem>
+            <SelectItem value="front-desk">Front Desk Operations</SelectItem>
+            <SelectItem value="housekeeping">
+              Housekeeping Excellence
+            </SelectItem>
+            <SelectItem value="restaurant">Culinary Operations</SelectItem>
+            <SelectItem value="finance">Financial Management</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Tabs defaultValue="employees" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3 p-2 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+          <TabsTrigger
+            value="employees"
+            className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700"
+          >
+            Team Directory
+            <span className="ml-2 px-2 py-1 bg-purple-500 text-white text-xs rounded-full">
+              {employees.length}
+            </span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="shifts"
+            className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700"
+          >
+            Shift Coordination
+            <span className="ml-2 px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
+              4
+            </span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="activity"
+            className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700"
+          >
+            Activity Intelligence
+            <span className="ml-2 px-2 py-1 bg-emerald-500 text-white text-xs rounded-full">
+              {activityLogs.length}
+            </span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="employees" className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search employees by name, role, or department..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-            <Select defaultValue="all">
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by department" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Departments</SelectItem>
-                <SelectItem value="front-desk">Front Desk</SelectItem>
-                <SelectItem value="housekeeping">Housekeeping</SelectItem>
-                <SelectItem value="restaurant">Restaurant</SelectItem>
-                <SelectItem value="finance">Finance</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid gap-4">
+          <div className="grid gap-6">
             {employees.map((employee) => (
-              <Card key={employee.id} className="border-border">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-lg">{employee.name}</CardTitle>
-                      <CardDescription>{employee.department}</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getRoleBadgeColor(employee.role)}>
-                        {employee.role}
-                      </Badge>
-                      <Badge className="bg-primary/10 text-primary">
-                        {employee.status}
-                      </Badge>
+              <Card
+                key={employee.id}
+                className="relative overflow-hidden border-0 bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="p-3 bg-gradient-to-r from-purple-500 to-orange-500 rounded-2xl">
+                          <div className="text-white font-bold text-lg">
+                            {employee.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <CardTitle className="text-xl font-bold text-slate-800 dark:text-white">
+                              {employee.name}
+                            </CardTitle>
+                            <Badge className={getRoleBadgeColor(employee.role)}>
+                              {employee.role}
+                            </Badge>
+                            <Badge
+                              className={getPerformanceColor(
+                                employee.performance
+                              )}
+                            >
+                              {employee.performance}
+                            </Badge>
+                          </div>
+                          <CardDescription className="text-slate-600 dark:text-slate-400">
+                            {employee.department} • Joined {employee.joinDate}
+                          </CardDescription>
+                        </div>
+                      </div>
+
+                      {/* Employee Details Grid */}
+                      <div className="grid grid-cols-3 gap-6 text-sm mb-4">
+                        <div>
+                          <p className="text-slate-500 dark:text-slate-400">
+                            Professional Email
+                          </p>
+                          <p className="font-semibold text-slate-800 dark:text-white">
+                            {employee.email}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-slate-500 dark:text-slate-400">
+                            Contact Number
+                          </p>
+                          <p className="font-semibold text-slate-800 dark:text-white">
+                            {employee.phone}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-slate-500 dark:text-slate-400">
+                            Work Schedule
+                          </p>
+                          <p className="font-semibold text-slate-800 dark:text-white">
+                            {employee.shift}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-3 gap-4 text-sm mb-4">
-                    <div>
-                      <p className="text-muted-foreground">Email</p>
-                      <p className="font-medium">{employee.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Phone</p>
-                      <p className="font-medium">{employee.phone}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Shift</p>
-                      <p className="font-medium">{employee.shift}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <UserCog className="h-3 w-3 mr-1" />
-                      Edit
+                <CardContent className="pt-0">
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl border-slate-300 dark:border-slate-600"
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Profile
                     </Button>
-                    <Button variant="outline" size="sm">
-                      Reset Password
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400"
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Details
                     </Button>
-                    <Button variant="outline" size="sm">
-                      View Activity
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl border-purple-300 dark:border-purple-600 text-purple-600 dark:text-purple-400"
+                    >
+                      <Key className="h-4 w-4 mr-2" />
+                      Reset Access
                     </Button>
                   </div>
                 </CardContent>
+
+                {/* Hover Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-orange-500 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-3xl"></div>
               </Card>
             ))}
           </div>
         </TabsContent>
 
         <TabsContent value="shifts" className="space-y-4">
-          <Card className="border-border">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
-                <CardTitle>Shift Schedule</CardTitle>
-              </div>
-              <CardDescription>Current week shift assignments</CardDescription>
+          <Card className="border-0 bg-white dark:bg-slate-800 shadow-2xl rounded-3xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3 text-slate-800 dark:text-white text-2xl">
+                <div className="p-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl">
+                  <Clock className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <div>Shift Coordination Center</div>
+                  <CardDescription className="text-lg">
+                    Optimized workforce scheduling and coverage management
+                  </CardDescription>
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {["Morning", "Day", "Afternoon", "Night"].map((shift) => (
+              <div className="space-y-6">
+                {[
+                  "Morning Excellence",
+                  "Day Operations",
+                  "Afternoon Service",
+                  "Night Operations",
+                ].map((shift) => (
                   <div
                     key={shift}
-                    className="border border-border rounded-lg p-4"
+                    className="border border-slate-200 dark:border-slate-600 rounded-2xl p-6 bg-white dark:bg-slate-700/50"
                   >
-                    <h4 className="font-semibold mb-3">{shift} Shift</h4>
-                    <div className="grid md:grid-cols-3 gap-2">
+                    <div className="flex items-center gap-3 mb-4">
+                      <h4 className="font-bold text-lg text-slate-800 dark:text-white">
+                        {shift}
+                      </h4>
+                      <Badge className="bg-orange-100 text-orange-800 border-orange-200">
+                        {
+                          employees.filter((emp) =>
+                            emp.shift.includes(shift.split(" ")[0])
+                          ).length
+                        }{" "}
+                        Team Members
+                      </Badge>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {employees
-                        .filter((emp) => emp.shift.includes(shift))
+                        .filter((emp) =>
+                          emp.shift.includes(shift.split(" ")[0])
+                        )
                         .map((emp) => (
                           <div
                             key={emp.id}
-                            className="flex items-center gap-2 p-2 bg-accent/5 rounded"
+                            className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-600/50 rounded-xl border border-slate-200 dark:border-slate-500"
                           >
-                            <UserCog className="h-4 w-4 text-muted-foreground" />
-                            <div>
-                              <p className="text-sm font-medium">{emp.name}</p>
-                              <p className="text-xs text-muted-foreground">
+                            <div className="p-2 bg-gradient-to-r from-purple-500 to-orange-500 rounded-lg">
+                              <UserCog className="h-4 w-4 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-slate-800 dark:text-white">
+                                {emp.name}
+                              </p>
+                              <p className="text-sm text-slate-600 dark:text-slate-400">
                                 {emp.role}
                               </p>
                             </div>
@@ -357,26 +673,44 @@ const Employees = () => {
         </TabsContent>
 
         <TabsContent value="activity" className="space-y-4">
-          <Card className="border-border">
-            <CardHeader>
-              <CardTitle>Activity Logs</CardTitle>
-              <CardDescription>
-                Recent employee actions and system events
-              </CardDescription>
+          <Card className="border-0 bg-white dark:bg-slate-800 shadow-2xl rounded-3xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3 text-slate-800 dark:text-white text-2xl">
+                <div className="p-3 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl">
+                  <TrendingUp className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <div>Activity Intelligence Dashboard</div>
+                  <CardDescription className="text-lg">
+                    Real-time team performance and system engagement metrics
+                  </CardDescription>
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {activityLogs.map((log, index) => (
                   <div
                     key={index}
-                    className="flex items-start justify-between pb-3 border-b border-border last:border-0"
+                    className="flex items-start gap-4 p-4 bg-white dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300"
                   >
-                    <div className="space-y-1">
-                      <p className="text-sm">
-                        <span className="font-medium">{log.user}</span>{" "}
+                    <div className="text-2xl">{getActivityIcon(log.type)}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <p className="font-semibold text-slate-800 dark:text-white">
+                          {log.user}
+                        </p>
+                        <Badge
+                          variant="outline"
+                          className="border-slate-300 dark:border-slate-600 text-xs"
+                        >
+                          {log.type}
+                        </Badge>
+                      </div>
+                      <p className="text-slate-700 dark:text-slate-300 mb-2">
                         {log.action}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         {log.time}
                       </p>
                     </div>
