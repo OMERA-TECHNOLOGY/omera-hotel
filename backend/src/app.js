@@ -16,6 +16,7 @@ import employeeRoutes from "./routes/employees.js";
 import bookingRoutes from "./routes/bookings.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import roomsRoutes from "./routes/rooms.js";
+import financeRoutes from "./routes/finance.js";
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/rooms", roomsRoutes);
+app.use("/api/finance", financeRoutes);
 
 // 404 handler (after all routes)
 app.use((req, res) => {
