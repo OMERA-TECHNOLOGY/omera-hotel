@@ -3,16 +3,16 @@ import bcrypt from "bcryptjs";
 
 class UsersService {
   static async create({
-    full_name,
     email,
     password,
-    role = "staff",
-    status = "active",
+    role = "receptionist",
+    is_active = true,
   }) {
     const password_hash = await bcrypt.hash(password, 12);
+    const payload = { email, password_hash, role, is_active };
     const { data, error } = await supabase
       .from("users")
-      .insert([{ full_name, email, password_hash, role, status }])
+      .insert([payload])
       .select()
       .single();
     if (error) throw error;
@@ -35,13 +35,17 @@ class UsersService {
     return data || null;
   }
   static async update(id, updates) {
-    if (updates.password) {
-      updates.password_hash = await bcrypt.hash(updates.password, 12);
-      delete updates.password;
+    const allowed = ["email", "role", "is_active", "last_login", "password"];
+    const safe = Object.fromEntries(
+      Object.entries(updates || {}).filter(([k]) => allowed.includes(k))
+    );
+    if (safe.password) {
+      safe.password_hash = await bcrypt.hash(safe.password, 12);
+      delete safe.password;
     }
     const { data, error } = await supabase
       .from("users")
-      .update(updates)
+      .update(safe)
       .eq("id", id)
       .select()
       .single();

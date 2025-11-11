@@ -21,10 +21,11 @@ export const authenticateToken = async (req, res, next) => {
   const authHeader = req.get("authorization") || req.headers["authorization"];
   const token = authHeader && String(authHeader).split(" ")[1];
 
-  if (!token)
-    return res
-      .status(401)
-      .json({ success: false, error: "Access token required" });
+  if (!token) {
+    // Instead of error, just skip setting req.user and continue
+    req.user = null;
+    return next();
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "");

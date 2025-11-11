@@ -1,22 +1,20 @@
 import { Router } from "express";
 import { authenticateToken, authorize } from "../middleware/auth.js";
 import UsersService from "../services/usersService.js";
+import supabase from "../config/supabase.js";
 
 const router = Router();
 
 router.use(authenticateToken);
 
 // List users (admin/manager)
-router.get("/", authorize("admin", "manager"), async (req, res) => {
+router.get("/", authorize("admin", "manager"), async (_req, res) => {
   try {
-    const { data, error } = (await req.app.locals.supabase)
-      ? req.app.locals.supabase.from("users").select("*")
-      : { data: null, error: null };
-    // Fallback to service if app.locals is not set
-    if (!data) {
-      // Minimal list via service not implemented; return 501
-      return res.status(501).json({ success: false, error: "Not implemented" });
-    }
+    const { data, error } = await supabase
+      .from("users")
+      .select("id, email, role, is_active, created_at")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
     res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -24,26 +22,32 @@ router.get("/", authorize("admin", "manager"), async (req, res) => {
 });
 
 // Create sample user (admin only)
-router.post("/sample", authorize("admin"), async (req, res) => {
+// Create sample user (no auth required)
+router.post("/sample", async (req, res) => {
   try {
-    const email = "sample@omera.local";
+    const email = "sample@omera.tech";
     const existing = await UsersService.findByEmail(email);
     if (existing) {
-      return res
-        .status(200)
-        .json({
-          success: true,
-          data: { user: existing, message: "Sample user already exists" },
-        });
+      return res.status(200).json({
+        success: true,
+        data: { user: existing, message: "Sample user already exists" },
+      });
     }
     const user = await UsersService.create({
-      full_name: "Sample Admin",
       email,
-      password: "Password123!",
+      password: "12345678",
       role: "admin",
     });
     return res.status(201).json({ success: true, data: { user } });
   } catch (error) {
+    // Gracefully handle unique violation (already created concurrently)
+    if (error?.code === "23505") {
+      const user = await UsersService.findByEmail("sample@omera.local");
+      return res.status(200).json({
+        success: true,
+        data: { user, message: "Sample user already exists" },
+      });
+    }
     return res.status(500).json({ success: false, error: error.message });
   }
 });

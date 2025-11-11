@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { apiPost, extractError } from "@/lib/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,11 +41,34 @@ const Login = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  const { mutateAsync: loginMutate } = useMutation({
+    mutationFn: async () =>
+      apiPost<
+        {
+          success: true;
+          data: { token: string; user: { id: string; role: string } };
+        },
+        { email: string; password: string }
+      >("/auth/login", { email, password }),
+  });
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    navigate("/dashboard");
+    try {
+      const res = await loginMutate();
+      const token = res?.data?.token;
+      if (token) {
+        localStorage.setItem("auth_token", token);
+        navigate("/dashboard");
+      } else {
+        throw new Error("Invalid response from server");
+      }
+    } catch (err) {
+      alert(`Login failed: ${extractError(err)}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

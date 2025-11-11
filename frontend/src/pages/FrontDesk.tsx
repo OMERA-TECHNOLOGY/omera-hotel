@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { apiGet, extractError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,87 +50,58 @@ const FrontDesk = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useLanguage();
 
-  const currentGuests = [
-    {
-      id: 1,
-      name: "John Smith",
-      room: "204 • Premium Suite",
-      checkIn: "2025-10-20",
-      checkOut: "2025-10-25",
-      status: "Active",
-      nights: 5,
-      amount: "45,320 ETB",
-      avatar: "JS",
-      priority: "vip",
-      services: ["Breakfast", "Spa", "Airport Transfer"],
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      room: "315 • Deluxe Room",
-      checkIn: "2025-10-21",
-      checkOut: "2025-10-24",
-      status: "Active",
-      nights: 3,
-      amount: "28,450 ETB",
-      avatar: "SJ",
-      priority: "premium",
-      services: ["Dinner", "Laundry"],
-    },
-    {
-      id: 3,
-      name: "Michael Brown",
-      room: "102 • Business Suite",
-      checkIn: "2025-10-19",
-      checkOut: "2025-10-23",
-      status: "Checking Out",
-      nights: 4,
-      amount: "38,760 ETB",
-      avatar: "MB",
-      priority: "standard",
-      services: ["Conference Room"],
-    },
-  ];
+  type CurrentGuest = {
+    booking_id: string;
+    guest_name?: string;
+    room_number?: string;
+    room_type?: string;
+    check_in: string;
+    check_out: string;
+    status: string;
+    amount_birr?: number;
+    nights?: number;
+  };
 
-  const upcomingArrivals = [
-    {
-      id: 1,
-      name: "Emma Wilson",
-      room: "Presidential Suite",
-      time: "2:00 PM",
-      duration: "3 nights",
-      special: "Anniversary",
-      status: "Confirmed",
-    },
-    {
-      id: 2,
-      name: "James Rodriguez",
-      room: "Executive Suite",
-      time: "4:30 PM",
-      duration: "5 nights",
-      special: "Business",
-      status: "Confirmed",
-    },
-  ];
+  const { data: statsData } = useQuery({
+    queryKey: ["frontdesk", "stats"],
+    queryFn: () => apiGet<{ success: true; data: any }>("/frontdesk/stats"),
+  });
 
-  const todaysCheckouts = [
-    {
-      id: 1,
-      name: "Robert Chen",
-      room: "Room 208 • Deluxe",
-      time: "11:00 AM",
-      balance: "12,540 ETB",
-      status: "Pending Payment",
-    },
-    {
-      id: 2,
-      name: "Lisa Wang",
-      room: "Suite 305 • Premium",
-      time: "12:30 PM",
-      balance: "0 ETB",
-      status: "Ready",
-    },
-  ];
+  const {
+    data: currentGuestsData,
+    isLoading: currentGuestsLoading,
+    error: currentGuestsError,
+  } = useQuery({
+    queryKey: ["frontdesk", "current"],
+    queryFn: () =>
+      apiGet<{ success: true; data: CurrentGuest[] }>("/frontdesk/current"),
+  });
+
+  const {
+    data: arrivalsData,
+    isLoading: arrivalsLoading,
+    error: arrivalsError,
+  } = useQuery({
+    queryKey: ["frontdesk", "arrivals"],
+    queryFn: () =>
+      apiGet<{ success: true; data: any[] }>("/frontdesk/arrivals"),
+  });
+
+  const {
+    data: departuresData,
+    isLoading: departuresLoading,
+    error: departuresError,
+  } = useQuery({
+    queryKey: ["frontdesk", "departures"],
+    queryFn: () =>
+      apiGet<{ success: true; data: any[] }>("/frontdesk/departures"),
+  });
+
+  // Removed static currentGuests sample; now using API data.
+
+  // Removed static upcomingArrivals; fetched from API.
+
+  // Removed static todaysCheckouts; fetched from API.
 
   return (
     <div className="space-y-8 p-6">
@@ -447,7 +420,17 @@ const FrontDesk = () => {
         {/* Current Guests Tab */}
         <TabsContent value="current" className="space-y-4">
           <div className="grid gap-6">
-            {currentGuests.map((guest) => (
+            {currentGuestsLoading && (
+              <div className="text-sm text-muted-foreground">
+                Loading current guests...
+              </div>
+            )}
+            {currentGuestsError && (
+              <div className="text-sm text-red-600">
+                {extractError(currentGuestsError)}
+              </div>
+            )}
+            {(currentGuestsData?.data ?? []).map((guest) => (
               <Card
                 key={guest.id}
                 className="border-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 shadow-2xl hover:shadow-3xl transition-all duration-500 group"
@@ -575,7 +558,17 @@ const FrontDesk = () => {
         {/* Check-out Today Tab */}
         <TabsContent value="checkout" className="space-y-4">
           <div className="grid gap-6">
-            {todaysCheckouts.map((guest) => (
+            {departuresLoading && (
+              <div className="text-sm text-muted-foreground">
+                Loading departures...
+              </div>
+            )}
+            {departuresError && (
+              <div className="text-sm text-red-600">
+                {extractError(departuresError)}
+              </div>
+            )}
+            {(departuresData?.data ?? []).map((guest) => (
               <Card
                 key={guest.id}
                 className="border-0 bg-gradient-to-br from-white to-amber-50 dark:from-slate-800 dark:to-amber-900/20 shadow-2xl"
@@ -623,7 +616,17 @@ const FrontDesk = () => {
         {/* Expected Arrivals Tab */}
         <TabsContent value="arrivals" className="space-y-4">
           <div className="grid gap-6">
-            {upcomingArrivals.map((guest) => (
+            {arrivalsLoading && (
+              <div className="text-sm text-muted-foreground">
+                Loading arrivals...
+              </div>
+            )}
+            {arrivalsError && (
+              <div className="text-sm text-red-600">
+                {extractError(arrivalsError)}
+              </div>
+            )}
+            {(arrivalsData?.data ?? []).map((guest) => (
               <Card
                 key={guest.id}
                 className="border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-slate-800 dark:to-emerald-900/20 shadow-2xl"

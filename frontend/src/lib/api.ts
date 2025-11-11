@@ -1,12 +1,13 @@
 import axios, { AxiosError } from "axios";
 
 export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+  import.meta.env.VITE_API_URL || "http://localhost:3002/api";
 
 // Central axios instance
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true,
+  // We use Authorization header (Bearer token), not cookies
+  withCredentials: false,
 });
 
 // Optional token interceptor (token stored in localStorage/session)

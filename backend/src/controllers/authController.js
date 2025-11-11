@@ -7,13 +7,11 @@ class AuthController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            error: "Validation failed",
-            details: errors.array(),
-          });
+        return res.status(400).json({
+          success: false,
+          error: "Validation failed",
+          details: errors.array(),
+        });
       }
       const { full_name, email, password, role } = req.body;
 
@@ -25,11 +23,9 @@ class AuthController {
       }
 
       const user = await UsersService.create({
-        full_name,
         email,
         password,
-        role: role || "staff",
-        status: "active",
+        role: role || "receptionist",
       });
 
       const token = jwt.sign(
@@ -59,13 +55,11 @@ class AuthController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            error: "Validation failed",
-            details: errors.array(),
-          });
+        return res.status(400).json({
+          success: false,
+          error: "Validation failed",
+          details: errors.array(),
+        });
       }
       const { email, password } = req.body;
 
@@ -85,7 +79,7 @@ class AuthController {
           .status(401)
           .json({ success: false, error: "Invalid credentials" });
       }
-      if (user.status !== "active") {
+      if (!user.is_active) {
         return res
           .status(401)
           .json({ success: false, error: "Account is deactivated" });
@@ -142,8 +136,11 @@ class AuthController {
   static async updateProfile(req, res) {
     try {
       const { full_name, email } = req.body;
+      const updates = {};
+      if (email) updates.email = email;
+      // full_name not stored in users table; ignored for now.
       const user = req.user
-        ? await UsersService.update(req.user.id, { full_name, email })
+        ? await UsersService.update(req.user.id, updates)
         : null;
 
       res.json({
