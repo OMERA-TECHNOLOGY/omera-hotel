@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -32,55 +33,50 @@ import { Textarea } from "@/components/ui/textarea";
 
 const Housekeeping = () => {
   const { t } = useLanguage();
-  const tasks = [
-    {
-      id: 1,
-      room: "204 • Premium Suite",
-      housekeeper: "Anna Tesfaye",
-      status: "pending",
-      priority: "high",
-      checkOut: "11:00 AM",
-      duration: "45 mins",
-      tasks: [
-        "Change premium linens",
-        "Restock minibar",
-        "Deep clean bathroom",
-        "Vacuum and polish floors",
-        "Sanitize all surfaces",
-      ],
-    },
-    {
-      id: 2,
-      room: "315 • Deluxe Room",
-      housekeeper: "Marta Lemma",
-      status: "in-progress",
-      priority: "normal",
-      checkOut: "12:00 PM",
-      duration: "30 mins",
-      tasks: [
-        "Change linens",
-        "Restock amenities",
-        "Clean bathroom",
-        "Refresh room",
-      ],
-    },
-    {
-      id: 3,
-      room: "102 • Business Suite",
-      housekeeper: "Sara Bekele",
-      status: "completed",
-      priority: "normal",
-      checkOut: "10:00 AM",
-      duration: "35 mins",
-      tasks: [
-        "Change linens",
-        "Restock minibar",
-        "Clean bathroom",
-        "Polish fixtures",
-        "Organize workspace",
-      ],
-    },
-  ];
+  type Task = {
+    id: string;
+    room_id: string;
+    title: string;
+    status: string;
+    scheduled_date: string;
+    type: string;
+  };
+  const [tasks, setTasks] = useState<Task[]>([]);
+  useEffect(() => {
+    let alive = true;
+    const load = async () => {
+      try {
+        const token = undefined; // TODO: plug in auth token
+        const res = await import("@/lib/api").then((m) =>
+          m.apiGet("/housekeeping/maintenance", token)
+        );
+        if (!alive) return;
+        interface RawTask {
+          id: string;
+          room_id: string;
+          title: string;
+          status: string;
+          scheduled_date: string;
+          type: string;
+        }
+        const mapped: Task[] = (res.data.tasks || []).map((t: RawTask) => ({
+          id: t.id,
+          room_id: t.room_id,
+          title: t.title,
+          status: t.status,
+          scheduled_date: t.scheduled_date,
+          type: t.type,
+        }));
+        setTasks(mapped);
+      } catch (e) {
+        console.error("Failed to load housekeeping tasks", e);
+      }
+    };
+    load();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const inventory = [
     {
@@ -352,7 +348,7 @@ const Housekeeping = () => {
             {tasks.map((task) => (
               <Card
                 key={task.id}
-                className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 shadow-xl hover:shadow-2xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                className="relative overflow-hidden bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 shadow-xl hover:shadow-2xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
               >
                 {/* Status Indicator */}
                 <div
@@ -375,13 +371,13 @@ const Housekeeping = () => {
                           }`}
                         >
                           <div className="text-white font-bold text-lg">
-                            {task.room.split(" ")[0]}
+                            {task.room_id.slice(0, 4)}
                           </div>
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <CardTitle className="text-xl font-bold text-slate-800 dark:text-white">
-                              {task.room}
+                              Room {task.room_id.slice(0, 4)} • {task.title}
                             </CardTitle>
                             <Badge className={getPriorityColor(task.priority)}>
                               {task.priority === "high"
@@ -390,8 +386,7 @@ const Housekeeping = () => {
                             </Badge>
                           </div>
                           <CardDescription className="text-slate-600 dark:text-slate-400">
-                            {task.housekeeper} • Check-out: {task.checkOut} •
-                            Est: {task.duration}
+                            Scheduled: {task.scheduled_date}
                           </CardDescription>
                         </div>
                       </div>
@@ -402,7 +397,11 @@ const Housekeeping = () => {
                           Cleaning Checklist:
                         </p>
                         <div className="grid gap-2">
-                          {task.tasks.map((item, index) => (
+                          {[
+                            "Change linens",
+                            "Restock amenities",
+                            "Clean bathroom",
+                          ].map((item, index) => (
                             <div
                               key={index}
                               className="flex items-center space-x-3 p-2 bg-white dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600"

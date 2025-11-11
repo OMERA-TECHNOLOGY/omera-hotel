@@ -5,6 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { apiGet, apiPut } from "@/lib/api";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -34,6 +36,53 @@ import {
 
 const Settings = () => {
   const { t } = useLanguage();
+  interface SettingsDto {
+    id?: string;
+    hotel_name_english?: string;
+    contact_email?: string;
+    phone_numbers?: string[];
+    address_english?: string;
+    total_rooms?: number;
+    star_rating?: number;
+    vat_rate?: number;
+    invoice_prefix?: string;
+    usd_to_etb_rate?: number;
+    primary_currency?: string;
+  }
+  const [settings, setSettings] = useState<SettingsDto | null>(null);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const token = undefined; // plug auth later
+        const res = await apiGet("/settings", token);
+        if (active) setSettings(res.data.settings);
+      } catch (e) {
+        console.error("Failed to load settings", e);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const updateField = (k: keyof SettingsDto, v: unknown) => {
+    setSettings((prev) => ({ ...(prev || {}), [k]: v }));
+  };
+  const handleSave = async () => {
+    if (!settings) return;
+    setSaving(true);
+    try {
+      const token = undefined;
+      const res = await apiPut("/settings", settings, token);
+      setSettings(res.data.settings);
+    } catch (e) {
+      console.error("Failed to save settings", e);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-8 p-6">
@@ -148,7 +197,10 @@ const Settings = () => {
                   </Label>
                   <Input
                     id="hotelName"
-                    defaultValue="Omera Luxury Resort"
+                    value={settings?.hotel_name_english || ""}
+                    onChange={(e) =>
+                      updateField("hotel_name_english", e.target.value)
+                    }
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                   />
                 </div>
@@ -159,7 +211,10 @@ const Settings = () => {
                   <Input
                     id="hotelEmail"
                     type="email"
-                    defaultValue="reservations@Omeraluxury.com"
+                    value={settings?.contact_email || ""}
+                    onChange={(e) =>
+                      updateField("contact_email", e.target.value)
+                    }
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                   />
                 </div>
@@ -171,7 +226,13 @@ const Settings = () => {
                   </Label>
                   <Input
                     id="hotelPhone"
-                    defaultValue="+251 11 123 4567"
+                    value={
+                      (settings?.phone_numbers && settings.phone_numbers[0]) ||
+                      ""
+                    }
+                    onChange={(e) =>
+                      updateField("phone_numbers", [e.target.value])
+                    }
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                   />
                 </div>
@@ -184,7 +245,8 @@ const Settings = () => {
                   </Label>
                   <Input
                     id="hotelWebsite"
-                    defaultValue="www.Omeraluxury.com"
+                    value={"www.Omeraluxury.com"}
+                    readOnly
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                   />
                 </div>
@@ -195,7 +257,10 @@ const Settings = () => {
                 </Label>
                 <Input
                   id="hotelAddress"
-                  defaultValue="Bole Road, Addis Ababa, Ethiopia"
+                  value={settings?.address_english || ""}
+                  onChange={(e) =>
+                    updateField("address_english", e.target.value)
+                  }
                   className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                 />
               </div>
@@ -207,7 +272,10 @@ const Settings = () => {
                   <Input
                     id="totalRooms"
                     type="number"
-                    defaultValue="60"
+                    value={settings?.total_rooms ?? 0}
+                    onChange={(e) =>
+                      updateField("total_rooms", parseInt(e.target.value) || 0)
+                    }
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                   />
                 </div>
@@ -215,7 +283,12 @@ const Settings = () => {
                   <Label htmlFor="starRating" className="text-sm font-semibold">
                     Accreditation Level
                   </Label>
-                  <Select defaultValue="5">
+                  <Select
+                    value={String(settings?.star_rating || 0)}
+                    onValueChange={(v) =>
+                      updateField("star_rating", parseInt(v))
+                    }
+                  >
                     <SelectTrigger
                       id="starRating"
                       className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
@@ -233,9 +306,13 @@ const Settings = () => {
                 </div>
               </div>
               <div className="flex gap-3 pt-4">
-                <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-xl">
+                <Button
+                  disabled={saving}
+                  onClick={handleSave}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-xl"
+                >
                   <Save className="h-4 w-4 mr-2" />
-                  Apply Configuration
+                  {saving ? "Saving..." : "Apply Configuration"}
                 </Button>
                 <Button
                   variant="outline"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -43,108 +43,74 @@ const Restaurant = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useLanguage();
 
-  const menuItems = [
-    {
-      id: 1,
-      name: "Doro Wat",
-      category: "Main Course",
-      price: 350,
-      description: "Traditional Ethiopian chicken stew with berbere spice",
-      preparationTime: "25 mins",
-      popularity: "bestseller",
-    },
-    {
-      id: 2,
-      name: "Kitfo",
-      category: "Main Course",
-      price: 400,
-      description: "Premium seasoned raw beef with mitmita and niter kibbeh",
-      preparationTime: "15 mins",
-      popularity: "featured",
-    },
-    {
-      id: 3,
-      name: "Tibs",
-      category: "Main Course",
-      price: 380,
-      description: "Sautéed prime beef with rosemary and awaze sauce",
-      preparationTime: "20 mins",
-      popularity: "standard",
-    },
-    {
-      id: 4,
-      name: "Shiro",
-      category: "Main Course",
-      price: 180,
-      description: "Slow-cooked chickpea flour stew with traditional spices",
-      preparationTime: "18 mins",
-      popularity: "standard",
-    },
-    {
-      id: 5,
-      name: "Fresh Mango Juice",
-      category: "Beverage",
-      price: 120,
-      description: "Freshly squeezed mango juice with mint leaves",
-      preparationTime: "5 mins",
-      popularity: "featured",
-    },
-    {
-      id: 6,
-      name: "Ethiopian Coffee Ceremony",
-      category: "Beverage",
-      price: 150,
-      description: "Traditional coffee with popcorn and incense",
-      preparationTime: "30 mins",
-      popularity: "bestseller",
-    },
-  ];
+  interface MenuItemDto {
+    id: string;
+    name_english: string;
+    category?: string;
+    price_birr: number;
+    description_english?: string;
+    is_available?: boolean;
+    created_at?: string;
+  }
+  interface OrderDto {
+    id: string;
+    order_number: string;
+    room_number?: string;
+    guest_name?: string;
+    status: string;
+    total_amount_birr: number;
+    created_at: string;
+  }
+  interface UiOrder {
+    id: string;
+    orderNumber: string;
+    room: string;
+    guest: string;
+    items: { name: string; quantity: number; price: number }[];
+    total: number;
+    status: string;
+    time: string;
+    priority: string;
+  }
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: "ORD-001",
-      room: "204 • Premium Suite",
-      guest: "John Smith",
-      items: [
-        { name: "Doro Wat", quantity: 1, price: 350 },
-        { name: "Ethiopian Coffee Ceremony", quantity: 2, price: 300 },
-      ],
-      total: 650,
-      status: "preparing",
-      time: "10 mins ago",
-      priority: "high",
-    },
-    {
-      id: 2,
-      orderNumber: "ORD-002",
-      room: "315 • Deluxe Room",
-      guest: "Sarah Johnson",
-      items: [
-        { name: "Kitfo", quantity: 1, price: 400 },
-        { name: "Fresh Mango Juice", quantity: 1, price: 120 },
-      ],
-      total: 520,
-      status: "ready",
-      time: "5 mins ago",
-      priority: "normal",
-    },
-    {
-      id: 3,
-      orderNumber: "ORD-003",
-      room: "102 • Business Suite",
-      guest: "Michael Brown",
-      items: [
-        { name: "Tibs", quantity: 1, price: 380 },
-        { name: "Shiro", quantity: 1, price: 180 },
-        { name: "Ethiopian Coffee Ceremony", quantity: 1, price: 150 },
-      ],
-      total: 710,
-      status: "delivered",
-      time: "30 mins ago",
-      priority: "normal",
-    },
-  ];
+  const [menuItems, setMenuItems] = useState<MenuItemDto[]>([]);
+  const [orders, setOrders] = useState<UiOrder[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const token = undefined; // TODO: plug in auth token from context
+        const [menuRes, ordersRes] = await Promise.all([
+          import("@/lib/api").then((m) => m.apiGet("/restaurant/menu", token)),
+          import("@/lib/api").then((m) =>
+            m.apiGet("/restaurant/orders", token)
+          ),
+        ]);
+        if (!isMounted) return;
+        setMenuItems(menuRes.data.menu || []);
+        // Map order shape for UI
+        const mapped = (ordersRes.data.orders || []).map((o: OrderDto) => ({
+          id: o.id,
+          orderNumber: o.order_number,
+          room: o.room_number || "",
+          guest: o.guest_name || "",
+          items: [],
+          total: o.total_amount_birr,
+          status: o.status,
+          time: new Date(o.created_at).toLocaleTimeString(),
+          priority: "normal",
+        }));
+        setOrders(mapped);
+      } catch (e) {
+        console.error("Failed to load restaurant data", e);
+      }
+    };
+    load();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -540,7 +506,7 @@ const Restaurant = () => {
             {orders.map((order) => (
               <Card
                 key={order.id}
-                className="relative overflow-hidden border-0 bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
               >
                 {/* Status Indicator */}
                 <div
@@ -658,7 +624,7 @@ const Restaurant = () => {
             {menuItems.map((item) => (
               <Card
                 key={item.id}
-                className="relative overflow-hidden border-0 bg-white dark:bg-slate-800 shadow-xl hover:shadow-2xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-xl hover:shadow-2xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
