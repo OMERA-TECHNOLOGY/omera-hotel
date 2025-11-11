@@ -1,7 +1,7 @@
 // src/middleware/auth.ts
 import { Request, Response, NextFunction } from "express";
-const jwt = require("jsonwebtoken");
-const supabase = require("../config/supabase");
+import jwt from "jsonwebtoken";
+import supabase from "../config/supabase";
 import { User, AuthRequest } from "../types";
 
 const authenticateToken = async (
@@ -67,4 +67,4 @@ const authorize = (...roles: string[]) => {
   };
 };
 
-module.exports = { authenticateToken, authorize };
+export { authenticateToken, authorize };

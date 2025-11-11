@@ -1,5 +1,5 @@
 // src/models/Employee.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 import { Employee } from "../types";
 
 class EmployeeModel {
@@ -70,4 +70,4 @@ class EmployeeModel {
   }
 }
 
-module.exports = EmployeeModel;
+export default EmployeeModel;

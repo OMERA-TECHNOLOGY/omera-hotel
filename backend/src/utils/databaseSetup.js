@@ -1,5 +1,7 @@
-const supabase = require("../config/supabase");
-const bcrypt = require("bcryptjs");
+import supabase from "../config/supabase";
+import bcrypt from "bcryptjs";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 async function initializeDatabase() {
   try {
@@ -492,9 +494,13 @@ async function createSampleOtherData() {
   }
 }
 
-// Auto-run when called directly
-if (require.main === module) {
+// Auto-run when called directly (ESM)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+if (process.argv[1] === __filename) {
+  // run without blocking
   initializeDatabase();
 }
 
-module.exports = { initializeDatabase };
+export { initializeDatabase };

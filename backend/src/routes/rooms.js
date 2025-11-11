@@ -1,8 +1,8 @@
 // src/routes/rooms.ts
-const { Router } = require("express");
-const RoomController = require("../controllers/roomController");
-const { authenticateToken, authorize } = require("../middleware/auth");
-const { validateRoom } = require("../middleware/validation");
+import { Router } from "express";
+import RoomController from "../controllers/roomController";
+import { authenticateToken, authorize } from "../middleware/auth";
+import { validateRoom } from "../middleware/validation";
 
 const router = Router();
 
@@ -45,4 +45,4 @@ router.patch(
   RoomController.markAsClean
 );
 
-module.exports = router;
+export default router;

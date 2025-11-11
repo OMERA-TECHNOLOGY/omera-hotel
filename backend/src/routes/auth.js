@@ -1,7 +1,7 @@
 // src/routes/auth.ts
-const { Router } = require("express");
-const AuthController = require("../controllers/authController");
-const { authenticateToken } = require("../middleware/auth");
+import { Router } from "express";
+import AuthController from "../controllers/authController";
+import { authenticateToken } from "../middleware/auth";
 
 const router = Router();
 
@@ -10,4 +10,4 @@ router.post("/login", AuthController.login);
 router.get("/profile", authenticateToken, AuthController.getProfile);
 router.put("/profile", authenticateToken, AuthController.updateProfile);
 
-module.exports = router;
+export default router;

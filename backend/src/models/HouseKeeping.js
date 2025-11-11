@@ -1,5 +1,5 @@
 // src/models/Housekeeping.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 import { HousekeepingTask } from "../types";
 
 class HousekeepingModel {
@@ -124,4 +124,4 @@ class HousekeepingModel {
   }
 }
 
-module.exports = HousekeepingModel;
+export default HousekeepingModel;

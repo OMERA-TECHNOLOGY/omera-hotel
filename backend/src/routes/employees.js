@@ -1,8 +1,8 @@
 // src/routes/employees.ts
-const { Router } = require("express");
-const EmployeeController = require("../controllers/employeeContoller");
-const { authenticateToken, authorize } = require("../middleware/auth");
-const { validateEmployee } = require("../middleware/validation");
+import { Router } from "express";
+import EmployeeController from "../controllers/employeeContoller";
+import { authenticateToken, authorize } from "../middleware/auth";
+import { validateEmployee } from "../middleware/validation";
 
 const router = Router();
 
@@ -32,4 +32,4 @@ router.post(
 router.put("/:id", authorize("admin"), EmployeeController.updateEmployee);
 router.delete("/:id", authorize("admin"), EmployeeController.deleteEmployee);
 
-module.exports = router;
+export default router;

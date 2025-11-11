@@ -1,5 +1,5 @@
 // src/models/Restaurant.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 import { RestaurantOrder } from "../types";
 
 class RestaurantModel {
@@ -119,4 +119,4 @@ class RestaurantModel {
   }
 }
 
-module.exports = RestaurantModel;
+export default RestaurantModel;

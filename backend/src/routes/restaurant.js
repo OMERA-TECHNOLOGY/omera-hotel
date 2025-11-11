@@ -1,7 +1,7 @@
 // src/routes/restaurant.ts
-const { Router } = require("express");
-const RestaurantController = require("../controllers/restaurantController");
-const { authenticateToken, authorize } = require("../middleware/auth");
+import { Router } from "express";
+import RestaurantController from "../controllers/restaurantController";
+import { authenticateToken, authorize } from "../middleware/auth";
 
 const router = Router();
 
@@ -39,4 +39,4 @@ router.get(
   RestaurantController.getRevenueSummary
 );
 
-module.exports = router;
+export default router;

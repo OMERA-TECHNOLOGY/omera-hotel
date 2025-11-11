@@ -1,8 +1,8 @@
 // src/routes/bookings.ts
-const { Router } = require("express");
-const BookingController = require("../controllers/bookingController");
-const { authenticateToken, authorize } = require("../middleware/auth");
-const { validateBooking } = require("../middleware/validation");
+import { Router } from "express";
+import BookingController from "../controllers/bookingController";
+import { authenticateToken, authorize } from "../middleware/auth";
+import { validateBooking } from "../middleware/validation";
 
 const router = Router();
 
@@ -33,4 +33,4 @@ router.patch(
   BookingController.checkOut
 );
 
-module.exports = router;
+export default router;

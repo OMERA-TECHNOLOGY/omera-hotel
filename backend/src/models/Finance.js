@@ -1,5 +1,5 @@
 // src/models/Finance.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 import { FinanceRecord } from "../types";
 
 class FinanceModel {
@@ -76,9 +76,9 @@ class FinanceModel {
     startDate: string,
     endDate: string
   ): Promise<{
-    totalIncome: number;
-    totalExpenses: number;
-    netProfit: number;
+    totalIncome: number,
+    totalExpenses: number,
+    netProfit: number,
   }> {
     const { data, error } = await supabase
       .from("finance_records")
@@ -108,4 +108,4 @@ class FinanceModel {
   }
 }
 
-module.exports = FinanceModel;
+export default FinanceModel;

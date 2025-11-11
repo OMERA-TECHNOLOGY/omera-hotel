@@ -1,8 +1,8 @@
 // src/routes/housekeeping.ts
-const { Router } = require("express");
-const HousekeepingController = require("../controllers/houseKeepingController");
-const { authenticateToken, authorize } = require("../middleware/auth");
-const { validateHousekeeping } = require("../middleware/validation");
+import { Router } from "express";
+import HousekeepingController from "../controllers/houseKeepingController";
+import { authenticateToken, authorize } from "../middleware/auth";
+import { validateHousekeeping } from "../middleware/validation";
 
 const router = Router();
 
@@ -41,4 +41,4 @@ router.patch(
   HousekeepingController.completeTask
 );
 
-module.exports = router;
+export default router;

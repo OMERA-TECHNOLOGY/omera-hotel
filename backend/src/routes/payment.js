@@ -1,7 +1,7 @@
 // src/routes/payments.ts
-const { Router } = require("express");
-const PaymentController = require("../controllers/paymentController");
-const { authenticateToken, authorize } = require("../middleware/auth");
+import { Router } from "express";
+import PaymentController from "../controllers/paymentController";
+import { authenticateToken, authorize } from "../middleware/auth";
 
 const router = Router();
 
@@ -39,4 +39,4 @@ router.get(
   PaymentController.getRevenueSummary
 );
 
-module.exports = router;
+export default router;

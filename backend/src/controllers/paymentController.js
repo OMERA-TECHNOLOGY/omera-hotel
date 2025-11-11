@@ -1,5 +1,5 @@
 // src/controllers/paymentController.ts
-const PaymentModel = require("../models/Payment");
+import PaymentModel from "../models/payment";
 import { Response } from "express";
 import { AuthRequest } from "../types";
 
@@ -103,4 +103,4 @@ class PaymentController {
   }
 }
 
-module.exports = PaymentController;
+export default PaymentController;

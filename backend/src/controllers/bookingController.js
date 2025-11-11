@@ -1,15 +1,14 @@
 // src/controllers/bookingController.ts
-const BookingModel = require("../models/Booking");
-const RoomModel = require("../models/Room");
-import { Response } from "express";
-import { AuthRequest } from "../types";
+import BookingModel from "../models/Booking";
+import RoomModel from "../models/Room";
+// Note: Plain JS version (removed TypeScript types)
 
 class BookingController {
-  static async createBooking(req: AuthRequest, res: Response): Promise<void> {
+  static async createBooking(req, res) {
     try {
       const bookingData = {
         ...req.body,
-        created_by: req.user!.id,
+        created_by: req.user && req.user.id,
       };
 
       const booking = await BookingModel.create(bookingData);
@@ -20,21 +19,21 @@ class BookingController {
         message: "Booking created successfully",
         booking,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getAllBookings(req: AuthRequest, res: Response): Promise<void> {
+  static async getAllBookings(req, res) {
     try {
       const bookings = await BookingModel.getAll();
       res.json({ bookings });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getBookingById(req: AuthRequest, res: Response): Promise<void> {
+  static async getBookingById(req, res) {
     try {
       const booking = await BookingModel.findById(parseInt(req.params.id));
       if (!booking) {
@@ -42,12 +41,12 @@ class BookingController {
         return;
       }
       res.json({ booking });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async updateBooking(req: AuthRequest, res: Response): Promise<void> {
+  static async updateBooking(req, res) {
     try {
       const booking = await BookingModel.update(
         parseInt(req.params.id),
@@ -57,12 +56,12 @@ class BookingController {
         message: "Booking updated successfully",
         booking,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async deleteBooking(req: AuthRequest, res: Response): Promise<void> {
+  static async deleteBooking(req, res) {
     try {
       const booking = await BookingModel.findById(parseInt(req.params.id));
       if (!booking) {
@@ -74,12 +73,12 @@ class BookingController {
       await RoomModel.update(booking.room_id, { status: "available" });
 
       res.json({ message: "Booking deleted successfully" });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async checkIn(req: AuthRequest, res: Response): Promise<void> {
+  static async checkIn(req, res) {
     try {
       const booking = await BookingModel.update(parseInt(req.params.id), {
         booking_status: "checked_in",
@@ -88,12 +87,12 @@ class BookingController {
         message: "Check-in successful",
         booking,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async checkOut(req: AuthRequest, res: Response): Promise<void> {
+  static async checkOut(req, res) {
     try {
       const booking = await BookingModel.findById(parseInt(req.params.id));
       if (!booking) {
@@ -115,10 +114,10 @@ class BookingController {
         message: "Check-out successful",
         booking: updatedBooking,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 }
 
-module.exports = BookingController;
+export default BookingController;

@@ -1,7 +1,7 @@
 // src/routes/settings.ts
-const { Router } = require("express");
-const SettingsController = require("../controllers/settingController");
-const { authenticateToken, authorize } = require("../middleware/auth");
+import { Router } from "express";
+import SettingsController from "../controllers/settingController";
+import { authenticateToken, authorize } from "../middleware/auth";
 
 const router = Router();
 
@@ -18,4 +18,4 @@ router.put("/:id", authorize("admin"), SettingsController.updateSetting);
 router.delete("/:id", authorize("admin"), SettingsController.deleteSetting);
 router.post("/upsert", authorize("admin"), SettingsController.upsertSetting);
 
-module.exports = router;
+export default router;

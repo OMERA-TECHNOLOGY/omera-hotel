@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const bookingSchema = Joi.object({
   customer_name: Joi.string().min(2).max(100).required(),
@@ -43,8 +43,8 @@ const housekeepingSchema = Joi.object({
     .default("pending"),
 });
 
-const validate = (schema: any) => {
-  return (req: any, res: any, next: any) => {
+const validate = (schema) => {
+  return (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
       res.status(400).json({ error: error.details[0].message });
@@ -54,9 +54,7 @@ const validate = (schema: any) => {
   };
 };
 
-module.exports = {
-  validateBooking: validate(bookingSchema),
-  validateRoom: validate(roomSchema),
-  validateEmployee: validate(employeeSchema),
-  validateHousekeeping: validate(housekeepingSchema),
-};
+export const validateBooking = validate(bookingSchema);
+export const validateRoom = validate(roomSchema);
+export const validateEmployee = validate(employeeSchema);
+export const validateHousekeeping = validate(housekeepingSchema);

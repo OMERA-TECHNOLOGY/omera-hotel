@@ -1,5 +1,5 @@
 // src/controllers/housekeepingController.ts
-const HousekeepingModel = require("../models/HouseKeeping");
+import HousekeepingModel from "../models/HouseKeeping";
 import { Response } from "express";
 import { AuthRequest } from "../types";
 
@@ -95,4 +95,4 @@ class HousekeepingController {
   }
 }
 
-module.exports = HousekeepingController;
+export default HousekeepingController;

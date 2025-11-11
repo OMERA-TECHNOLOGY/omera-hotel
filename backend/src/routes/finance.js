@@ -1,7 +1,7 @@
 // src/routes/finance.ts
-const Router = require("express");
-const FinanceController = require("../controllers/financeController");
-const { authenticateToken, authorize } = require("../middleware/auth");
+import { Router } from "express";
+import FinanceController from "../controllers/financeController";
+import { authenticateToken, authorize } from "../middleware/auth";
 
 const router = Router();
 
@@ -39,4 +39,4 @@ router.get(
   FinanceController.getFinancialSummary
 );
 
-module.exports = router;
+export default router;

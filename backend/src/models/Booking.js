@@ -1,5 +1,5 @@
 // src/models/Booking.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 import { Booking } from "../types";
 
 class BookingModel {
@@ -90,4 +90,4 @@ class BookingModel {
   }
 }
 
-module.exports = BookingModel;
+export default BookingModel;

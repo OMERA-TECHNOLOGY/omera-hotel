@@ -1,11 +1,11 @@
 // src/controllers/authController.ts
-import { Request, Response } from "express";
-const jwt = require("jsonwebtoken");
-const UserModel = require("../models/User");
-import { AuthRequest } from "../types";
+import express from "express"; // Removed TS type-only imports
+import jwt from "jsonwebtoken";
+import UserModel from "../models/User";
+// Removed AuthRequest type import (plain JS)
 
 class AuthController {
-  static async register(req: Request, res: Response): Promise<void> {
+  static async register(req, res) {
     try {
       const { full_name, email, password, role } = req.body;
 
@@ -25,7 +25,7 @@ class AuthController {
 
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN }
       );
 
@@ -39,12 +39,12 @@ class AuthController {
         },
         token,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async login(req: Request, res: Response): Promise<void> {
+  static async login(req, res) {
     try {
       const { email, password } = req.body;
 
@@ -70,7 +70,7 @@ class AuthController {
 
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN }
       );
 
@@ -86,46 +86,48 @@ class AuthController {
         },
         token,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getProfile(req: AuthRequest, res: Response): Promise<void> {
+  static async getProfile(req, res) {
     try {
-      const user = await UserModel.findById(req.user!.id);
+      const user = req.user ? await UserModel.findById(req.user.id) : null;
       res.json({
         user: {
-          id: user!.id,
-          full_name: user!.full_name,
-          email: user!.email,
-          role: user!.role,
-          created_at: user!.created_at,
+          id: user && user.id,
+          full_name: user && user.full_name,
+          email: user && user.email,
+          role: user && user.role,
+          created_at: user && user.created_at,
         },
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async updateProfile(req: AuthRequest, res: Response): Promise<void> {
+  static async updateProfile(req, res) {
     try {
       const { full_name, email } = req.body;
-      const user = await UserModel.update(req.user!.id, { full_name, email });
+      const user = req.user
+        ? await UserModel.update(req.user.id, { full_name, email })
+        : null;
 
       res.json({
         message: "Profile updated successfully",
         user: {
-          id: user.id,
-          full_name: user.full_name,
-          email: user.email,
-          role: user.role,
+          id: user && user.id,
+          full_name: user && user.full_name,
+          email: user && user.email,
+          role: user && user.role,
         },
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 }
 
-module.exports = AuthController;
+export default AuthController;

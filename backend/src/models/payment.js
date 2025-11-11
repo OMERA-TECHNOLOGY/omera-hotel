@@ -1,5 +1,5 @@
 // src/models/Payment.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 
 export interface Payment {
   id: number;
@@ -120,4 +120,4 @@ class PaymentModel {
   }
 }
 
-module.exports = PaymentModel;
+export default PaymentModel;

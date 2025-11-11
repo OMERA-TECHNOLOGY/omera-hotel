@@ -1,5 +1,5 @@
 // src/models/Settings.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 import { Setting } from "../types";
 
 class SettingsModel {
@@ -69,4 +69,4 @@ class SettingsModel {
   }
 }
 
-module.exports = SettingsModel;
+export default SettingsModel;

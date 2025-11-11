@@ -1,5 +1,5 @@
 // src/models/Room.ts
-const supabase = require("../config/supabase");
+import supabase from "../config/supabase";
 import { Room } from "../types";
 
 class RoomModel {
@@ -81,4 +81,4 @@ class RoomModel {
   }
 }
 
-module.exports = RoomModel;
+export default RoomModel;

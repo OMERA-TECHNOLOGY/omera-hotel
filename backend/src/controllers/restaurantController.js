@@ -1,5 +1,5 @@
 // src/controllers/restaurantController.ts
-const RestaurantModel = require("../models/Restaurant");
+import RestaurantModel from "../models/Restaurant";
 import { Response } from "express";
 import { AuthRequest } from "../types";
 
@@ -103,4 +103,4 @@ class RestaurantController {
   }
 }
 
-module.exports = RestaurantController;
+export default RestaurantController;

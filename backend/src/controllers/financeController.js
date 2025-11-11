@@ -1,5 +1,5 @@
 // src/controllers/financeController.ts
-const FinanceModel = require("../models/Finance");
+import FinanceModel from "../models/Finance";
 import { Response } from "express";
 import { AuthRequest } from "../types";
 
@@ -108,4 +108,4 @@ class FinanceController {
   }
 }
 
-module.exports = FinanceController;
+export default FinanceController;

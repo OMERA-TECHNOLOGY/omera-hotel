@@ -1,31 +1,30 @@
 // src/controllers/employeeController.ts
-const EmployeeModel = require("../models/Employee");
-import { Response } from "express";
-import { AuthRequest } from "../types";
+import EmployeeModel from "../models/Employee";
+// Plain JS: removed type-only imports
 
 class EmployeeController {
-  static async createEmployee(req: AuthRequest, res: Response): Promise<void> {
+  static async createEmployee(req, res) {
     try {
       const employee = await EmployeeModel.create(req.body);
       res.status(201).json({
         message: "Employee created successfully",
         employee,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getAllEmployees(req: AuthRequest, res: Response): Promise<void> {
+  static async getAllEmployees(req, res) {
     try {
       const employees = await EmployeeModel.getAll();
       res.json({ employees });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getEmployeeById(req: AuthRequest, res: Response): Promise<void> {
+  static async getEmployeeById(req, res) {
     try {
       const employee = await EmployeeModel.findById(parseInt(req.params.id));
       if (!employee) {
@@ -33,12 +32,12 @@ class EmployeeController {
         return;
       }
       res.json({ employee });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async updateEmployee(req: AuthRequest, res: Response): Promise<void> {
+  static async updateEmployee(req, res) {
     try {
       const employee = await EmployeeModel.update(
         parseInt(req.params.id),
@@ -48,32 +47,29 @@ class EmployeeController {
         message: "Employee updated successfully",
         employee,
       });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async deleteEmployee(req: AuthRequest, res: Response): Promise<void> {
+  static async deleteEmployee(req, res) {
     try {
       await EmployeeModel.delete(parseInt(req.params.id));
       res.json({ message: "Employee deleted successfully" });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getEmployeesByDepartment(
-    req: AuthRequest,
-    res: Response
-  ): Promise<void> {
+  static async getEmployeesByDepartment(req, res) {
     try {
       const { department } = req.params;
       const employees = await EmployeeModel.getByDepartment(department);
       res.json({ employees });
-    } catch (error: any) {
+    } catch (error) {
       res.status(500).json({ error: error.message });
     }
   }
 }
 
-module.exports = EmployeeController;
+export default EmployeeController;

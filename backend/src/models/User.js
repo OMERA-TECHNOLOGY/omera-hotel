@@ -1,6 +1,6 @@
 // src/models/User.ts
-const supabase = require("../config/supabase");
-const bcrypt = require("bcryptjs");
+import supabase from "../config/supabase";
+import bcrypt from "bcryptjs";
 import { User } from "../types";
 
 class UserModel {
@@ -76,4 +76,4 @@ class UserModel {
   }
 }
 
-module.exports = UserModel;
+export default UserModel;
