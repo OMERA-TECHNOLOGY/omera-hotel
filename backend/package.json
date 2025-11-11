@@ -1,6 +1,6 @@
 {
   "name": "omera-hotel-backend",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
