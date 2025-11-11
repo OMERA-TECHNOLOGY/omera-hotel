@@ -1,42 +1,21 @@
-// src/middleware/auth.ts
-import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import supabase from "../config/supabase";
-import { User, AuthRequest } from "../types";
+import supabase from "../config/supabase.js";
 
-const authenticateToken = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const authHeader =
-    (req as Request).get?.("authorization") ??
-    (req as Request).headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+export const authenticateToken = async (req, res, next) => {
+  const authHeader = req.get("authorization") || req.headers["authorization"];
+  const token = authHeader && String(authHeader).split(" ")[1];
 
-  if (!token) {
-    res.status(401).json({ error: "Access token required" });
-    return;
-  }
+  if (!token)
+    return res
+      .status(401)
+      .json({ success: false, error: "Access token required" });
 
   try {
-    // Fix: Define the interface locally instead of using jwt.JwtPayload
-    interface JwtPayloadWithUserId {
-      userId?: string;
-      email?: string;
-      role?: string;
-      iat?: number;
-      exp?: number;
-    }
-
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as JwtPayloadWithUserId;
-
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
     if (!decoded || !decoded.userId) {
-      res.status(403).json({ error: "Invalid or expired token" });
-      return;
+      return res
+        .status(403)
+        .json({ success: false, error: "Invalid or expired token" });
     }
 
     const { data: user, error } = await supabase
@@ -45,26 +24,25 @@ const authenticateToken = async (
       .eq("id", decoded.userId)
       .single();
 
-    if (error || !user) {
-      res.status(401).json({ error: "Invalid token" });
-      return;
-    }
+    if (error || !user)
+      return res.status(401).json({ success: false, error: "Invalid token" });
 
-    req.user = user as User;
+    req.user = user;
     next();
-  } catch (error) {
-    res.status(403).json({ error: "Invalid or expired token" });
+  } catch (err) {
+    return res
+      .status(403)
+      .json({ success: false, error: "Invalid or expired token" });
   }
 };
 
-const authorize = (...roles: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authorize =
+  (...roles) =>
+  (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
-      res.status(403).json({ error: "Insufficient permissions" });
-      return;
+      return res
+        .status(403)
+        .json({ success: false, error: "Insufficient permissions" });
     }
     next();
   };
-};
-
-export { authenticateToken, authorize };

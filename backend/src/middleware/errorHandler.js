@@ -1,43 +1,35 @@
-// src/middleware/errorHandler.ts
-import { Request, Response, NextFunction } from "express";
+import logger from "./logger.js";
 
-interface CustomError extends Error {
-  statusCode?: number;
-}
-
-const errorHandler = (
-  err: CustomError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
-  console.error("Error:", err);
+const errorHandler = (err, req, res, next) => {
+  // Log detailed error
+  logger.error(err);
 
   // Supabase error
-  if (err.message && err.message.includes("supabase")) {
-    res.status(400).json({
-      error: "Database error",
-      details: err.message,
-    });
-    return;
+  if (
+    err &&
+    err.message &&
+    String(err.message).toLowerCase().includes("supabase")
+  ) {
+    return res
+      .status(400)
+      .json({ success: false, error: "Database error", details: err.message });
   }
 
-  // JWT error
-  if (err.name === "JsonWebTokenError") {
-    res.status(401).json({ error: "Invalid token" });
-    return;
+  // JWT errors
+  if (err && err.name === "JsonWebTokenError") {
+    return res.status(401).json({ success: false, error: "Invalid token" });
+  }
+  if (err && err.name === "TokenExpiredError") {
+    return res.status(401).json({ success: false, error: "Token expired" });
   }
 
-  if (err.name === "TokenExpiredError") {
-    res.status(401).json({ error: "Token expired" });
-    return;
-  }
-
-  // Default error
-  const statusCode = err.statusCode || 500;
-  res.status(statusCode).json({
-    error: "Internal server error",
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+  const statusCode = err?.statusCode || 500;
+  return res.status(statusCode).json({
+    success: false,
+    error: err?.message || "Internal server error",
+    ...(process.env.NODE_ENV === "development" && err?.stack
+      ? { stack: err.stack }
+      : {}),
   });
 };
 
