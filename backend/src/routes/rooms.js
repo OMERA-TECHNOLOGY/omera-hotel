@@ -33,23 +33,6 @@ router.put(
   [param("id").isString().isUUID()],
   RoomController.updateRoom
 );
-router.patch(
-  "/:id/status",
-  authorize("admin", "receptionist"),
-  RoomController.updateRoomStatus
-);
 router.delete("/:id", authorize("admin"), RoomController.deleteRoom);
-
-// Room maintenance routes
-router.patch(
-  "/:id/maintenance",
-  authorize("admin", "receptionist"),
-  RoomController.setMaintenance
-);
-router.patch(
-  "/:id/clean",
-  authorize("admin", "receptionist"),
-  RoomController.markAsClean
-);
 
 export default router;

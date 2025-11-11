@@ -6,16 +6,15 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 
 // Core middleware & utilities
-import { apiResponse } from "./middleware/response";
-import errorHandler from "./middleware/errorHandler";
-import { requestLogger } from "./middleware/logger";
+import { apiResponse } from "./middleware/response.js";
+import errorHandler from "./middleware/errorHandler.js";
+import { requestLogger } from "./middleware/logger.js";
 
 // Routes (will progressively be filled)
 import authRoutes from "./routes/auth.js";
 import employeeRoutes from "./routes/employees.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import roomsRoutes from "./routes/rooms.js";
-import paymentsRoutes from "./routes/payment.js";
 
 const app = express();
 
@@ -53,7 +52,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/rooms", roomsRoutes);
-app.use("/api/payments", paymentsRoutes);
 
 // 404 handler (after all routes)
 app.use((req, res) => {
