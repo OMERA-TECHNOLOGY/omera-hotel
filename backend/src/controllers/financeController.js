@@ -1,111 +1,176 @@
-// src/controllers/financeController.ts
-import FinanceModel from "../models/Finance";
-import { Response } from "express";
-import { AuthRequest } from "../types";
+import { validationResult } from "express-validator";
+import FinanceService from "../services/financeService.js";
 
 class FinanceController {
-  static async createRecord(req: AuthRequest, res: Response): Promise<void> {
+  static async listInvoices(req, res) {
     try {
-      const recordData = {
-        ...req.body,
-        created_by: req.user!.id,
-      };
-
-      const record = await FinanceModel.create(recordData);
-      res.status(201).json({
-        message: "Finance record created successfully",
-        record,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const invoices = await FinanceService.listInvoices(req.query);
+      res.json({ success: true, data: { invoices } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getAllRecords(req: AuthRequest, res: Response): Promise<void> {
+  static async getInvoice(req, res) {
     try {
-      const records = await FinanceModel.getAll();
-      res.json({ records });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const invoice = await FinanceService.findInvoice(req.params.id);
+      if (!invoice)
+        return res
+          .status(404)
+          .json({ success: false, error: "Invoice not found" });
+      res.json({ success: true, data: { invoice } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getRecordById(req: AuthRequest, res: Response): Promise<void> {
+  static async createInvoice(req, res) {
     try {
-      const record = await FinanceModel.findById(parseInt(req.params.id));
-      if (!record) {
-        res.status(404).json({ error: "Record not found" });
-        return;
-      }
-      res.json({ record });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const invoice = await FinanceService.createInvoice(req.body);
+      res.status(201).json({ success: true, data: { invoice } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async updateRecord(req: AuthRequest, res: Response): Promise<void> {
+  static async updateInvoice(req, res) {
     try {
-      const record = await FinanceModel.update(
-        parseInt(req.params.id),
+      const invoice = await FinanceService.updateInvoice(
+        req.params.id,
         req.body
       );
-      res.json({
-        message: "Finance record updated successfully",
-        record,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.json({ success: true, data: { invoice } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deleteInvoice(req, res) {
+    try {
+      await FinanceService.removeInvoice(req.params.id);
+      res.json({ success: true, data: { message: "Invoice deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
 
-  static async deleteRecord(req: AuthRequest, res: Response): Promise<void> {
+  static async listPayments(req, res) {
     try {
-      await FinanceModel.delete(parseInt(req.params.id));
-      res.json({ message: "Finance record deleted successfully" });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const payments = await FinanceService.listPayments(req.query);
+      res.json({ success: true, data: { payments } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getRecordsByCategory(
-    req: AuthRequest,
-    res: Response
-  ): Promise<void> {
+  static async getPayment(req, res) {
     try {
-      const { category } = req.params;
-      const records = await FinanceModel.getByCategory(category);
-      res.json({ records });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const payment = await FinanceService.findPayment(req.params.id);
+      if (!payment)
+        return res
+          .status(404)
+          .json({ success: false, error: "Payment not found" });
+      res.json({ success: true, data: { payment } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getFinancialSummary(
-    req: AuthRequest,
-    res: Response
-  ): Promise<void> {
+  static async createPayment(req, res) {
     try {
-      const { start_date, end_date } = req.query;
-
-      if (!start_date || !end_date) {
-        res.status(400).json({ error: "Start date and end date are required" });
-        return;
-      }
-
-      const summary = await FinanceModel.getFinancialSummary(
-        start_date as string,
-        end_date as string
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const payment = await FinanceService.createPayment(req.body);
+      res.status(201).json({ success: true, data: { payment } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async updatePayment(req, res) {
+    try {
+      const payment = await FinanceService.updatePayment(
+        req.params.id,
+        req.body
       );
+      res.json({ success: true, data: { payment } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deletePayment(req, res) {
+    try {
+      await FinanceService.removePayment(req.params.id);
+      res.json({ success: true, data: { message: "Payment deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
 
-      res.json({
-        start_date,
-        end_date,
-        ...summary,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+  static async listExpenses(req, res) {
+    try {
+      const expenses = await FinanceService.listExpenses(req.query);
+      res.json({ success: true, data: { expenses } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async getExpense(req, res) {
+    try {
+      const expense = await FinanceService.findExpense(req.params.id);
+      if (!expense)
+        return res
+          .status(404)
+          .json({ success: false, error: "Expense not found" });
+      res.json({ success: true, data: { expense } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async createExpense(req, res) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const expense = await FinanceService.createExpense(req.body);
+      res.status(201).json({ success: true, data: { expense } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async updateExpense(req, res) {
+    try {
+      const expense = await FinanceService.updateExpense(
+        req.params.id,
+        req.body
+      );
+      res.json({ success: true, data: { expense } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deleteExpense(req, res) {
+    try {
+      await FinanceService.removeExpense(req.params.id);
+      res.json({ success: true, data: { message: "Expense deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
 }
-
 export default FinanceController;

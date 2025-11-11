@@ -42,7 +42,7 @@ router.put(
   EmployeeController.updateEmployee
 );
 router.delete(
-  ":id",
+  "/:id",
   authorize("admin"),
   [param("id").isUUID()],
   EmployeeController.deleteEmployee
