@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +26,7 @@ import {
   Eye,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+import { apiGet } from "@/lib/api";
 import {
   Select,
   SelectContent,
@@ -36,8 +37,17 @@ import {
 
 type RoomStatus = "vacant" | "occupied" | "cleaning" | "maintenance";
 
-interface Room {
-  id: number;
+interface RoomApi {
+  id: string;
+  room_number: string;
+  room_type_id?: string;
+  floor: number;
+  status: RoomStatus;
+  base_price_birr: number;
+  view_type?: string;
+}
+interface RoomUI {
+  id: string;
   number: string;
   type: string;
   floor: number;
@@ -54,88 +64,43 @@ const Rooms = () => {
   const [filterType, setFilterType] = useState<string>("all");
   const { t } = useLanguage();
 
-  const rooms: Room[] = [
-    {
-      id: 1,
-      number: "101",
-      type: "Single",
-      floor: 1,
-      status: "vacant",
-      price: 1500,
-      features: ["WiFi", "TV", "AC"],
-      rating: 4.2,
-      size: "28m²",
-      view: "Garden",
-    },
-    {
-      id: 2,
-      number: "102",
-      type: "Single",
-      floor: 1,
-      status: "occupied",
-      price: 1500,
-      features: ["WiFi", "TV", "AC"],
-      rating: 4.1,
-      size: "28m²",
-      view: "Garden",
-    },
-    {
-      id: 3,
-      number: "201",
-      type: "Deluxe",
-      floor: 2,
-      status: "cleaning",
-      price: 3500,
-      features: ["WiFi", "TV", "AC", "Mini Bar", "Ocean View"],
-      rating: 4.7,
-      size: "45m²",
-      view: "Ocean",
-    },
-    {
-      id: 4,
-      number: "202",
-      type: "Deluxe",
-      floor: 2,
-      status: "vacant",
-      price: 3500,
-      features: ["WiFi", "TV", "AC", "Mini Bar", "Ocean View"],
-      rating: 4.8,
-      size: "45m²",
-      view: "Ocean",
-    },
-    {
-      id: 5,
-      number: "301",
-      type: "Executive Suite",
-      floor: 3,
-      status: "occupied",
-      price: 6500,
-      features: ["WiFi", "TV", "AC", "Mini Bar", "Balcony", "Jacuzzi"],
-      rating: 4.9,
-      size: "68m²",
-      view: "Panoramic",
-    },
-    {
-      id: 6,
-      number: "401",
-      type: "Presidential",
-      floor: 4,
-      status: "maintenance",
-      price: 12500,
-      features: [
-        "WiFi",
-        "TV",
-        "AC",
-        "Mini Bar",
-        "Balcony",
-        "Jacuzzi",
-        "Butler",
-      ],
-      rating: 5.0,
-      size: "120m²",
-      view: "Penthouse",
-    },
-  ];
+  const [rooms, setRooms] = useState<RoomUI[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadRooms() {
+      try {
+        const res = await apiGet("/rooms");
+        const list: RoomApi[] = (res.data?.rooms ||
+          res.rooms ||
+          []) as RoomApi[];
+        const mapped: RoomUI[] = list.map((r) => ({
+          id: r.id,
+          number: r.room_number,
+          type: "Unknown", // could be expanded by joining room_types in API
+          floor: r.floor,
+          status: r.status,
+          price: Number(r.base_price_birr),
+          features: ["WiFi", "TV", "AC"],
+          rating: 4.5,
+          size: "-",
+          view: r.view_type || "-",
+        }));
+        if (isMounted) setRooms(mapped);
+      } catch (e) {
+        const err = e as Error;
+        setError(err.message || "Failed to load rooms");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+    loadRooms();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const getStatusColor = (status: RoomStatus) => {
     switch (status) {
@@ -222,6 +187,8 @@ const Rooms = () => {
     console.log("View details room:", roomId);
   };
 
+  if (loading) return <div className="p-6">Loading rooms...</div>;
+  if (error) return <div className="p-6 text-red-600">{error}</div>;
   return (
     <div className="space-y-8 p-6">
       {/* Enhanced Header Section */}

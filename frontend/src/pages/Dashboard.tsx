@@ -18,17 +18,59 @@ import {
   Crown,
   Sparkles,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
+import { apiGet } from "@/lib/api";
 
 const Dashboard = () => {
   const { t } = useLanguage();
+
+  type Metrics = {
+    occupied_rooms?: number;
+    total_rooms?: number;
+    today_revenue?: number;
+    today_checkins?: number;
+    pending_arrivals?: number;
+    [key: string]: unknown;
+  } | null;
+  type RoomStatusRow = { status: string } & Record<string, unknown>;
+  const [metrics, setMetrics] = useState<Metrics>(null);
+  const [roomStatusData, setRoomStatusData] = useState<RoomStatusRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function load() {
+      try {
+        const [metricsRes, roomStatusRes] = await Promise.all([
+          apiGet("/dashboard/metrics"),
+          apiGet("/dashboard/room-status"),
+        ]);
+        if (!isMounted) return;
+        setMetrics(metricsRes.data || metricsRes);
+        setRoomStatusData(
+          (metricsRes.data ? roomStatusRes.data : roomStatusRes) || []
+        );
+      } catch (e) {
+        const err = e as Error;
+        setError(err.message || "Failed to load dashboard");
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Premium Stats with enhanced data
   const stats = [
     {
       title: t.totalGuests,
-      value: "124",
-      change: "+12% from last month",
+      value: metrics?.total_guests ?? "-",
+      change: metrics ? `+${metrics?.guests_change || 0}%` : "",
       icon: Users,
       color: "text-blue-500",
       gradient: "from-blue-500 to-cyan-500",
@@ -36,8 +78,14 @@ const Dashboard = () => {
     },
     {
       title: t.occupiedRooms,
-      value: "45/60",
-      change: "75% occupancy",
+      value: String(
+        metrics ? `${metrics.occupied_rooms}/${metrics.total_rooms}` : "-"
+      ),
+      change: metrics
+        ? `${Math.round(
+            ((metrics.occupied_rooms || 0) / (metrics.total_rooms || 1)) * 100
+          )}% occupancy`
+        : "",
       icon: Bed,
       color: "text-emerald-500",
       gradient: "from-emerald-500 to-green-500",
@@ -45,8 +93,10 @@ const Dashboard = () => {
     },
     {
       title: t.todayRevenue,
-      value: "45,320 ETB",
-      change: "+8% from yesterday",
+      value: metrics
+        ? `${(metrics.today_revenue || 0).toLocaleString()} ETB`
+        : "-",
+      change: "",
       icon: DollarSign,
       color: "text-amber-500",
       gradient: "from-amber-500 to-orange-500",
@@ -54,8 +104,10 @@ const Dashboard = () => {
     },
     {
       title: t.checkInsToday,
-      value: "12",
-      change: "8 pending arrivals",
+      value: String(metrics?.today_checkins ?? "-"),
+      change: metrics
+        ? `${metrics.pending_arrivals || 0} pending arrivals`
+        : "",
       icon: Calendar,
       color: "text-purple-500",
       gradient: "from-purple-500 to-pink-500",
@@ -104,11 +156,36 @@ const Dashboard = () => {
   ];
 
   // Room status overview
+  const counts = roomStatusData.reduce((acc, r) => {
+    acc[r.status] = (acc[r.status] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  const totalRooms = metrics?.total_rooms || roomStatusData.length || 1;
   const roomStatus = [
-    { status: "Available", count: 15, color: "bg-emerald-500", percentage: 25 },
-    { status: "Occupied", count: 45, color: "bg-blue-500", percentage: 75 },
-    { status: "Cleaning", count: 8, color: "bg-amber-500", percentage: 13 },
-    { status: "Maintenance", count: 2, color: "bg-red-500", percentage: 3 },
+    {
+      status: "Available",
+      count: counts["vacant"] || 0,
+      color: "bg-emerald-500",
+      percentage: Math.round(((counts["vacant"] || 0) / totalRooms) * 100),
+    },
+    {
+      status: "Occupied",
+      count: counts["occupied"] || 0,
+      color: "bg-blue-500",
+      percentage: Math.round(((counts["occupied"] || 0) / totalRooms) * 100),
+    },
+    {
+      status: "Cleaning",
+      count: counts["cleaning"] || 0,
+      color: "bg-amber-500",
+      percentage: Math.round(((counts["cleaning"] || 0) / totalRooms) * 100),
+    },
+    {
+      status: "Maintenance",
+      count: counts["maintenance"] || 0,
+      color: "bg-red-500",
+      percentage: Math.round(((counts["maintenance"] || 0) / totalRooms) * 100),
+    },
   ];
 
   // Guest satisfaction metrics
@@ -144,6 +221,12 @@ const Dashboard = () => {
     },
   ];
 
+  if (loading) {
+    return <div className="p-6">Loading dashboard...</div>;
+  }
+  if (error) {
+    return <div className="p-6 text-red-600">{error}</div>;
+  }
   return (
     <div className="space-y-8 p-6">
       {/* Header Section */}
