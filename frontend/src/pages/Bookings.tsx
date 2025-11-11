@@ -46,50 +46,24 @@ const Bookings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useLanguage();
 
-  const bookings = [
-    {
-      id: 1,
-      guestName: "John Smith",
-      room: "204 • Premium Suite",
-      checkIn: "2025-10-23",
-      checkOut: "2025-10-25",
-      status: "Confirmed",
-      source: "Website",
-      guests: 2,
-      totalPrice: 24500,
-      nights: 2,
-      specialRequests: "Anniversary celebration",
-      priority: "vip",
-    },
-    {
-      id: 2,
-      guestName: "Sarah Johnson",
-      room: "315 • Deluxe Room",
-      checkIn: "2025-10-24",
-      checkOut: "2025-10-28",
-      status: "Pending",
-      source: "Phone",
-      guests: 1,
-      totalPrice: 42000,
-      nights: 4,
-      specialRequests: "Early check-in requested",
-      priority: "premium",
-    },
-    {
-      id: 3,
-      guestName: "Michael Brown",
-      room: "102 • Business Suite",
-      checkIn: "2025-10-25",
-      checkOut: "2025-10-27",
-      status: "Confirmed",
-      source: "Walk-in",
-      guests: 3,
-      totalPrice: 18000,
-      nights: 2,
-      specialRequests: "Conference materials needed",
-      priority: "standard",
-    },
-  ];
+  // Fetch bookings from API
+  import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+  import { apiGet, apiPost, apiPut, apiDelete, extractError } from "@/lib/api";
+
+  const queryClient = useQueryClient();
+  const {
+    data: bookingsData,
+    isLoading,
+    error,
+  } = useQuery(["bookings"], async () => {
+    const res = await apiGet<{ success: boolean; data: { bookings: any[] } }>(
+      "/bookings"
+    );
+    return res.data.bookings;
+  });
+
+  // Mutations for create/edit/delete can be added here
+  // ...existing code...
 
   const getStatusColor = (status: string) => {
     switch (status) {

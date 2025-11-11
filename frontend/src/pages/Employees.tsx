@@ -39,61 +39,40 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery } from "@tanstack/react-query";
+import { apiGet } from "@/lib/api";
 
 const Employees = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { t } = useLanguage();
 
-  const employees = [
-    {
-      id: 1,
-      name: "Anna Tesfaye",
-      email: "anna.t@Omera.com",
-      phone: "+251 91 234 5678",
-      role: "Housekeeper",
-      department: "Housekeeping",
-      shift: "Morning (6 AM - 2 PM)",
-      status: "Active",
-      joinDate: "2023-01-15",
-      performance: "Excellent",
-    },
-    {
-      id: 2,
-      name: "Dawit Assefa",
-      email: "dawit.a@Omera.com",
-      phone: "+251 91 345 6789",
-      role: "Receptionist",
-      department: "Front Desk",
-      shift: "Day (10 AM - 6 PM)",
-      status: "Active",
-      joinDate: "2022-08-22",
-      performance: "Good",
-    },
-    {
-      id: 3,
-      name: "Marta Lemma",
-      email: "marta.l@Omera.com",
-      phone: "+251 91 456 7890",
-      role: "Housekeeper",
-      department: "Housekeeping",
-      shift: "Afternoon (2 PM - 10 PM)",
-      status: "Active",
-      joinDate: "2023-03-10",
-      performance: "Excellent",
-    },
-    {
-      id: 4,
-      name: "Yonas Bekele",
-      email: "yonas.b@Omera.com",
-      phone: "+251 91 567 8901",
-      role: "Executive Chef",
-      department: "Restaurant",
-      shift: "Split (7 AM - 3 PM, 6 PM - 10 PM)",
-      status: "Active",
-      joinDate: "2021-11-05",
-      performance: "Outstanding",
-    },
-  ];
+  interface EmployeeApi {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    role: string;
+    department: string;
+    shift?: string;
+    status?: string;
+    join_date?: string;
+    performance?: string;
+  }
+
+  const {
+    data: employeesData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["employees"],
+    queryFn: () =>
+      apiGet<{ success: true; data: { employees: EmployeeApi[] } }>(
+        "/employees"
+      ),
+  });
+
+  const employees: EmployeeApi[] = employeesData?.data?.employees || [];
 
   const activityLogs = [
     {
@@ -499,7 +478,7 @@ const Employees = () => {
             {employees.map((employee) => (
               <Card
                 key={employee.id}
-                className="relative overflow-hidden border-0 bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
