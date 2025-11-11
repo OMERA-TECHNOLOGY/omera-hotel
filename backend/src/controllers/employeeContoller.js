@@ -1,73 +1,77 @@
-// src/controllers/employeeController.ts
-import EmployeeModel from "../models/Employee";
-// Plain JS: removed type-only imports
+import { validationResult } from "express-validator";
+import EmployeesService from "../services/employeesService.js";
 
 class EmployeeController {
   static async createEmployee(req, res) {
     try {
-      const employee = await EmployeeModel.create(req.body);
-      res.status(201).json({
-        message: "Employee created successfully",
-        employee,
-      });
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      }
+      const employee = await EmployeesService.create(req.body);
+      res.status(201).json({ success: true, data: { employee } });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
   static async getAllEmployees(req, res) {
     try {
-      const employees = await EmployeeModel.getAll();
-      res.json({ employees });
+      const employees = await EmployeesService.list();
+      res.json({ success: true, data: { employees } });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
   static async getEmployeeById(req, res) {
     try {
-      const employee = await EmployeeModel.findById(parseInt(req.params.id));
+      const employee = await EmployeesService.find(req.params.id);
       if (!employee) {
-        res.status(404).json({ error: "Employee not found" });
-        return;
+        return res
+          .status(404)
+          .json({ success: false, error: "Employee not found" });
       }
-      res.json({ employee });
+      res.json({ success: true, data: { employee } });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
   static async updateEmployee(req, res) {
     try {
-      const employee = await EmployeeModel.update(
-        parseInt(req.params.id),
-        req.body
-      );
-      res.json({
-        message: "Employee updated successfully",
-        employee,
-      });
+      const employee = await EmployeesService.update(req.params.id, req.body);
+      res.json({ success: true, data: { employee } });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
   static async deleteEmployee(req, res) {
     try {
-      await EmployeeModel.delete(parseInt(req.params.id));
-      res.json({ message: "Employee deleted successfully" });
+      await EmployeesService.remove(req.params.id);
+      res.json({
+        success: true,
+        data: { message: "Employee deleted successfully" },
+      });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
   static async getEmployeesByDepartment(req, res) {
     try {
       const { department } = req.params;
-      const employees = await EmployeeModel.getByDepartment(department);
-      res.json({ employees });
+      const employees = await EmployeesService.list({ department });
+      res.json({ success: true, data: { employees } });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 }

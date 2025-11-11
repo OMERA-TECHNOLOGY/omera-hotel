@@ -12,12 +12,7 @@ import { requestLogger } from "./middleware/logger";
 
 // Routes (will progressively be filled)
 import authRoutes from "./routes/auth.js";
-import bookingRoutes from "./routes/bookings.js";
 import employeeRoutes from "./routes/employees.js";
-import housekeepingRoutes from "./routes/houseKeeping.js";
-import restaurantRoutes from "./routes/restaurant.js";
-import financeRoutes from "./routes/finance.js";
-import settingsRoutes from "./routes/settings.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import roomsRoutes from "./routes/rooms.js";
 import paymentsRoutes from "./routes/payment.js";
@@ -55,12 +50,7 @@ app.get("/api/health", (req, res) => {
 
 // API Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/bookings", bookingRoutes);
 app.use("/api/employees", employeeRoutes);
-app.use("/api/housekeeping", housekeepingRoutes);
-app.use("/api/restaurant", restaurantRoutes);
-app.use("/api/finance", financeRoutes);
-app.use("/api/settings", settingsRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/rooms", roomsRoutes);
 app.use("/api/payments", paymentsRoutes);

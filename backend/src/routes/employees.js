@@ -1,8 +1,7 @@
-// src/routes/employees.ts
 import { Router } from "express";
-import EmployeeController from "../controllers/employeeContoller";
-import { authenticateToken, authorize } from "../middleware/auth";
-import { validateEmployee } from "../middleware/validation";
+import { body, param } from "express-validator";
+import EmployeeController from "../controllers/employeeContoller.js";
+import { authenticateToken, authorize } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -26,10 +25,27 @@ router.get(
 router.post(
   "/",
   authorize("admin"),
-  validateEmployee,
+  [
+    body("first_name").isString().isLength({ min: 2 }),
+    body("last_name").isString().isLength({ min: 2 }),
+    body("email").isEmail(),
+    body("phone").isString().isLength({ min: 7 }),
+    body("role").isString(),
+    body("department").isString(),
+  ],
   EmployeeController.createEmployee
 );
-router.put("/:id", authorize("admin"), EmployeeController.updateEmployee);
-router.delete("/:id", authorize("admin"), EmployeeController.deleteEmployee);
+router.put(
+  "/:id",
+  authorize("admin"),
+  [param("id").isUUID()],
+  EmployeeController.updateEmployee
+);
+router.delete(
+  ":id",
+  authorize("admin"),
+  [param("id").isUUID()],
+  EmployeeController.deleteEmployee
+);
 
 export default router;
