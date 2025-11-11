@@ -1,104 +1,170 @@
-// src/controllers/restaurantController.ts
-import RestaurantModel from "../models/Restaurant";
-import { Response } from "express";
-import { AuthRequest } from "../types";
+import { validationResult } from "express-validator";
+import RestaurantService from "../services/restaurantService.js";
 
 class RestaurantController {
-  static async createOrder(req: AuthRequest, res: Response): Promise<void> {
+  // Menu Items
+  static async listMenuItems(req, res) {
     try {
-      const order = await RestaurantModel.create(req.body);
-      res.status(201).json({
-        message: "Restaurant order created successfully",
-        order,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const menu = await RestaurantService.listMenuItems(req.query);
+      res.json({ success: true, data: { menu } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getAllOrders(req: AuthRequest, res: Response): Promise<void> {
+  static async getMenuItem(req, res) {
     try {
-      const orders = await RestaurantModel.getAll();
-      res.json({ orders });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const item = await RestaurantService.findMenuItem(req.params.id);
+      if (!item)
+        return res
+          .status(404)
+          .json({ success: false, error: "Menu item not found" });
+      res.json({ success: true, data: { item } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getOrderById(req: AuthRequest, res: Response): Promise<void> {
+  static async createMenuItem(req, res) {
     try {
-      const order = await RestaurantModel.findById(parseInt(req.params.id));
-      if (!order) {
-        res.status(404).json({ error: "Order not found" });
-        return;
-      }
-      res.json({ order });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const item = await RestaurantService.createMenuItem(req.body);
+      res.status(201).json({ success: true, data: { item } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async updateOrder(req: AuthRequest, res: Response): Promise<void> {
+  static async updateMenuItem(req, res) {
     try {
-      const order = await RestaurantModel.update(
-        parseInt(req.params.id),
+      const item = await RestaurantService.updateMenuItem(
+        req.params.id,
         req.body
       );
-      res.json({
-        message: "Order updated successfully",
-        order,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.json({ success: true, data: { item } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deleteMenuItem(req, res) {
+    try {
+      await RestaurantService.removeMenuItem(req.params.id);
+      res.json({ success: true, data: { message: "Menu item deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
 
-  static async deleteOrder(req: AuthRequest, res: Response): Promise<void> {
+  // Orders
+  static async listOrders(req, res) {
     try {
-      await RestaurantModel.delete(parseInt(req.params.id));
-      res.json({ message: "Order deleted successfully" });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const orders = await RestaurantService.listOrders(req.query);
+      res.json({ success: true, data: { orders } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getOrdersByBooking(
-    req: AuthRequest,
-    res: Response
-  ): Promise<void> {
+  static async getOrder(req, res) {
     try {
-      const { bookingId } = req.params;
-      const orders = await RestaurantModel.getByBooking(parseInt(bookingId));
-      res.json({ orders });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const order = await RestaurantService.findOrder(req.params.id);
+      if (!order)
+        return res
+          .status(404)
+          .json({ success: false, error: "Order not found" });
+      const items = await RestaurantService.listOrderItems(order.id);
+      res.json({ success: true, data: { order, items } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getRevenueSummary(
-    req: AuthRequest,
-    res: Response
-  ): Promise<void> {
+  static async createOrder(req, res) {
     try {
-      const { start_date, end_date } = req.query;
-
-      if (!start_date || !end_date) {
-        res.status(400).json({ error: "Start date and end date are required" });
-        return;
-      }
-
-      const revenue = await RestaurantModel.getRevenueByDate(
-        start_date as string,
-        end_date as string
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const order = await RestaurantService.createOrder(req.body);
+      res.status(201).json({ success: true, data: { order } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async updateOrder(req, res) {
+    try {
+      const order = await RestaurantService.updateOrder(
+        req.params.id,
+        req.body
       );
+      res.json({ success: true, data: { order } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deleteOrder(req, res) {
+    try {
+      await RestaurantService.removeOrder(req.params.id);
+      res.json({ success: true, data: { message: "Order deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
 
-      res.json({
-        start_date,
-        end_date,
-        total_revenue: revenue,
+  // Order Items
+  static async listOrderItems(req, res) {
+    try {
+      const items = await RestaurantService.listOrderItems(req.params.orderId);
+      res.json({ success: true, data: { items } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async addOrderItem(req, res) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const item = await RestaurantService.addOrderItem({
+        ...req.body,
+        order_id: req.params.orderId,
       });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(201).json({ success: true, data: { item } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async updateOrderItem(req, res) {
+    try {
+      const item = await RestaurantService.updateOrderItem(
+        req.params.id,
+        req.body
+      );
+      res.json({ success: true, data: { item } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deleteOrderItem(req, res) {
+    try {
+      await RestaurantService.removeOrderItem(req.params.id);
+      res.json({ success: true, data: { message: "Order item deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
 }

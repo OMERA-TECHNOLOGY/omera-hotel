@@ -17,6 +17,9 @@ import bookingRoutes from "./routes/bookings.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import roomsRoutes from "./routes/rooms.js";
 import financeRoutes from "./routes/finance.js";
+import restaurantRoutes from "./routes/restaurant.js";
+import houseKeepingRoutes from "./routes/houseKeeping.js";
+import settingsRoutes from "./routes/settings.js";
 
 const app = express();
 
@@ -56,6 +59,9 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/rooms", roomsRoutes);
 app.use("/api/finance", financeRoutes);
+app.use("/api/restaurant", restaurantRoutes);
+app.use("/api/housekeeping", houseKeepingRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // 404 handler (after all routes)
 app.use((req, res) => {

@@ -1,96 +1,120 @@
-// src/controllers/housekeepingController.ts
-import HousekeepingModel from "../models/HouseKeeping";
-import { Response } from "express";
-import { AuthRequest } from "../types";
+import { validationResult } from "express-validator";
+import HousekeepingService from "../services/housekeepingService.js";
 
 class HousekeepingController {
-  static async createTask(req: AuthRequest, res: Response): Promise<void> {
+  // Maintenance
+  static async listMaintenance(req, res) {
     try {
-      const taskData = {
-        ...req.body,
-        date_assigned: new Date().toISOString().split("T")[0],
-      };
-
-      const task = await HousekeepingModel.create(taskData);
-      res.status(201).json({
-        message: "Housekeeping task created successfully",
-        task,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const tasks = await HousekeepingService.listMaintenance(req.query);
+      res.json({ success: true, data: { tasks } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getAllTasks(req: AuthRequest, res: Response): Promise<void> {
+  static async getMaintenance(req, res) {
     try {
-      const tasks = await HousekeepingModel.getAll();
-      res.json({ tasks });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const task = await HousekeepingService.findMaintenance(req.params.id);
+      if (!task)
+        return res
+          .status(404)
+          .json({ success: false, error: "Task not found" });
+      res.json({ success: true, data: { task } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getTaskById(req: AuthRequest, res: Response): Promise<void> {
+  static async createMaintenance(req, res) {
     try {
-      const task = await HousekeepingModel.findById(parseInt(req.params.id));
-      if (!task) {
-        res.status(404).json({ error: "Task not found" });
-        return;
-      }
-      res.json({ task });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const task = await HousekeepingService.createMaintenance(req.body);
+      res.status(201).json({ success: true, data: { task } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async updateTask(req: AuthRequest, res: Response): Promise<void> {
+  static async updateMaintenance(req, res) {
     try {
-      const task = await HousekeepingModel.update(
-        parseInt(req.params.id),
+      const task = await HousekeepingService.updateMaintenance(
+        req.params.id,
         req.body
       );
-      res.json({
-        message: "Task updated successfully",
-        task,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.json({ success: true, data: { task } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deleteMaintenance(req, res) {
+    try {
+      await HousekeepingService.removeMaintenance(req.params.id);
+      res.json({ success: true, data: { message: "Task deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
 
-  static async deleteTask(req: AuthRequest, res: Response): Promise<void> {
+  // Special requests
+  static async listRequests(req, res) {
     try {
-      await HousekeepingModel.delete(parseInt(req.params.id));
-      res.json({ message: "Task deleted successfully" });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const requests = await HousekeepingService.listRequests(req.query);
+      res.json({ success: true, data: { requests } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async getTasksByStatus(
-    req: AuthRequest,
-    res: Response
-  ): Promise<void> {
+  static async getRequest(req, res) {
     try {
-      const { status } = req.params;
-      const tasks = await HousekeepingModel.getByStatus(status);
-      res.json({ tasks });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      const request = await HousekeepingService.findRequest(req.params.id);
+      if (!request)
+        return res
+          .status(404)
+          .json({ success: false, error: "Request not found" });
+      res.json({ success: true, data: { request } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
-
-  static async completeTask(req: AuthRequest, res: Response): Promise<void> {
+  static async createRequest(req, res) {
     try {
-      const task = await HousekeepingModel.completeTask(
-        parseInt(req.params.id)
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      const request = await HousekeepingService.createRequest(req.body);
+      res.status(201).json({ success: true, data: { request } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async updateRequest(req, res) {
+    try {
+      const request = await HousekeepingService.updateRequest(
+        req.params.id,
+        req.body
       );
-      res.json({
-        message: "Task completed successfully",
-        task,
-      });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.json({ success: true, data: { request } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  }
+  static async deleteRequest(req, res) {
+    try {
+      await HousekeepingService.removeRequest(req.params.id);
+      res.json({ success: true, data: { message: "Request deleted" } });
+    } catch (e) {
+      res.status(500).json({ success: false, error: e.message });
     }
   }
 }
