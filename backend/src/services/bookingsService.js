@@ -3,7 +3,8 @@ import RoomsService from "./roomsService.js";
 
 class BookingsService {
   static async list(filters = {}) {
-    let q = supabase.from("bookings").select("*");
+    // include related room and guest info for frontend convenience
+    let q = supabase.from("bookings").select(`*, rooms (*), guests (*)`);
     if (filters.status) q = q.eq("status", filters.status);
     if (filters.guest_id) q = q.eq("guest_id", filters.guest_id);
     if (filters.room_id) q = q.eq("room_id", filters.room_id);
@@ -14,7 +15,7 @@ class BookingsService {
   static async find(id) {
     const { data, error } = await supabase
       .from("bookings")
-      .select("*")
+      .select(`*, rooms (*), guests (*)`)
       .eq("id", id)
       .single();
     if (error) return null;
@@ -24,7 +25,7 @@ class BookingsService {
     const { data, error } = await supabase
       .from("bookings")
       .insert([payload])
-      .select()
+      .select(`*, rooms (*), guests (*)`)
       .single();
     if (error) throw error;
     // Update room status if booking confirmed
@@ -43,7 +44,7 @@ class BookingsService {
       .from("bookings")
       .update(updates)
       .eq("id", id)
-      .select()
+      .select(`*, rooms (*), guests (*)`)
       .single();
     if (error) throw error;
     return data;

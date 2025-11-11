@@ -38,6 +38,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiGet, apiPost, apiPut, apiDelete, extractError } from "@/lib/api";
 
 const Bookings = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -47,23 +49,90 @@ const Bookings = () => {
   const { t } = useLanguage();
 
   // Fetch bookings from API
-  import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-  import { apiGet, apiPost, apiPut, apiDelete, extractError } from "@/lib/api";
-
   const queryClient = useQueryClient();
   const {
     data: bookingsData,
     isLoading,
     error,
-  } = useQuery(["bookings"], async () => {
-    const res = await apiGet<{ success: boolean; data: { bookings: any[] } }>(
-      "/bookings"
+  } = useQuery({
+    queryKey: ["bookings"],
+    queryFn: async () => {
+      const res = await apiGet<{ success: boolean; data: { bookings: any[] } }>(
+        "/bookings"
+      );
+      return res.data.bookings;
+    },
+  });
+
+  // Dashboard metrics for header stats (database-driven)
+  const { data: metricsData } = useQuery({
+    queryKey: ["dashboard", "metrics"],
+    queryFn: async () =>
+      apiGet<{ success: boolean; data: any }>("/dashboard/metrics"),
+    staleTime: 1000 * 60 * 2,
+  });
+
+  // Map bookings from backend shape to UI-friendly shape
+  const mappedBookings = (bookingsData || []).map((b: any) => {
+    const guest = b.guests || b.guest || null;
+    const room = b.rooms || b.room || null;
+    const guestName = guest
+      ? `${guest.first_name || ""} ${guest.last_name || ""}`.trim()
+      : "Guest";
+    const roomLabel = room
+      ? `Room ${room.room_number || room.room_number}`
+      : b.room_id;
+    const nights = b.total_nights
+      ? Number(b.total_nights)
+      : b.check_in && b.check_out
+      ? Math.max(
+          1,
+          Math.round(
+            (new Date(b.check_out).getTime() - new Date(b.check_in).getTime()) /
+              (1000 * 60 * 60 * 24)
+          )
+        )
+      : 1;
+    const statusMap: Record<string, string> = {
+      confirmed: "Confirmed",
+      active: "Active",
+      checking_out: "Checking Out",
+      completed: "Completed",
+      cancelled: "Cancelled",
+    };
+    const status = statusMap[b.status] || b.status || "Unknown";
+    const priority = guest?.is_vip ? "vip" : "standard";
+    return {
+      id: b.id,
+      guestName,
+      priority,
+      status,
+      room: roomLabel,
+      guests: b.number_of_guests ?? b.guests ?? 1,
+      nights,
+      checkIn: b.check_in ? new Date(b.check_in).toLocaleDateString() : "-",
+      checkOut: b.check_out ? new Date(b.check_out).toLocaleDateString() : "-",
+      source: b.source || "-",
+      totalPrice: Number(b.total_price_birr ?? b.total_price ?? 0),
+      specialRequests: b.special_requests || b.specialRequests || "",
+      raw: b,
+    };
+  });
+
+  // Simple search filtering
+  const filteredBookings = mappedBookings.filter((bk) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      String(bk.guestName).toLowerCase().includes(q) ||
+      String(bk.room).toLowerCase().includes(q) ||
+      String(bk.id).toLowerCase().includes(q)
     );
-    return res.data.bookings;
   });
 
   // Mutations for create/edit/delete can be added here
-  // ...existing code...
+  // Mutations for create/edit/delete can be added here
+  // Keep UI driven by the live bookings from the API.
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -390,10 +459,10 @@ const Bookings = () => {
         {/* Enhanced Booking List */}
         <TabsContent value="list" className="space-y-4">
           <div className="grid gap-6">
-            {bookings.map((booking) => (
+            {filteredBookings.map((booking) => (
               <Card
                 key={booking.id}
-                className="relative overflow-hidden border-0 bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
@@ -543,7 +612,7 @@ const Bookings = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {bookings.slice(0, 3).map((booking) => (
+                  {filteredBookings.slice(0, 3).map((booking) => (
                     <div
                       key={booking.id}
                       className="flex items-center justify-between p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all"

@@ -22,6 +22,7 @@ import houseKeepingRoutes from "./routes/houseKeeping.js";
 import settingsRoutes from "./routes/settings.js";
 import frontDeskRoutes from "./routes/frontdesk.js";
 import usersRoutes from "./routes/users.js";
+import activityRoutes from "./routes/activity.js";
 
 const app = express();
 
@@ -76,6 +77,8 @@ app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/housekeeping", houseKeepingRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/frontdesk", frontDeskRoutes);
+
+app.use("/api/activity", activityRoutes);
 app.use("/api/users", usersRoutes);
 
 // 404 handler (after all routes)

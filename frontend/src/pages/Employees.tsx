@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -39,7 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { apiGet } from "@/lib/api";
 
 const Employees = () => {
@@ -60,52 +61,18 @@ const Employees = () => {
     performance?: string;
   }
 
+  // Fetch activity logs from backend
   const {
-    data: employeesData,
-    isLoading,
-    error,
+    data: activityLogs = [],
+    isLoading: activityLoading,
+    isError: activityError,
   } = useQuery({
-    queryKey: ["employees"],
-    queryFn: () =>
-      apiGet<{ success: true; data: { employees: EmployeeApi[] } }>(
-        "/employees"
-      ),
+    queryKey: ["activityLogs"],
+    queryFn: async () => {
+      const res = await axios.get("/api/activity", { withCredentials: true });
+      return res.data.data || [];
+    },
   });
-
-  const employees: EmployeeApi[] = employeesData?.data?.employees || [];
-
-  const activityLogs = [
-    {
-      user: "Anna Tesfaye",
-      action: "Completed premium cleaning of Suite 204",
-      time: "10 mins ago",
-      type: "cleaning",
-    },
-    {
-      user: "Dawit Assefa",
-      action: "Checked in VIP guest John Smith to Premium Suite 315",
-      time: "25 mins ago",
-      type: "checkin",
-    },
-    {
-      user: "System Admin",
-      action: "Generated comprehensive financial performance report",
-      time: "1 hour ago",
-      type: "system",
-    },
-    {
-      user: "Marta Lemma",
-      action: "Reported maintenance issue in Deluxe Room 402",
-      time: "2 hours ago",
-      type: "maintenance",
-    },
-    {
-      user: "Yonas Bekele",
-      action: "Updated restaurant menu with seasonal specialties",
-      time: "3 hours ago",
-      type: "menu",
-    },
-  ];
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
@@ -468,7 +435,7 @@ const Employees = () => {
           >
             Activity Intelligence
             <span className="ml-2 px-2 py-1 bg-emerald-500 text-white text-xs rounded-full">
-              {activityLogs.length}
+              {activityLoading ? "..." : activityLogs.length}
             </span>
           </TabsTrigger>
         </TabsList>
@@ -667,35 +634,62 @@ const Employees = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {activityLogs.map((log, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-4 p-4 bg-white dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300"
-                  >
-                    <div className="text-2xl">{getActivityIcon(log.type)}</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <p className="font-semibold text-slate-800 dark:text-white">
-                          {log.user}
-                        </p>
-                        <Badge
-                          variant="outline"
-                          className="border-slate-300 dark:border-slate-600 text-xs"
-                        >
-                          {log.type}
-                        </Badge>
-                      </div>
-                      <p className="text-slate-700 dark:text-slate-300 mb-2">
-                        {log.action}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {log.time}
-                      </p>
+              {activityLoading ? (
+                <div className="text-center py-8 text-lg text-slate-500">
+                  Loading activity logs...
+                </div>
+              ) : activityError ? (
+                <div className="text-center py-8 text-lg text-red-500">
+                  Failed to load activity logs.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {activityLogs.length === 0 ? (
+                    <div className="text-center py-8 text-lg text-slate-500">
+                      No activity logs found.
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ) : (
+                    activityLogs.map((log, index) => (
+                      <div
+                        key={log.id || index}
+                        className="flex items-start gap-4 p-4 bg-white dark:bg-slate-700/50 rounded-2xl border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300"
+                      >
+                        <div className="text-2xl">
+                          {getActivityIcon(
+                            log.type ||
+                              log.action_english
+                                ?.toLowerCase()
+                                .includes("clean")
+                              ? "cleaning"
+                              : "system"
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <p className="font-semibold text-slate-800 dark:text-white">
+                              {log.employees
+                                ? `${log.employees.first_name} ${log.employees.last_name}`
+                                : log.guest || "Unknown"}
+                            </p>
+                            <Badge
+                              variant="outline"
+                              className="border-slate-300 dark:border-slate-600 text-xs"
+                            >
+                              {log.room || log.type || "activity"}
+                            </Badge>
+                          </div>
+                          <p className="text-slate-700 dark:text-slate-300 mb-2">
+                            {log.action_english}
+                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {new Date(log.created_at).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
