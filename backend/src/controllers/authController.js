@@ -1,24 +1,33 @@
-// src/controllers/authController.ts
-import express from "express"; // Removed TS type-only imports
 import jwt from "jsonwebtoken";
-import UserModel from "../models/User";
-// Removed AuthRequest type import (plain JS)
+import { validationResult } from "express-validator";
+import UsersService from "../services/usersService.js";
 
 class AuthController {
   static async register(req, res) {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      }
       const { full_name, email, password, role } = req.body;
 
-      const existingUser = await UserModel.findByEmail(email);
+      const existingUser = await UsersService.findByEmail(email);
       if (existingUser) {
-        res.status(400).json({ error: "User already exists" });
-        return;
+        return res
+          .status(400)
+          .json({ success: false, error: "User already exists" });
       }
 
-      const user = await UserModel.create({
+      const user = await UsersService.create({
         full_name,
         email,
-        password_hash: password,
+        password,
         role: role || "staff",
         status: "active",
       });
@@ -30,81 +39,103 @@ class AuthController {
       );
 
       res.status(201).json({
-        message: "User created successfully",
-        user: {
-          id: user.id,
-          full_name: user.full_name,
-          email: user.email,
-          role: user.role,
+        success: true,
+        data: {
+          user: {
+            id: user.id,
+            full_name: user.full_name,
+            email: user.email,
+            role: user.role,
+          },
+          token,
         },
-        token,
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
   static async login(req, res) {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            error: "Validation failed",
+            details: errors.array(),
+          });
+      }
       const { email, password } = req.body;
 
-      const user = await UserModel.findByEmail(email);
+      const user = await UsersService.findByEmail(email);
       if (!user) {
-        res.status(401).json({ error: "Invalid credentials" });
-        return;
+        return res
+          .status(401)
+          .json({ success: false, error: "Invalid credentials" });
       }
 
-      const isValidPassword = await UserModel.verifyPassword(
+      const isValidPassword = await UsersService.verifyPassword(
         password,
         user.password_hash
       );
       if (!isValidPassword) {
-        res.status(401).json({ error: "Invalid credentials" });
-        return;
+        return res
+          .status(401)
+          .json({ success: false, error: "Invalid credentials" });
       }
-
       if (user.status !== "active") {
-        res.status(401).json({ error: "Account is deactivated" });
-        return;
+        return res
+          .status(401)
+          .json({ success: false, error: "Account is deactivated" });
       }
-
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN }
       );
 
-      await UserModel.update(user.id, { last_login: new Date().toISOString() });
+      await UsersService.update(user.id, {
+        last_login: new Date().toISOString(),
+      });
 
       res.json({
-        message: "Login successful",
-        user: {
-          id: user.id,
-          full_name: user.full_name,
-          email: user.email,
-          role: user.role,
+        success: true,
+        data: {
+          user: {
+            id: user.id,
+            full_name: user.full_name,
+            email: user.email,
+            role: user.role,
+          },
+          token,
         },
-        token,
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
   static async getProfile(req, res) {
     try {
-      const user = req.user ? await UserModel.findById(req.user.id) : null;
+      const user = req.user ? await UsersService.findById(req.user.id) : null;
       res.json({
-        user: {
-          id: user && user.id,
-          full_name: user && user.full_name,
-          email: user && user.email,
-          role: user && user.role,
-          created_at: user && user.created_at,
+        success: true,
+        data: {
+          user: user
+            ? {
+                id: user.id,
+                full_name: user.full_name,
+                email: user.email,
+                role: user.role,
+                created_at: user.created_at,
+              }
+            : null,
         },
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 
@@ -112,20 +143,25 @@ class AuthController {
     try {
       const { full_name, email } = req.body;
       const user = req.user
-        ? await UserModel.update(req.user.id, { full_name, email })
+        ? await UsersService.update(req.user.id, { full_name, email })
         : null;
 
       res.json({
-        message: "Profile updated successfully",
-        user: {
-          id: user && user.id,
-          full_name: user && user.full_name,
-          email: user && user.email,
-          role: user && user.role,
+        success: true,
+        data: {
+          message: "Profile updated successfully",
+          user: user
+            ? {
+                id: user.id,
+                full_name: user.full_name,
+                email: user.email,
+                role: user.role,
+              }
+            : null,
         },
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
 }
