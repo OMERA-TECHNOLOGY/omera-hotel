@@ -1,8 +1,7 @@
-// src/routes/rooms.ts
 import { Router } from "express";
-import RoomController from "../controllers/roomController";
-import { authenticateToken, authorize } from "../middleware/auth";
-import { validateRoom } from "../middleware/validation";
+import { body, param } from "express-validator";
+import RoomController from "../controllers/roomController.js";
+import { authenticateToken, authorize } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -17,13 +16,21 @@ router.get("/:id", RoomController.getRoomById);
 router.post(
   "/",
   authorize("admin", "receptionist"),
-  validateRoom,
+  [
+    body("room_number").isString(),
+    body("room_type_id").isString().isUUID(),
+    body("floor").isInt(),
+    body("status")
+      .optional()
+      .isIn(["vacant", "occupied", "cleaning", "maintenance"]),
+    body("base_price_birr").isNumeric(),
+  ],
   RoomController.createRoom
 );
 router.put(
   "/:id",
   authorize("admin", "receptionist"),
-  validateRoom,
+  [param("id").isString().isUUID()],
   RoomController.updateRoom
 );
 router.patch(
