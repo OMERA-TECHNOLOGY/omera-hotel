@@ -7,15 +7,30 @@ class BookingController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            error: "Validation failed",
-            details: errors.array(),
-          });
+        return res.status(400).json({
+          success: false,
+          error: "Validation failed",
+          details: errors.array(),
+        });
       }
       const payload = { ...req.body };
+      // If guest_id not provided but embedded guest data exists, create the guest
+      if (!payload.guest_id && payload.guest) {
+        const guestPayload = {
+          first_name: payload.guest.first_name,
+          last_name: payload.guest.last_name,
+          email: payload.guest.email,
+          phone: payload.guest.phone,
+        };
+        // Create guest via GuestsService (will throw on error)
+        const GuestsService = (await import("../services/guestsService.js"))
+          .default;
+        const createdGuest = await GuestsService.create(guestPayload);
+        if (createdGuest && createdGuest.id) payload.guest_id = createdGuest.id;
+        // remove embedded guest to avoid unexpected columns
+        delete payload.guest;
+      }
+
       const booking = await BookingsService.create(payload);
       res.status(201).json({ success: true, data: { booking } });
     } catch (error) {

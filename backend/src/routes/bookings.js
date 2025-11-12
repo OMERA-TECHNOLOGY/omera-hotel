@@ -13,11 +13,14 @@ router.get(
   BookingController.getAllBookings
 );
 router.get("/:id", [param("id").isUUID()], BookingController.getBookingById);
+// Public booking creation: allows creating a booking with either an existing guest_id
+// or embedded guest details (first_name, last_name, phone, email). The controller
+// will create the guest when guest_id is not provided.
 router.post(
   "/",
-  authorize("admin", "receptionist", "manager"),
   [
-    body("guest_id").isUUID(),
+    // guest_id optional (if provided must be UUID)
+    body("guest_id").optional().isUUID(),
     body("room_id").isUUID(),
     body("check_in").isISO8601(),
     body("check_out").isISO8601(),
@@ -27,6 +30,11 @@ router.post(
       .isIn(["confirmed", "active", "checking_out", "completed", "cancelled"]),
     body("total_price_birr").isNumeric(),
     body("advance_payment_birr").optional().isNumeric(),
+    // optional embedded guest fields
+    body("guest.first_name").optional().isString(),
+    body("guest.last_name").optional().isString(),
+    body("guest.email").optional().isEmail(),
+    body("guest.phone").optional().isString(),
   ],
   BookingController.createBooking
 );

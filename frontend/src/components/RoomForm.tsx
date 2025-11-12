@@ -47,9 +47,19 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
   const { toast } = useToast();
 
   const submit = async (data: Partial<CreateRoomInput>) => {
-  // Basic runtime validation
-  if (!data.room_number) return toast({ title: "Validation", description: "Room number is required", variant: "destructive" });
-  if (data.base_price_birr == null) return toast({ title: "Validation", description: "Price is required", variant: "destructive" });
+    // Basic runtime validation
+    if (!data.room_number)
+      return toast({
+        title: "Validation",
+        description: "Room number is required",
+        variant: "destructive",
+      });
+    if (data.base_price_birr == null)
+      return toast({
+        title: "Validation",
+        description: "Price is required",
+        variant: "destructive",
+      });
     // support comma-separated images in the optional description field
     const payload: CreateRoomInput = {
       ...data,

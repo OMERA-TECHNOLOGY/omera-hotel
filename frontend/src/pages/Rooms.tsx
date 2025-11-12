@@ -328,7 +328,12 @@ const Rooms = () => {
   const [page, setPage] = useState(1);
   const pageSize = 9;
 
-  const roomsQuery = useRooms({ limit: pageSize, offset: (page - 1) * pageSize, status: "all", search });
+  const roomsQuery = useRooms({
+    limit: pageSize,
+    offset: (page - 1) * pageSize,
+    status: "all",
+    search,
+  });
   const createRoom = useCreateRoom();
   const updateRoom = useUpdateRoom();
   const deleteRoom = useDeleteRoom();
@@ -431,9 +436,19 @@ const Rooms = () => {
     if (!toDelete) return setConfirmOpen(false);
     try {
       await deleteRoom.mutateAsync(toDelete.id);
-      toast({ title: "Room deleted", description: `Room ${toDelete.room_number || toDelete.number || ''} removed`, variant: "success" });
+      toast({
+        title: "Room deleted",
+        description: `Room ${
+          toDelete.room_number || toDelete.number || ""
+        } removed`,
+        variant: "success",
+      });
     } catch (e) {
-      toast({ title: "Delete failed", description: extractError(e), variant: "destructive" });
+      toast({
+        title: "Delete failed",
+        description: extractError(e),
+        variant: "destructive",
+      });
     } finally {
       setConfirmOpen(false);
       setToDelete(null);
@@ -656,7 +671,10 @@ const Rooms = () => {
           <Input
             placeholder="Search room number..."
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             className="rounded-xl bg-white/80 dark:bg-slate-700/80"
           />
         </div>
@@ -679,11 +697,23 @@ const Rooms = () => {
 
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
-        <div className="text-sm text-slate-500">Showing {rooms.length} of {totalRooms} rooms</div>
+        <div className="text-sm text-slate-500">
+          Showing {rooms.length} of {totalRooms} rooms
+        </div>
         <div className="flex items-center gap-2">
-          <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
+          <Button
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            Previous
+          </Button>
           <div className="px-3">Page {page}</div>
-          <Button disabled={(page * pageSize) >= totalRooms} onClick={() => setPage((p) => p + 1)}>Next</Button>
+          <Button
+            disabled={page * pageSize >= totalRooms}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Next
+          </Button>
         </div>
       </div>
 
@@ -704,15 +734,30 @@ const Rooms = () => {
             onSubmit={async (values) => {
               try {
                 if (editingRoom) {
-                  await updateRoom.mutateAsync({ id: editingRoom.id, body: values });
-                  toast({ title: "Room updated", description: `Room ${values.room_number} updated`, variant: "success" });
+                  await updateRoom.mutateAsync({
+                    id: editingRoom.id,
+                    body: values,
+                  });
+                  toast({
+                    title: "Room updated",
+                    description: `Room ${values.room_number} updated`,
+                    variant: "success",
+                  });
                 } else {
                   await createRoom.mutateAsync(values as any);
-                  toast({ title: "Room created", description: `Room ${values.room_number} created`, variant: "success" });
+                  toast({
+                    title: "Room created",
+                    description: `Room ${values.room_number} created`,
+                    variant: "success",
+                  });
                 }
                 setIsCreateOpen(false);
               } catch (e) {
-                toast({ title: "Save failed", description: extractError(e), variant: "destructive" });
+                toast({
+                  title: "Save failed",
+                  description: extractError(e),
+                  variant: "destructive",
+                });
               }
             }}
           />
@@ -724,11 +769,18 @@ const Rooms = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm delete</DialogTitle>
-            <DialogDescription>Are you sure you want to delete this room? This action cannot be undone.</DialogDescription>
+            <DialogDescription>
+              Are you sure you want to delete this room? This action cannot be
+              undone.
+            </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={() => setConfirmOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => confirmDelete()}>Delete</Button>
+            <Button variant="ghost" onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={() => confirmDelete()}>
+              Delete
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

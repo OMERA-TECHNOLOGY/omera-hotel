@@ -10,7 +10,13 @@ export const ROOM_KEYS = {
 };
 
 export function useRooms(
-  filters: { limit?: number; offset?: number; status?: string; search?: string; room_type_id?: string } = { limit: 100, offset: 0, status: "all" }
+  filters: {
+    limit?: number;
+    offset?: number;
+    status?: string;
+    search?: string;
+    room_type_id?: string;
+  } = { limit: 100, offset: 0, status: "all" }
 ) {
   return useQuery({
     queryKey: ROOM_KEYS.lists(filters),
@@ -18,14 +24,17 @@ export function useRooms(
       const params = new URLSearchParams();
       params.set("limit", String(filters.limit ?? 100));
       params.set("offset", String(filters.offset ?? 0));
-      if (typeof filters.status !== "undefined") params.set("status", String(filters.status));
+      if (typeof filters.status !== "undefined")
+        params.set("status", String(filters.status));
       if (filters.search) params.set("search", String(filters.search));
-      if (filters.room_type_id) params.set("room_type_id", String(filters.room_type_id));
+      if (filters.room_type_id)
+        params.set("room_type_id", String(filters.room_type_id));
       const q = `?${params.toString()}`;
       const res: any = await apiGet(`/rooms${q}`);
       // backend returns { success: true, data: { rooms, total } }
       const rooms = res?.data?.rooms || res.rooms || res;
-      const total = res?.data?.total ?? (Array.isArray(rooms) ? rooms.length : 0);
+      const total =
+        res?.data?.total ?? (Array.isArray(rooms) ? rooms.length : 0);
       return { rooms, total };
     },
   });

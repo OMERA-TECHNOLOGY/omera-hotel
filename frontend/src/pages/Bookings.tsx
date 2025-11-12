@@ -40,6 +40,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiGet, apiPost, apiPut, apiDelete, extractError } from "@/lib/api";
+import type {
+  Booking,
+  CreateBookingInput,
+  UpdateBookingInput,
+  Guest,
+} from "@/types/bookings";
+import type { Room } from "@/types/rooms";
 import { useToast } from "@/hooks/use-toast";
 
 const Bookings = () => {
@@ -59,10 +66,11 @@ const Bookings = () => {
   } = useQuery({
     queryKey: ["bookings"],
     queryFn: async () => {
-      const res = await apiGet<{ success: boolean; data: { bookings: any[] } }>(
-        "/bookings"
-      );
-      return res.data.bookings;
+      const res = await apiGet<{
+        success: true;
+        data: { bookings: Booking[] };
+      }>("/bookings");
+      return res?.data?.bookings || [];
     },
   });
 
@@ -70,14 +78,10 @@ const Bookings = () => {
   const { data: roomsData } = useQuery({
     queryKey: ["rooms"],
     queryFn: async () => {
-      const res = await apiGet<{ success: boolean; data: { rooms: any[] } }>(
+      const res = await apiGet<{ success: true; data: { rooms: Room[] } }>(
         "/rooms"
       );
-      // backend returns { success: true, data: { rooms } } OR { success: true, data: rooms }
-      // normalize
-      if (res && (res as any).data && (res as any).data.rooms)
-        return (res as any).data.rooms;
-      return (res as any).data || [];
+      return res?.data?.rooms || [];
     },
   });
 
@@ -85,12 +89,10 @@ const Bookings = () => {
   const { data: guestsData } = useQuery({
     queryKey: ["guests"],
     queryFn: async () => {
-      const res = await apiGet<{ success: boolean; data: { guests: any[] } }>(
+      const res = await apiGet<{ success: true; data: { guests: Guest[] } }>(
         "/guests"
       );
-      if (res && (res as any).data && (res as any).data.guests)
-        return (res as any).data.guests;
-      return (res as any).data || [];
+      return res?.data?.guests || [];
     },
     // guests may be protected; avoid failing the whole page
     retry: 1,
@@ -99,9 +101,24 @@ const Bookings = () => {
   // Local form state for create/edit booking
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<any>({
+  type BookingForm = {
+    guestId?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    numberOfGuests: number;
+    checkIn: string;
+    checkOut: string;
+    roomId?: string | undefined;
+    source?: string | undefined;
+    specialRequests?: string | undefined;
+  };
+
+  const [formData, setFormData] = useState<BookingForm>({
     guestId: "",
     firstName: "",
     lastName: "",
@@ -114,29 +131,33 @@ const Bookings = () => {
     source: "website",
     specialRequests: "",
   });
-  const [editingBooking, setEditingBooking] = useState<any | null>(null);
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [viewingBooking, setViewingBooking] = useState<Booking | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
-  function openEditFor(booking: any) {
-    setEditingBooking(booking);
+  function openEditFor(booking: Booking | { raw?: Booking }) {
+    const b = (booking as { raw?: Booking }).raw || (booking as Booking);
+    setEditingBooking(b);
     setFormData({
-      guestId: booking.raw?.guest_id || booking.raw?.guest?.id || "",
-      firstName:
-        booking.raw?.guests?.first_name || booking.raw?.guest?.first_name || "",
-      lastName:
-        booking.raw?.guests?.last_name || booking.raw?.guest?.last_name || "",
-      email: booking.raw?.guests?.email || booking.raw?.guest?.email || "",
-      phone: booking.raw?.guests?.phone || booking.raw?.guest?.phone || "",
-      numberOfGuests: booking.guests || 1,
-      checkIn: booking.raw?.check_in || "",
-      checkOut: booking.raw?.check_out || "",
-      roomId: booking.raw?.room_id || booking.raw?.room?.id || "",
-      source: booking.raw?.source || booking.source || "website",
-      specialRequests:
-        booking.raw?.special_requests || booking.specialRequests || "",
+      guestId: b.guest_id || undefined,
+      firstName: b.guests?.first_name || undefined,
+      lastName: b.guests?.last_name || undefined,
+      email: b.guests?.email || undefined,
+      phone: b.guests?.phone || undefined,
+      numberOfGuests: b.number_of_guests ?? 1,
+      checkIn: b.check_in || "",
+      checkOut: b.check_out || "",
+      roomId: b.room_id || undefined,
+      source: b.source || "website",
+      specialRequests: b.special_requests || undefined,
     });
     setIsEditOpen(true);
+  }
+
+  function openViewFor(booking: Booking) {
+    setViewingBooking(booking);
+    setIsViewOpen(true);
   }
 
   function confirmDelete(id: string) {
@@ -148,12 +169,14 @@ const Bookings = () => {
   const { data: metricsData } = useQuery({
     queryKey: ["dashboard", "metrics"],
     queryFn: async () =>
-      apiGet<{ success: boolean; data: any }>("/dashboard/metrics"),
+      apiGet<{ success: boolean; data: Record<string, unknown> }>(
+        "/dashboard/metrics"
+      ),
     staleTime: 1000 * 60 * 2,
   });
 
   // Map bookings from backend shape to UI-friendly shape
-  const mappedBookings = (bookingsData || []).map((b: any) => {
+  const mappedBookings = (bookingsData || []).map((b: Booking) => {
     const guest = b.guests || b.guest || null;
     const room = b.rooms || b.room || null;
     const guestName = guest
@@ -188,7 +211,7 @@ const Bookings = () => {
       priority,
       status,
       room: roomLabel,
-      guests: b.number_of_guests ?? b.guests ?? 1,
+      guests: b.number_of_guests ?? 1,
       nights,
       checkIn: b.check_in ? new Date(b.check_in).toLocaleDateString() : "-",
       checkOut: b.check_out ? new Date(b.check_out).toLocaleDateString() : "-",
@@ -196,6 +219,8 @@ const Bookings = () => {
       totalPrice: Number(b.total_price_birr ?? b.total_price ?? 0),
       specialRequests: b.special_requests || b.specialRequests || "",
       raw: b,
+      // expose typed shape for viewing/editor
+      typed: b as Booking,
     };
   });
 
@@ -212,13 +237,19 @@ const Bookings = () => {
 
   // Mutations for create/edit/delete can be added here
   // Create booking mutation (handles creating guest if necessary)
-  const createBookingMutation = useMutation(
-    async (payload: any) => {
-      return apiPost("/bookings", payload);
-    },
+  const createBookingMutation = useMutation<
+    { success: true; data: { booking: Booking } },
+    Error,
+    CreateBookingInput
+  >(
+    async (payload: CreateBookingInput) =>
+      apiPost<
+        { success: true; data: { booking: Booking } },
+        CreateBookingInput
+      >("/bookings", payload),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["bookings"]);
+        queryClient.invalidateQueries({ queryKey: ["bookings"] });
         setIsCreateOpen(false);
         toast({
           title: "Booking created",
@@ -238,13 +269,19 @@ const Bookings = () => {
     }
   );
 
-  const updateBookingMutation = useMutation(
-    async ({ id, payload }: any) => {
-      return apiPut(`/bookings/${id}`, payload);
-    },
+  const updateBookingMutation = useMutation<
+    { success: true; data: { booking: Booking } },
+    Error,
+    { id: string; payload: UpdateBookingInput }
+  >(
+    async ({ id, payload }: { id: string; payload: UpdateBookingInput }) =>
+      apiPut<{ success: true; data: { booking: Booking } }, UpdateBookingInput>(
+        `/bookings/${id}`,
+        payload
+      ),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["bookings"]);
+        queryClient.invalidateQueries({ queryKey: ["bookings"] });
         setIsEditOpen(false);
         setEditingBooking(null);
         toast({
@@ -264,27 +301,28 @@ const Bookings = () => {
     }
   );
 
-  const deleteBookingMutation = useMutation(
-    async (id: string) => apiDelete(`/bookings/${id}`),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["bookings"]);
-        toast({
-          title: "Booking removed",
-          description: "Reservation cancelled",
-          duration: 3000,
-        });
-      },
-      onError: (err) => {
-        const message = extractError(err);
-        toast({
-          title: "Error deleting booking",
-          description: message,
-          duration: 6000,
-        });
-      },
-    }
-  );
+  const deleteBookingMutation = useMutation<
+    { success: boolean },
+    Error,
+    string
+  >(async (id: string) => apiDelete<{ success: boolean }>(`/bookings/${id}`), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      toast({
+        title: "Booking removed",
+        description: "Reservation cancelled",
+        duration: 3000,
+      });
+    },
+    onError: (err) => {
+      const message = extractError(err);
+      toast({
+        title: "Error deleting booking",
+        description: message,
+        duration: 6000,
+      });
+    },
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -550,7 +588,7 @@ const Bookings = () => {
                             <SelectValue placeholder="Select room" />
                           </SelectTrigger>
                           <SelectContent>
-                            {(roomsData || []).map((r: any) => (
+                            {(roomsData || []).map((r: Room) => (
                               <SelectItem
                                 key={r.id}
                                 value={r.id}
@@ -559,9 +597,9 @@ const Bookings = () => {
                                 }
                               >
                                 {`Room ${r.room_number || r.id} - ${
-                                  r.price_per_night
+                                  r.base_price_birr
                                     ? `${Number(
-                                        r.price_per_night
+                                        r.base_price_birr
                                       ).toLocaleString()} ETB`
                                     : ""
                                 }`}
@@ -675,13 +713,16 @@ const Bookings = () => {
                           let guestId = formData.guestId;
                           // If no guestId provided, create guest
                           if (!guestId) {
-                            const guestPayload: any = {
+                            const guestPayload: Partial<Guest> = {
                               first_name: formData.firstName || undefined,
                               last_name: formData.lastName || undefined,
                               email: formData.email || undefined,
                               phone: formData.phone || undefined,
                             };
-                            const g = await apiPost("/guests", guestPayload);
+                            const g = await apiPost<
+                              { success: true; data: { guest: Guest } },
+                              Partial<Guest>
+                            >("/guests", guestPayload);
                             // g may be { success, data: { guest } }
                             guestId =
                               g?.data?.guest?.id ||
@@ -875,14 +916,21 @@ const Bookings = () => {
                     <div className="flex flex-col gap-3 ml-6">
                       <Button
                         variant="outline"
-                        className="border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all cursor-pointer"
+                        className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-all"
+                        onClick={() => openViewFor(booking.typed)}
+                      >
+                        View
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all"
                         onClick={() => openEditFor(booking)}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="outline"
-                        className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all cursor-pointer"
+                        className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                         onClick={() => confirmDelete(booking.id)}
                       >
                         Cancel
@@ -952,6 +1000,206 @@ const Bookings = () => {
           </div>
         </TabsContent>
       </Tabs>
+      {/* View Booking Dialog */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Booking Details</DialogTitle>
+            <DialogDescription>Full booking information</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            {viewingBooking ? (
+              <div>
+                <p className="font-semibold">Guest</p>
+                <p>
+                  {viewingBooking.guests?.first_name}{" "}
+                  {viewingBooking.guests?.last_name}
+                </p>
+                <p className="mt-2 font-semibold">Room</p>
+                <p>
+                  {viewingBooking.rooms?.room_number || viewingBooking.room_id}
+                </p>
+                <p className="mt-2 font-semibold">Stay</p>
+                <p>
+                  {viewingBooking.check_in} → {viewingBooking.check_out} •{" "}
+                  {viewingBooking.number_of_guests} guest(s)
+                </p>
+                <p className="mt-2 font-semibold">Status</p>
+                <p>{viewingBooking.status}</p>
+                <p className="mt-2 font-semibold">Total</p>
+                <p>{viewingBooking.total_price_birr ?? 0} ETB</p>
+                {viewingBooking.special_requests && (
+                  <>
+                    <p className="mt-2 font-semibold">Special requests</p>
+                    <p>{viewingBooking.special_requests}</p>
+                  </>
+                )}
+              </div>
+            ) : (
+              <p>No booking selected</p>
+            )}
+          </div>
+          <div className="flex justify-end mt-4">
+            <Button variant="outline" onClick={() => setIsViewOpen(false)}>
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Booking Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Edit Reservation</DialogTitle>
+            <DialogDescription>Update booking details</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-6 py-4">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label htmlFor="editCheckIn">Check-in Date</Label>
+                <Input
+                  id="editCheckIn"
+                  type="date"
+                  value={formData.checkIn}
+                  onChange={(e) =>
+                    setFormData({ ...formData, checkIn: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor="editCheckOut">Check-out Date</Label>
+                <Input
+                  id="editCheckOut"
+                  type="date"
+                  value={formData.checkOut}
+                  onChange={(e) =>
+                    setFormData({ ...formData, checkOut: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label htmlFor="editRoom">Room</Label>
+                <Select>
+                  <SelectTrigger id="editRoom">
+                    <SelectValue placeholder="Select room" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(roomsData || []).map((r: Room) => (
+                      <SelectItem
+                        key={r.id}
+                        value={r.id}
+                        onClick={() =>
+                          setFormData({ ...formData, roomId: r.id })
+                        }
+                      >
+                        {`Room ${r.room_number || r.id}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor="editGuests">Number of Guests</Label>
+                <Input
+                  id="editGuests"
+                  type="number"
+                  min={1}
+                  value={formData.numberOfGuests}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      numberOfGuests: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <Label htmlFor="editSpecial">Special Requests</Label>
+              <Input
+                id="editSpecial"
+                value={formData.specialRequests}
+                onChange={(e) =>
+                  setFormData({ ...formData, specialRequests: e.target.value })
+                }
+              />
+            </div>
+          </div>
+          {formError && <p className="text-sm text-red-600">{formError}</p>}
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                setFormError(null);
+                if (!editingBooking) return setFormError("No booking selected");
+                if (!formData.checkIn || !formData.checkOut)
+                  return setFormError("Please provide dates");
+                try {
+                  await updateBookingMutation.mutateAsync({
+                    id: editingBooking.id,
+                    payload: {
+                      check_in: formData.checkIn,
+                      check_out: formData.checkOut,
+                      room_id: formData.roomId,
+                      number_of_guests: formData.numberOfGuests,
+                      special_requests: formData.specialRequests,
+                    } as UpdateBookingInput,
+                  });
+                } catch (err) {
+                  const message = extractError(err);
+                  setFormError(message);
+                }
+              }}
+            >
+              {updateBookingMutation.isLoading ? "Saving..." : "Save changes"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm cancellation</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel this reservation? This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
+              No, keep booking
+            </Button>
+            <Button
+              className="bg-red-600 text-white"
+              onClick={async () => {
+                if (!deleteTargetId) return;
+                try {
+                  await deleteBookingMutation.mutateAsync(deleteTargetId);
+                } catch (err) {
+                  // handled in mutation
+                } finally {
+                  setDeleteDialogOpen(false);
+                  setDeleteTargetId(null);
+                }
+              }}
+            >
+              {deleteBookingMutation.isLoading
+                ? "Cancelling..."
+                : "Yes, cancel booking"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
