@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -41,7 +42,8 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import axios from "axios";
-import { apiGet } from "@/lib/api";
+import { apiGet, apiPost, apiDelete, extractError } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
 
 const Employees = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,6 +60,8 @@ const Employees = () => {
     shift?: string;
     status?: string;
     join_date?: string;
+    joinDate?: string;
+    name?: string;
     performance?: string;
   }
 
@@ -73,6 +77,93 @@ const Employees = () => {
       return res.data.data || [];
     },
   });
+
+  // Fetch employees list from backend (replace any mock/static employees)
+  const {
+    data: employeesData,
+    isLoading: employeesLoading,
+    isError: employeesError,
+  } = useQuery({
+    queryKey: ["employees"],
+    queryFn: async () => {
+      const res = await apiGet("/employees");
+      return res.data?.employees || res.employees || res.data || res;
+    },
+  });
+
+  const queryClient = useQueryClient();
+
+  // simple form state for onboarding
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    role: "",
+    department: "",
+    shift: "",
+  });
+
+  const createEmployee = useMutation({
+    mutationFn: async (body: typeof form) => {
+      return await apiPost<Record<string, unknown>>("/employees", body);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["employees"]);
+      toast({
+        title: "Employee onboarded",
+        description: "New employee created successfully",
+      });
+      setForm({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        role: "",
+        department: "",
+        shift: "",
+      });
+    },
+    onError: (err) => {
+      toast({ title: "Failed to create", description: extractError(err) });
+    },
+  });
+
+  const deleteEmployee = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiDelete(`/employees/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["employees"]);
+      toast({ title: "Deleted", description: "Employee removed" });
+    },
+    onError: (err) => {
+      toast({ title: "Delete failed", description: extractError(err) });
+    },
+  });
+
+  // normalize employees array (support multiple shapes) and map to UI shape
+  const employeesRaw: EmployeeApi[] = Array.isArray(employeesData)
+    ? (employeesData as EmployeeApi[])
+    : (employeesData?.employees as EmployeeApi[]) ||
+      (employeesData?.data as EmployeeApi[]) ||
+      [];
+
+  const employees = employeesRaw.map((e: EmployeeApi) => ({
+    id: e.id,
+    name:
+      `${e.first_name || e.name || ""} ${e.last_name || ""}`.trim() ||
+      e.email ||
+      "Unknown",
+    email: e.email || "",
+    phone: e.phone || "",
+    role: e.role || "",
+    department: e.department || "",
+    shift: e.shift || "",
+    performance: e.performance || "",
+    joinDate: e.join_date || e.joinDate || "",
+    avatar: e.first_name ? e.first_name[0] : e.name ? e.name[0] : "U",
+  }));
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
@@ -202,6 +293,10 @@ const Employees = () => {
                         </Label>
                         <Input
                           id="empFirstName"
+                          value={form.first_name}
+                          onChange={(e) =>
+                            setForm({ ...form, first_name: e.target.value })
+                          }
                           placeholder="Enter first name"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
@@ -215,6 +310,10 @@ const Employees = () => {
                         </Label>
                         <Input
                           id="empLastName"
+                          value={form.last_name}
+                          onChange={(e) =>
+                            setForm({ ...form, last_name: e.target.value })
+                          }
                           placeholder="Enter last name"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
@@ -231,6 +330,10 @@ const Employees = () => {
                         <Input
                           id="empEmail"
                           type="email"
+                          value={form.email}
+                          onChange={(e) =>
+                            setForm({ ...form, email: e.target.value })
+                          }
                           placeholder="team.member@Omera.com"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
@@ -244,6 +347,10 @@ const Employees = () => {
                         </Label>
                         <Input
                           id="empPhone"
+                          value={form.phone}
+                          onChange={(e) =>
+                            setForm({ ...form, phone: e.target.value })
+                          }
                           placeholder="+251 xxx xxx xxx"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
@@ -257,7 +364,12 @@ const Employees = () => {
                         >
                           Position & Role
                         </Label>
-                        <Select>
+                        <Select
+                          value={form.role}
+                          onValueChange={(v) =>
+                            setForm({ ...form, role: String(v) })
+                          }
+                        >
                           <SelectTrigger
                             id="empRole"
                             className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
@@ -294,7 +406,12 @@ const Employees = () => {
                         >
                           Department
                         </Label>
-                        <Select>
+                        <Select
+                          value={form.department}
+                          onValueChange={(v) =>
+                            setForm({ ...form, department: String(v) })
+                          }
+                        >
                           <SelectTrigger
                             id="empDepartment"
                             className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
@@ -331,7 +448,12 @@ const Employees = () => {
                       >
                         Work Schedule
                       </Label>
-                      <Select>
+                      <Select
+                        value={form.shift}
+                        onValueChange={(v) =>
+                          setForm({ ...form, shift: String(v) })
+                        }
+                      >
                         <SelectTrigger
                           id="empShift"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
@@ -366,8 +488,14 @@ const Employees = () => {
                     >
                       Cancel
                     </Button>
-                    <Button className="bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 rounded-xl">
-                      Onboard Team Member
+                    <Button
+                      className="bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 rounded-xl"
+                      onClick={() => createEmployee.mutate(form)}
+                      disabled={createEmployee.isLoading}
+                    >
+                      {createEmployee.isLoading
+                        ? "Onboarding..."
+                        : "Onboard Team Member"}
                     </Button>
                   </div>
                 </DialogContent>
@@ -532,10 +660,10 @@ const Employees = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="rounded-xl border-purple-300 dark:border-purple-600 text-purple-600 dark:text-purple-400"
+                      className="rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400"
+                      onClick={() => deleteEmployee.mutate(String(employee.id))}
                     >
-                      <Key className="h-4 w-4 mr-2" />
-                      Reset Access
+                      Delete
                     </Button>
                   </div>
                 </CardContent>

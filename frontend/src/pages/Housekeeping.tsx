@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { apiGet } from "@/lib/api";
 import {
   Card,
   CardContent,
@@ -78,43 +80,18 @@ const Housekeeping = () => {
     };
   }, []);
 
-  const inventory = [
-    {
-      item: "Premium Bath Towels",
-      current: 145,
-      minimum: 100,
-      status: "good",
-      category: "Linens",
+  // Fetch inventory from backend (replaces static inventory)
+  const { data: inventoryData, isLoading: inventoryLoading } = useQuery({
+    queryKey: ["housekeeping", "inventory"],
+    queryFn: async () => {
+      const res = await apiGet("/housekeeping/inventory");
+      return res.data?.items || res.items || res.data || res;
     },
-    {
-      item: "Egyptian Cotton Sheets",
-      current: 85,
-      minimum: 80,
-      status: "good",
-      category: "Linens",
-    },
-    {
-      item: "Luxury Shampoo Bottles",
-      current: 45,
-      minimum: 60,
-      status: "low",
-      category: "Amenities",
-    },
-    {
-      item: "Artisanal Soap Bars",
-      current: 32,
-      minimum: 50,
-      status: "low",
-      category: "Amenities",
-    },
-    {
-      item: "Premium Toilet Paper",
-      current: 156,
-      minimum: 100,
-      status: "good",
-      category: "Bathroom",
-    },
-  ];
+  });
+
+  const inventory = Array.isArray(inventoryData)
+    ? inventoryData
+    : inventoryData?.items || inventoryData?.data || [];
 
   const getStatusColor = (status: string) => {
     switch (status) {

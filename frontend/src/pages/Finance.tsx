@@ -101,19 +101,29 @@ const Finance = () => {
   const invoices = invoicesData?.invoices || [];
   const expenses = expensesData?.expenses || [];
 
+  // derive summary stats from invoices/expenses when available
+  const totalInvoiceAmount = invoices.reduce(
+    (s, inv) => s + (inv.total_amount_birr || 0),
+    0
+  );
+  const pendingPaymentsCount = invoices.filter(
+    (inv) => (inv.payment_status || "").toLowerCase() !== "paid"
+  ).length;
+  const totalExpenses = expenses.reduce((s, e) => s + (e.amount_birr || 0), 0);
+
   const stats = [
     {
       title: "Today's Revenue",
-      value: "45,320 ETB",
-      change: "+12.5%",
+      value: `${totalInvoiceAmount.toLocaleString()} ETB`,
+      change: "+0%",
       icon: DollarSign,
       gradient: "from-emerald-500 to-green-500",
       trend: "up",
     },
     {
       title: "Pending Payments",
-      value: "48,300 ETB",
-      change: "3 invoices",
+      value: `${pendingPaymentsCount} invoices`,
+      change: "",
       icon: Receipt,
       color: "text-amber-500",
       gradient: "from-amber-500 to-yellow-500",
@@ -121,8 +131,8 @@ const Finance = () => {
     },
     {
       title: "Monthly Revenue",
-      value: "1,245,500 ETB",
-      change: "+8.3%",
+      value: `${totalInvoiceAmount.toLocaleString()} ETB`,
+      change: "+0%",
       icon: TrendingUp,
       color: "text-blue-500",
       gradient: "from-blue-500 to-cyan-500",
@@ -130,8 +140,8 @@ const Finance = () => {
     },
     {
       title: "Monthly Expenses",
-      value: "351,500 ETB",
-      change: "-2.1%",
+      value: `${totalExpenses.toLocaleString()} ETB`,
+      change: "",
       icon: CreditCard,
       color: "text-orange-500",
       gradient: "from-orange-500 to-red-500",

@@ -23,6 +23,7 @@ import settingsRoutes from "./routes/settings.js";
 import frontDeskRoutes from "./routes/frontdesk.js";
 import usersRoutes from "./routes/users.js";
 import activityRoutes from "./routes/activity.js";
+import guestsRoutes from "./routes/guests.js";
 
 const app = express();
 
@@ -80,6 +81,7 @@ app.use("/api/frontdesk", frontDeskRoutes);
 
 app.use("/api/activity", activityRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/guests", guestsRoutes);
 
 // 404 handler (after all routes)
 app.use((req, res) => {

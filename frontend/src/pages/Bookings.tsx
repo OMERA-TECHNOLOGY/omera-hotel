@@ -40,6 +40,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiGet, apiPost, apiPut, apiDelete, extractError } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 
 const Bookings = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
@@ -50,6 +51,7 @@ const Bookings = () => {
 
   // Fetch bookings from API
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const {
     data: bookingsData,
     isLoading,
@@ -63,6 +65,84 @@ const Bookings = () => {
       return res.data.bookings;
     },
   });
+
+  // Fetch rooms for selection
+  const { data: roomsData } = useQuery({
+    queryKey: ["rooms"],
+    queryFn: async () => {
+      const res = await apiGet<{ success: boolean; data: { rooms: any[] } }>(
+        "/rooms"
+      );
+      // backend returns { success: true, data: { rooms } } OR { success: true, data: rooms }
+      // normalize
+      if (res && (res as any).data && (res as any).data.rooms)
+        return (res as any).data.rooms;
+      return (res as any).data || [];
+    },
+  });
+
+  // Fetch guests for selection (receptionists/admins)
+  const { data: guestsData } = useQuery({
+    queryKey: ["guests"],
+    queryFn: async () => {
+      const res = await apiGet<{ success: boolean; data: { guests: any[] } }>(
+        "/guests"
+      );
+      if (res && (res as any).data && (res as any).data.guests)
+        return (res as any).data.guests;
+      return (res as any).data || [];
+    },
+    // guests may be protected; avoid failing the whole page
+    retry: 1,
+  });
+
+  // Local form state for create/edit booking
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formData, setFormData] = useState<any>({
+    guestId: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    numberOfGuests: 1,
+    checkIn: "",
+    checkOut: "",
+    roomId: "",
+    source: "website",
+    specialRequests: "",
+  });
+  const [editingBooking, setEditingBooking] = useState<any | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
+  function openEditFor(booking: any) {
+    setEditingBooking(booking);
+    setFormData({
+      guestId: booking.raw?.guest_id || booking.raw?.guest?.id || "",
+      firstName:
+        booking.raw?.guests?.first_name || booking.raw?.guest?.first_name || "",
+      lastName:
+        booking.raw?.guests?.last_name || booking.raw?.guest?.last_name || "",
+      email: booking.raw?.guests?.email || booking.raw?.guest?.email || "",
+      phone: booking.raw?.guests?.phone || booking.raw?.guest?.phone || "",
+      numberOfGuests: booking.guests || 1,
+      checkIn: booking.raw?.check_in || "",
+      checkOut: booking.raw?.check_out || "",
+      roomId: booking.raw?.room_id || booking.raw?.room?.id || "",
+      source: booking.raw?.source || booking.source || "website",
+      specialRequests:
+        booking.raw?.special_requests || booking.specialRequests || "",
+    });
+    setIsEditOpen(true);
+  }
+
+  function confirmDelete(id: string) {
+    setDeleteTargetId(id);
+    setDeleteDialogOpen(true);
+  }
 
   // Dashboard metrics for header stats (database-driven)
   const { data: metricsData } = useQuery({
@@ -131,8 +211,80 @@ const Bookings = () => {
   });
 
   // Mutations for create/edit/delete can be added here
-  // Mutations for create/edit/delete can be added here
-  // Keep UI driven by the live bookings from the API.
+  // Create booking mutation (handles creating guest if necessary)
+  const createBookingMutation = useMutation(
+    async (payload: any) => {
+      return apiPost("/bookings", payload);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["bookings"]);
+        setIsCreateOpen(false);
+        toast({
+          title: "Booking created",
+          description: "Reservation created successfully",
+          duration: 4000,
+        });
+      },
+      onError: (err) => {
+        const message = extractError(err);
+        setFormError(message);
+        toast({
+          title: "Error creating booking",
+          description: message,
+          duration: 6000,
+        });
+      },
+    }
+  );
+
+  const updateBookingMutation = useMutation(
+    async ({ id, payload }: any) => {
+      return apiPut(`/bookings/${id}`, payload);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["bookings"]);
+        setIsEditOpen(false);
+        setEditingBooking(null);
+        toast({
+          title: "Booking updated",
+          description: "Reservation updated successfully",
+          duration: 3000,
+        });
+      },
+      onError: (err) => {
+        const message = extractError(err);
+        toast({
+          title: "Error updating booking",
+          description: message,
+          duration: 6000,
+        });
+      },
+    }
+  );
+
+  const deleteBookingMutation = useMutation(
+    async (id: string) => apiDelete(`/bookings/${id}`),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["bookings"]);
+        toast({
+          title: "Booking removed",
+          description: "Reservation cancelled",
+          duration: 3000,
+        });
+      },
+      onError: (err) => {
+        const message = extractError(err);
+        toast({
+          title: "Error deleting booking",
+          description: message,
+          duration: 6000,
+        });
+      },
+    }
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -208,13 +360,19 @@ const Bookings = () => {
             </div>
 
             <div className="text-right">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-2xl rounded-2xl px-6 py-3">
-                    <Plus className="h-5 w-5 mr-2" />
-                    Create Reservation
-                  </Button>
-                </DialogTrigger>
+              <Button
+                onClick={() => {
+                  setIsCreateOpen(true);
+                  setFormError(null);
+                }}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-2xl rounded-2xl px-6 py-3"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Create Reservation
+              </Button>
+
+              {/* Controlled create dialog */}
+              <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                 <DialogContent className="max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-3xl">
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-3 text-2xl">
@@ -234,14 +392,41 @@ const Bookings = () => {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="space-y-3">
                         <Label
-                          htmlFor="guestName"
+                          htmlFor="firstName"
                           className="text-sm font-semibold"
                         >
-                          Guest Name
+                          First Name
                         </Label>
                         <Input
-                          id="guestName"
-                          placeholder="Enter guest full name"
+                          id="firstName"
+                          value={formData.firstName}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              firstName: e.target.value,
+                            })
+                          }
+                          placeholder="First name"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <Label
+                          htmlFor="lastName"
+                          className="text-sm font-semibold"
+                        >
+                          Last Name
+                        </Label>
+                        <Input
+                          id="lastName"
+                          value={formData.lastName}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              lastName: e.target.value,
+                            })
+                          }
+                          placeholder="Last name"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
                       </div>
@@ -254,6 +439,10 @@ const Bookings = () => {
                         </Label>
                         <Input
                           id="guestPhone"
+                          value={formData.phone}
+                          onChange={(e) =>
+                            setFormData({ ...formData, phone: e.target.value })
+                          }
                           placeholder="+251 xxx xxx xxx"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
@@ -271,6 +460,10 @@ const Bookings = () => {
                         <Input
                           id="guestEmail"
                           type="email"
+                          value={formData.email}
+                          onChange={(e) =>
+                            setFormData({ ...formData, email: e.target.value })
+                          }
                           placeholder="guest@example.com"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
@@ -286,7 +479,13 @@ const Bookings = () => {
                           id="numberOfGuests"
                           type="number"
                           min="1"
-                          defaultValue="1"
+                          value={formData.numberOfGuests}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              numberOfGuests: Number(e.target.value),
+                            })
+                          }
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
                       </div>
@@ -303,6 +502,13 @@ const Bookings = () => {
                         <Input
                           id="bookingCheckIn"
                           type="date"
+                          value={formData.checkIn}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              checkIn: e.target.value,
+                            })
+                          }
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
                       </div>
@@ -316,6 +522,13 @@ const Bookings = () => {
                         <Input
                           id="bookingCheckOut"
                           type="date"
+                          value={formData.checkOut}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              checkOut: e.target.value,
+                            })
+                          }
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                         />
                       </div>
@@ -327,28 +540,33 @@ const Bookings = () => {
                           htmlFor="bookingRoomType"
                           className="text-sm font-semibold"
                         >
-                          Room Type
+                          Room
                         </Label>
                         <Select>
                           <SelectTrigger
                             id="bookingRoomType"
                             className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                           >
-                            <SelectValue placeholder="Select room type" />
+                            <SelectValue placeholder="Select room" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="single">
-                              Single Room - 1,500 ETB/night
-                            </SelectItem>
-                            <SelectItem value="deluxe">
-                              Deluxe Room - 3,500 ETB/night
-                            </SelectItem>
-                            <SelectItem value="suite">
-                              Executive Suite - 6,500 ETB/night
-                            </SelectItem>
-                            <SelectItem value="presidential">
-                              Presidential Suite - 12,500 ETB/night
-                            </SelectItem>
+                            {(roomsData || []).map((r: any) => (
+                              <SelectItem
+                                key={r.id}
+                                value={r.id}
+                                onClick={() =>
+                                  setFormData({ ...formData, roomId: r.id })
+                                }
+                              >
+                                {`Room ${r.room_number || r.id} - ${
+                                  r.price_per_night
+                                    ? `${Number(
+                                        r.price_per_night
+                                      ).toLocaleString()} ETB`
+                                    : ""
+                                }`}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
@@ -367,11 +585,46 @@ const Bookings = () => {
                             <SelectValue placeholder="Select source" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="website">Website</SelectItem>
-                            <SelectItem value="phone">Phone</SelectItem>
-                            <SelectItem value="walk-in">Walk-in</SelectItem>
-                            <SelectItem value="agent">Travel Agent</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem
+                              value="website"
+                              onClick={() =>
+                                setFormData({ ...formData, source: "website" })
+                              }
+                            >
+                              Website
+                            </SelectItem>
+                            <SelectItem
+                              value="phone"
+                              onClick={() =>
+                                setFormData({ ...formData, source: "phone" })
+                              }
+                            >
+                              Phone
+                            </SelectItem>
+                            <SelectItem
+                              value="walk-in"
+                              onClick={() =>
+                                setFormData({ ...formData, source: "walk-in" })
+                              }
+                            >
+                              Walk-in
+                            </SelectItem>
+                            <SelectItem
+                              value="agent"
+                              onClick={() =>
+                                setFormData({ ...formData, source: "agent" })
+                              }
+                            >
+                              Travel Agent
+                            </SelectItem>
+                            <SelectItem
+                              value="other"
+                              onClick={() =>
+                                setFormData({ ...formData, source: "other" })
+                              }
+                            >
+                              Other
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -386,21 +639,86 @@ const Bookings = () => {
                       </Label>
                       <Input
                         id="specialRequests"
+                        value={formData.specialRequests}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            specialRequests: e.target.value,
+                          })
+                        }
                         placeholder="Any special requirements, celebrations, or additional notes"
                         className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
                       />
                     </div>
                   </div>
-
                   <div className="flex justify-end gap-3">
                     <Button
                       variant="outline"
+                      onClick={() => setIsCreateOpen(false)}
                       className="border-slate-300 dark:border-slate-600 rounded-xl"
                     >
                       Cancel
                     </Button>
-                    <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-xl">
-                      Create Reservation
+                    <Button
+                      disabled={createBookingMutation.isLoading}
+                      onClick={async () => {
+                        setFormError(null);
+                        // basic validation
+                        if (!formData.roomId)
+                          return setFormError("Please select a room");
+                        if (!formData.checkIn || !formData.checkOut)
+                          return setFormError(
+                            "Please select check-in and check-out dates"
+                          );
+                        setFormLoading(true);
+                        try {
+                          let guestId = formData.guestId;
+                          // If no guestId provided, create guest
+                          if (!guestId) {
+                            const guestPayload: any = {
+                              first_name: formData.firstName || undefined,
+                              last_name: formData.lastName || undefined,
+                              email: formData.email || undefined,
+                              phone: formData.phone || undefined,
+                            };
+                            const g = await apiPost("/guests", guestPayload);
+                            // g may be { success, data: { guest } }
+                            guestId =
+                              g?.data?.guest?.id ||
+                              g?.guest?.id ||
+                              g?.data?.id ||
+                              g?.id;
+                          }
+
+                          const payload = {
+                            guest_id: guestId,
+                            room_id: formData.roomId,
+                            check_in: formData.checkIn,
+                            check_out: formData.checkOut,
+                            number_of_guests: formData.numberOfGuests,
+                            source: formData.source,
+                            special_requests: formData.specialRequests,
+                            total_price_birr: 0,
+                          };
+
+                          await createBookingMutation.mutateAsync(payload);
+                        } catch (err) {
+                          const message = extractError(err);
+                          setFormError(message);
+                          toast({
+                            title: "Error",
+                            description: message,
+                            duration: 6000,
+                          });
+                        } finally {
+                          setFormLoading(false);
+                        }
+                      }}
+                      className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-xl"
+                    >
+                      {createBookingMutation.isLoading
+                        ? "Creating..."
+                        : "Create Reservation"}
                     </Button>
                   </div>
                 </DialogContent>
@@ -558,16 +876,14 @@ const Bookings = () => {
                       <Button
                         variant="outline"
                         className="border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all cursor-pointer"
-                        onClick={() => console.log("Edit booking:", booking.id)}
+                        onClick={() => openEditFor(booking)}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="outline"
                         className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all cursor-pointer"
-                        onClick={() =>
-                          console.log("Cancel booking:", booking.id)
-                        }
+                        onClick={() => confirmDelete(booking.id)}
                       >
                         Cancel
                       </Button>

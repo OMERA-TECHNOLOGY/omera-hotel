@@ -97,6 +97,19 @@ const FrontDesk = () => {
       apiGet<{ success: true; data: any[] }>("/frontdesk/departures"),
   });
 
+  // Fetch rooms for room selection in check-in dialog
+  const { data: roomsData, isLoading: roomsLoading } = useQuery({
+    queryKey: ["rooms"],
+    queryFn: async () => {
+      const res = await apiGet("/rooms");
+      return res.data?.rooms || res.rooms || res.data || res;
+    },
+  });
+
+  const rooms = Array.isArray(roomsData)
+    ? roomsData
+    : roomsData?.rooms || roomsData?.data || [];
+
   // Removed static currentGuests sample; now using API data.
 
   // Removed static upcomingArrivals; fetched from API.
@@ -291,18 +304,22 @@ const FrontDesk = () => {
                             <SelectValue placeholder="Select room" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="101">
-                              Room 101 • Single
-                            </SelectItem>
-                            <SelectItem value="102">
-                              Room 102 • Deluxe
-                            </SelectItem>
-                            <SelectItem value="201">
-                              Suite 201 • Executive
-                            </SelectItem>
-                            <SelectItem value="301">
-                              Suite 301 • Presidential
-                            </SelectItem>
+                            {rooms && rooms.length > 0 ? (
+                              rooms.map((r: any) => (
+                                <SelectItem
+                                  key={r.id || r.room_number}
+                                  value={r.room_number || r.id}
+                                >
+                                  {`Room ${r.room_number || r.id} • ${
+                                    r.room_type_name || r.type || ""
+                                  }`}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="none">
+                                No rooms available
+                              </SelectItem>
+                            )}
                           </SelectContent>
                         </Select>
                       </div>

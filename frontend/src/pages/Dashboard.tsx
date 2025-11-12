@@ -116,44 +116,7 @@ const Dashboard = () => {
   ];
 
   // Enhanced recent activities
-  const recentActivities = [
-    {
-      action: "VIP Check-in",
-      room: "Suite 204 • Premium",
-      time: "2 minutes ago",
-      guest: "John Smith",
-      icon: Crown,
-      color: "text-amber-500",
-      type: "checkin",
-    },
-    {
-      action: "Room Service Completed",
-      room: "Room 315 • Deluxe",
-      time: "15 minutes ago",
-      guest: "Housekeeping",
-      icon: Coffee,
-      color: "text-emerald-500",
-      type: "service",
-    },
-    {
-      action: "Payment Processed",
-      room: "Room 102 • Business",
-      time: "32 minutes ago",
-      guest: "Sarah Johnson",
-      icon: DollarSign,
-      color: "text-blue-500",
-      type: "payment",
-    },
-    {
-      action: "Early Check-out",
-      room: "Suite 401 • Premium",
-      time: "1 hour ago",
-      guest: "Michael Brown",
-      icon: Shield,
-      color: "text-purple-500",
-      type: "checkout",
-    },
-  ];
+  const recentActivities = metrics?.recent_activities || [];
 
   // Room status overview
   const counts = roomStatusData.reduce((acc, r) => {
@@ -188,38 +151,14 @@ const Dashboard = () => {
     },
   ];
 
-  // Guest satisfaction metrics
-  const satisfactionMetrics = [
-    { metric: "Overall Rating", value: "4.8/5", trend: "+0.2", icon: Star },
-    { metric: "Cleanliness", value: "4.9/5", trend: "+0.1", icon: Sparkles },
-    { metric: "Service", value: "4.7/5", trend: "+0.3", icon: Users },
-    { metric: "Amenities", value: "4.6/5", trend: "+0.1", icon: Wifi },
+  const satisfactionMetrics = metrics?.satisfaction_metrics || [
+    { metric: "Overall Rating", value: "-", trend: "", icon: Star },
+    { metric: "Cleanliness", value: "-", trend: "", icon: Sparkles },
+    { metric: "Service", value: "-", trend: "", icon: Users },
+    { metric: "Amenities", value: "-", trend: "", icon: Wifi },
   ];
 
-  // Upcoming VIP arrivals
-  const vipArrivals = [
-    {
-      name: "Emma Wilson",
-      room: "Presidential Suite",
-      time: "2:00 PM",
-      duration: "3 nights",
-      special: "Anniversary",
-    },
-    {
-      name: "James Rodriguez",
-      room: "Executive Suite",
-      time: "4:30 PM",
-      duration: "5 nights",
-      special: "Business",
-    },
-    {
-      name: "Sophia Chen",
-      room: "Premium Suite",
-      time: "6:15 PM",
-      duration: "2 nights",
-      special: "Birthday",
-    },
-  ];
+  const vipArrivals = metrics?.vip_arrivals || [];
 
   if (loading) {
     return <div className="p-6">Loading dashboard...</div>;

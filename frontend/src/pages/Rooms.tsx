@@ -1,4 +1,14 @@
 import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { apiGet, apiPost, apiPut, apiDelete, extractError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -64,43 +74,53 @@ const Rooms = () => {
   const [filterType, setFilterType] = useState<string>("all");
   const { t } = useLanguage();
 
-  const [rooms, setRooms] = useState<RoomUI[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    let isMounted = true;
-    async function loadRooms() {
-      try {
-        const res = await apiGet("/rooms");
-        const list: RoomApi[] = (res.data?.rooms ||
-          res.rooms ||
-          []) as RoomApi[];
-        const mapped: RoomUI[] = list.map((r) => ({
-          id: r.id,
-          number: r.room_number,
-          type: "Unknown", // could be expanded by joining room_types in API
-          floor: r.floor,
-          status: r.status,
-          price: Number(r.base_price_birr),
-          features: ["WiFi", "TV", "AC"],
-          rating: 4.5,
-          size: "-",
-          view: r.view_type || "-",
-        }));
-        if (isMounted) setRooms(mapped);
-      } catch (e) {
-        const err = e as Error;
-        setError(err.message || "Failed to load rooms");
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-    loadRooms();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const {
+    data: roomsData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["rooms"],
+    queryFn: async () => {
+      const res = await apiGet<any>("/rooms");
+      // backend may return { success, data: { rooms } } or { rooms }
+      return res.data?.rooms || res.rooms || res;
+    },
+    staleTime: 1000 * 60,
+  });
+
+  // Create room
+  const createRoom = useMutation({
+    mutationFn: async (body: any) => apiPost<any>("/rooms", body),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rooms"] }),
+  });
+
+  // Update room
+  const updateRoom = useMutation({
+    mutationFn: async ({ id, body }: { id: string; body: any }) =>
+      apiPut<any>(`/rooms/${id}`, body),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rooms"] }),
+  });
+
+  // Delete room
+  const deleteRoom = useMutation({
+    mutationFn: async (id: string) => apiDelete<any>(`/rooms/${id}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rooms"] }),
+  });
+
+  const rooms: RoomUI[] = (roomsData || []).map((r: any) => ({
+    id: r.id,
+    number: r.room_number || r.roomNumber || String(r.id).slice(0, 4),
+    type: r.room_type_name || r.type || "Unknown",
+    floor: r.floor || 0,
+    status: r.status || "vacant",
+    price: Number(r.base_price_birr || r.price || 0),
+    features: r.features || ["WiFi", "TV", "AC"],
+    rating: r.rating || 4.5,
+    size: r.size || "-",
+    view: r.view_type || r.view || "-",
+  }));
 
   const getStatusColor = (status: RoomStatus) => {
     switch (status) {
@@ -172,19 +192,27 @@ const Rooms = () => {
     maintenance: rooms.filter((r) => r.status === "maintenance").length,
   };
 
-  const handleDeleteRoom = (roomId: number) => {
-    // Add delete functionality here
-    console.log("Delete room:", roomId);
+  const handleDeleteRoom = async (roomId: string) => {
+    if (!confirm("Are you sure you want to delete this room?")) return;
+    try {
+      await deleteRoom.mutateAsync(roomId);
+    } catch (e) {
+      alert("Failed to delete room: " + extractError(e));
+    }
   };
 
-  const handleEditRoom = (roomId: number) => {
-    // Add edit functionality here
-    console.log("Edit room:", roomId);
+  const handleEditRoom = async (roomId: string, updates: any) => {
+    try {
+      await updateRoom.mutateAsync({ id: roomId, body: updates });
+      alert("Room updated");
+    } catch (e) {
+      alert("Failed to update room: " + extractError(e));
+    }
   };
 
-  const handleViewDetails = (roomId: number) => {
-    // Add view details functionality here
-    console.log("View details room:", roomId);
+  const handleViewDetails = (room: RoomUI) => {
+    // show a quick detail dialog
+    alert(JSON.stringify(room, null, 2));
   };
 
   if (loading) return <div className="p-6">Loading rooms...</div>;
