@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { apiGet, apiPost, apiPut, apiDelete, extractError } from "@/lib/api";
+import { extractError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,7 +35,251 @@ import {
   Eye,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
-import { apiGet } from "@/lib/api";
+import RoomList from "@/components/RoomList";
+import RoomForm from "@/components/RoomForm";
+import {
+  useRooms,
+  useCreateRoom,
+  useUpdateRoom,
+  useDeleteRoom,
+} from "@/lib/hooks/useRooms";
+import { useToast } from "@/hooks/use-toast";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/*
+Integration plan & implementation instructions (Rooms page)
+
+Overview
+---
+The following block is a complete, actionable plan and per-file/component implementation instructions
+for integrating the Rooms page with the Supabase-backed API (tables: `rooms`, `room_types`).
+Paste code snippets into the suggested files, then wire the hooks/components into `Rooms.tsx`.
+
+1) API endpoints (server-side)
+---
+Paths (REST-style). Adjust if your backend routes differ, but these match the common patterns used by
+the current `backend/src` structure:
+
+GET /rooms?limit=20&offset=0&status=vacant&room_type_id=<id>
+  - Purpose: list rooms with optional filters & pagination
+  - Query params: limit, offset, status, room_type_id, search
+  - Response 200: { data: { rooms: Room[], total: number } }
+
+GET /rooms/:id
+  - Purpose: get a single room with optional expansion of room_type
+  - Response 200: { data: { room: Room & { room_type?: RoomType } } }
+
+POST /rooms
+  - Purpose: create a room
+  - Body: CreateRoomInput (JSON)
+  - Response 201: { data: { room: Room } }
+
+PUT /rooms/:id
+  - Purpose: update a room
+  - Body: UpdateRoomInput (JSON)
+  - Response 200: { data: { room: Room } }
+
+DELETE /rooms/:id
+  - Purpose: delete a room
+  - Response 204: { }
+
+Standard error: 4xx/5xx with JSON { error: { message: string, code?: string, details?: any } }
+
+DB relevant fields (from database.sql)
+---
+- rooms: id (uuid), room_number, room_type_id (fk), floor, capacity, base_price_birr, status (enum), description, images (json[]), view_type, created_at, updated_at
+- room_types: id, name, slug, description
+
+2) TypeScript types (create file: `frontend/src/types/rooms.ts`)
+---
+Example (copy into file):
+
+export type RoomStatus = "vacant" | "occupied" | "cleaning" | "maintenance";
+
+export interface RoomType {
+  id: string;
+  name: string;
+  slug?: string;
+  description?: string | null;
+}
+
+export interface Room {
+  id: string;
+  room_number: string;
+  room_type_id?: string | null;
+  room_type?: RoomType | null; // when expanded
+  floor?: number | null;
+  capacity?: number | null;
+  base_price_birr: number;
+  status: RoomStatus;
+  description?: string | null;
+  images?: string[];
+  view_type?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateRoomInput {
+  room_number: string;
+  room_type_id?: string;
+  floor?: number;
+  capacity?: number;
+  base_price_birr: number;
+  status?: RoomStatus;
+  description?: string;
+  images?: string[];
+  view_type?: string;
+}
+
+export type UpdateRoomInput = Partial<CreateRoomInput>;
+
+3) React Query hooks (create file: `frontend/src/lib/hooks/useRooms.ts`)
+---
+Use React Query for caching, background refresh and invalidation. Example implementations:
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiGet, apiPost, apiPut, apiDelete } from "@/lib/api";
+import type { Room, CreateRoomInput, UpdateRoomInput } from "@/types/rooms";
+
+export const ROOM_KEYS = { all: ["rooms"], lists: (filters: any) => ["rooms", "list", JSON.stringify(filters)], detail: (id: string) => ["rooms", "detail", id] };
+
+export function useRooms(filters = { limit: 50, offset: 0 }) {
+  return useQuery(ROOM_KEYS.lists(filters), async () => {
+    const res = await apiGet(`/rooms?limit=${filters.limit}&offset=${filters.offset}`);
+    // backend returns { data: { rooms, total } }
+    return res.data?.rooms || res.rooms || [];
+  }, { keepPreviousData: true });
+}
+
+export function useRoom(id?: string) {
+  return useQuery(ROOM_KEYS.detail(String(id)), async () => {
+    if (!id) return null;
+    const res = await apiGet(`/rooms/${id}`);
+    return res.data?.room || res.room || res;
+  }, { enabled: !!id });
+}
+
+export function useCreateRoom() {
+  const qc = useQueryClient();
+  return useMutation((body: CreateRoomInput) => apiPost(`/rooms`, body), {
+    onSuccess: () => qc.invalidateQueries({ queryKey: ROOM_KEYS.all }),
+  });
+}
+
+export function useUpdateRoom() {
+  const qc = useQueryClient();
+  return useMutation(({ id, body }: { id: string; body: UpdateRoomInput }) => apiPut(`/rooms/${id}`, body), {
+    onSuccess: (_data, { id }) => {
+      qc.invalidateQueries({ queryKey: ROOM_KEYS.all });
+      qc.invalidateQueries({ queryKey: ROOM_KEYS.detail(id) });
+    },
+  });
+}
+
+export function useDeleteRoom() {
+  const qc = useQueryClient();
+  return useMutation((id: string) => apiDelete(`/rooms/${id}`), {
+    onMutate: async (id: string) => {
+      await qc.cancelQueries({ queryKey: ROOM_KEYS.all });
+      const previous = qc.getQueryData(ROOM_KEYS.all as any);
+      qc.setQueryData(ROOM_KEYS.all as any, (old: any) => (old || []).filter((r: any) => r.id !== id));
+      return { previous };
+    },
+    onError: (_err, _id, context: any) => qc.setQueryData(ROOM_KEYS.all as any, context.previous),
+    onSettled: () => qc.invalidateQueries({ queryKey: ROOM_KEYS.all }),
+  });
+}
+
+4) UI components - per-file plan and snippets
+---
+- `frontend/src/components/RoomList.tsx` — present list/grid of rooms (call `useRooms`), filters, pagination, and action callbacks for view/edit/delete.
+- `frontend/src/components/RoomDetails.tsx` — dialog or page showing full room metadata (expand room_type, images, description).
+- `frontend/src/components/RoomForm.tsx` — create/edit form wired to `react-hook-form` + `zod` (or `yup`), used for both create and update.
+
+RoomForm (example snippet)
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const roomSchema = z.object({
+  room_number: z.string().min(1, "Room number is required"),
+  room_type_id: z.string().optional(),
+  floor: z.number().min(0).optional(),
+  capacity: z.number().min(1).optional(),
+  base_price_birr: z.number().min(0, "Price required"),
+  status: z.enum(["vacant","occupied","cleaning","maintenance"]).optional(),
+  description: z.string().optional(),
+});
+
+// useForm({ resolver: zodResolver(roomSchema), defaultValues: {} })
+
+Use `isSubmitting` to disable submit button and show spinner.
+
+5) Wiring to pages/Rooms.tsx (this file)
+---
+Replace manual api calls and local mutations with the hooks above. Example usages:
+
+const { data: rooms, isLoading } = useRooms({ limit: 50, offset: 0 });
+const createRoom = useCreateRoom();
+const updateRoom = useUpdateRoom();
+const deleteRoom = useDeleteRoom();
+
+Create flow (in RoomForm onSubmit):
+await createRoom.mutateAsync(values);
+toast({ title: 'Room created', description: `Room ${values.room_number} created.`, variant: 'success' });
+
+Update flow:
+await updateRoom.mutateAsync({ id, body: values });
+toast({ title: 'Room updated', description: `Room ${values.room_number} updated.`, variant: 'success' });
+
+Delete flow (confirmation dialog):
+open confirmation Dialog -> onConfirm -> await deleteRoom.mutateAsync(id)
+on success -> toast success, on error -> toast error
+
+6) Form validation, loading states, error handling
+---
+- Use `react-hook-form` + `zod` for schema and client-side validation. Show server errors by catching mutate errors and mapping using `extractError` from `@/lib/api`.
+- Loading states: use `isLoading` (initial), `isFetching` (background), `isSubmitting` (form). Disable inputs when submitting.
+- Errors: show field errors under inputs (react-hook-form), show top-level server errors as an alert or toast.
+
+7) Toasts and confirmation dialogs
+---
+- Use your existing toast system (file likely in `src/components/ui/toast` or `use-toast` hook). Example pattern:
+  toast({ title: 'Success', description: 'Room saved', variant: 'success' });
+- Confirmation dialog: reuse `Dialog` component imported above or a simple `confirm()` fallback. Prefer modal with explicit Confirm/Cancel.
+
+8) Field mapping & UI transformations
+---
+- base_price_birr -> display formatted price: `Intl.NumberFormat('en-ET').format(price)` and append `ETB`.
+- status enum -> badge/color mapping (already in file). Keep mapping consistent with backend enumerated values.
+- room_type -> show `room.room_type?.name ?? typeNameFromId(room.room_type_id)`; fetch `room_types` list for filter dropdowns.
+- images: if stored as array of URLs, show a carousel or first image as thumbnail.
+
+9) Per-component TODO checklist (practical order)
+---
+1. Create `src/types/rooms.ts` with the types above.
+2. Create `src/lib/hooks/useRooms.ts` with the react-query hooks above.
+3. Create `src/components/RoomForm.tsx` (react-hook-form + zod) using `useCreateRoom`/`useUpdateRoom` via props.
+4. Create `src/components/RoomList.tsx` to render grid and receive `rooms`, `onEdit`, `onDelete`, `onView` callbacks.
+5. Update this `Rooms.tsx` page to import and use the hooks and components above. Remove inline api calls and `confirm` fallbacks.
+6. Add toast success/error usage across create/update/delete flows.
+
+10) Testing & verification
+---
+- Run frontend: `pnpm dev` or `npm run dev` (check `frontend/package.json`).
+- Test flows in browser: load Rooms page, create room, edit room, delete room. Verify list updates and toasts appear.
+- If backend is protected by auth, ensure your `api` helpers attach auth token (check `@/lib/api.ts`).
+
+Notes & assumptions
+---
+- I assumed REST endpoints as above. If your backend uses a slightly different route or response shape, adapt the `apiGet/apiPost/apiPut/apiDelete` calls or the react-query hooks. Use `res.data` when backend wraps payload.
+- The plan favors small reusable components and keeps `Rooms.tsx` as the orchestration layer (calls hooks and renders composed components).
+
+If you want, I can now:
+- create the TS types file and hooks under `src/lib/hooks` and create `RoomForm.tsx` and `RoomList.tsx` components and wire them into this page.
+- or, if you prefer, I can only modify this file to use the new hooks (if you already want to implement hooks yourself).
+
+End of integration plan.
+*/
 import {
   Select,
   SelectContent,
@@ -44,6 +287,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 type RoomStatus = "vacant" | "occupied" | "cleaning" | "maintenance";
 
@@ -74,45 +318,29 @@ const Rooms = () => {
   const [filterType, setFilterType] = useState<string>("all");
   const { t } = useLanguage();
 
-  const queryClient = useQueryClient();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingRoom, setEditingRoom] = useState<any | null>(null);
+  const [viewingRoom, setViewingRoom] = useState<any | null>(null);
+  const [toDelete, setToDelete] = useState<any | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const { toast } = useToast();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 9;
 
-  const {
-    data: roomsData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["rooms"],
-    queryFn: async () => {
-      const res = await apiGet<any>("/rooms");
-      // backend may return { success, data: { rooms } } or { rooms }
-      return res.data?.rooms || res.rooms || res;
-    },
-    staleTime: 1000 * 60,
-  });
-
-  // Create room
-  const createRoom = useMutation({
-    mutationFn: async (body: any) => apiPost<any>("/rooms", body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rooms"] }),
-  });
-
-  // Update room
-  const updateRoom = useMutation({
-    mutationFn: async ({ id, body }: { id: string; body: any }) =>
-      apiPut<any>(`/rooms/${id}`, body),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rooms"] }),
-  });
-
-  // Delete room
-  const deleteRoom = useMutation({
-    mutationFn: async (id: string) => apiDelete<any>(`/rooms/${id}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["rooms"] }),
-  });
+  const roomsQuery = useRooms({ limit: pageSize, offset: (page - 1) * pageSize, status: "all", search });
+  const createRoom = useCreateRoom();
+  const updateRoom = useUpdateRoom();
+  const deleteRoom = useDeleteRoom();
+  const roomsData = roomsQuery.data?.rooms || [];
+  const totalRooms = roomsQuery.data?.total || 0;
+  const isLoading = roomsQuery.isLoading;
+  const error = (roomsQuery as any).error;
 
   const rooms: RoomUI[] = (roomsData || []).map((r: any) => ({
     id: r.id,
     number: r.room_number || r.roomNumber || String(r.id).slice(0, 4),
-    type: r.room_type_name || r.type || "Unknown",
+    type: r.room_types?.name || r.room_type_name || r.type || "Unknown",
     floor: r.floor || 0,
     status: r.status || "vacant",
     price: Number(r.base_price_birr || r.price || 0),
@@ -193,30 +421,41 @@ const Rooms = () => {
   };
 
   const handleDeleteRoom = async (roomId: string) => {
-    if (!confirm("Are you sure you want to delete this room?")) return;
+    // open confirmation dialog
+    const r = rooms.find((r) => r.id === roomId);
+    setToDelete(r || { id: roomId });
+    setConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!toDelete) return setConfirmOpen(false);
     try {
-      await deleteRoom.mutateAsync(roomId);
+      await deleteRoom.mutateAsync(toDelete.id);
+      toast({ title: "Room deleted", description: `Room ${toDelete.room_number || toDelete.number || ''} removed`, variant: "success" });
     } catch (e) {
-      alert("Failed to delete room: " + extractError(e));
+      toast({ title: "Delete failed", description: extractError(e), variant: "destructive" });
+    } finally {
+      setConfirmOpen(false);
+      setToDelete(null);
     }
   };
 
-  const handleEditRoom = async (roomId: string, updates: any) => {
-    try {
-      await updateRoom.mutateAsync({ id: roomId, body: updates });
-      alert("Room updated");
-    } catch (e) {
-      alert("Failed to update room: " + extractError(e));
-    }
+  const handleEditRoom = (roomIdOrRoom: any) => {
+    // Accept either id or room object
+    const roomObj =
+      typeof roomIdOrRoom === "string"
+        ? rooms.find((r) => r.id === roomIdOrRoom)
+        : roomIdOrRoom;
+    setEditingRoom(roomObj || null);
+    setIsCreateOpen(true);
   };
 
   const handleViewDetails = (room: RoomUI) => {
-    // show a quick detail dialog
-    alert(JSON.stringify(room, null, 2));
+    setViewingRoom(room);
   };
 
-  if (loading) return <div className="p-6">Loading rooms...</div>;
-  if (error) return <div className="p-6 text-red-600">{error}</div>;
+  if (isLoading) return <div className="p-6">Loading rooms...</div>;
+  if (error) return <div className="p-6 text-red-600">{String(error)}</div>;
   return (
     <div className="space-y-8 p-6">
       {/* Enhanced Header Section */}
@@ -241,7 +480,13 @@ const Rooms = () => {
                   <p className="text-xs text-emerald-200">60 total rooms</p>
                 </div>
               </div>
-              <Button className="bg-gradient-to-r from-emerald-500 to-amber-500 hover:from-emerald-600 hover:to-amber-600 border-0 shadow-2xl">
+              <Button
+                onClick={() => {
+                  setIsCreateOpen(true);
+                  setEditingRoom(null);
+                }}
+                className="bg-gradient-to-r from-emerald-500 to-amber-500 hover:from-emerald-600 hover:to-amber-600 border-0 shadow-2xl"
+              >
                 <Plus className="h-5 w-5 mr-2" />
                 {t.addRoom}
               </Button>
@@ -407,6 +652,14 @@ const Rooms = () => {
             <SelectItem value="Presidential">Presidential Suite</SelectItem>
           </SelectContent>
         </Select>
+        <div className="ml-4 w-[320px]">
+          <Input
+            placeholder="Search room number..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            className="rounded-xl bg-white/80 dark:bg-slate-700/80"
+          />
+        </div>
         <Button
           variant="outline"
           className="ml-auto border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-xl"
@@ -417,137 +670,86 @@ const Rooms = () => {
       </div>
 
       {/* Enhanced Room Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredRooms.map((room) => {
-          const FeatureIcon = getFeatureIcon;
-          return (
-            <Card
-              key={room.id}
-              className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105 group"
-            >
-              {/* Status Indicator */}
-              <div
-                className={`absolute top-4 right-4 px-3 py-1 rounded-full text-white text-xs font-semibold bg-gradient-to-r ${getStatusGradient(
-                  room.status
-                )} shadow-lg`}
-              >
-                {getStatusLabel(room.status)}
-              </div>
+      <RoomList
+        rooms={filteredRooms as any}
+        onView={(r) => handleViewDetails(r as any)}
+        onEdit={(r) => handleEditRoom(r as any)}
+        onDelete={(r) => handleDeleteRoom((r as any).id)}
+      />
 
-              {/* Room Type Badge */}
-              <div className="absolute top-4 left-4">
-                <Badge
-                  variant="outline"
-                  className={`backdrop-blur-sm border-slate-300 dark:border-slate-600 ${
-                    room.type === "Presidential"
-                      ? "bg-amber-500/10 text-amber-700 dark:text-amber-300"
-                      : room.type === "Executive Suite"
-                      ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                      : room.type === "Deluxe"
-                      ? "bg-orange-500/10 text-orange-700 dark:text-orange-300"
-                      : "bg-slate-500/10 text-slate-700 dark:text-slate-300"
-                  }`}
-                >
-                  {room.type.includes("Suite") && (
-                    <Crown className="h-3 w-3 mr-1" />
-                  )}
-                  {room.type}
-                </Badge>
-              </div>
-
-              <CardHeader className="pb-4 pt-16">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                      Room {room.number}
-                    </CardTitle>
-                    <CardDescription className="flex items-center gap-2 mt-1">
-                      <MapPin className="h-4 w-4" />
-                      Floor {room.floor} • {room.view} • {room.size}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                {/* Price & Rating */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-3xl font-bold text-slate-800 dark:text-white">
-                      {room.price.toLocaleString()} ETB
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      per night
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 bg-amber-500/10 px-3 py-1 rounded-full">
-                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                    <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">
-                      {room.rating}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Features */}
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
-                    Premium Features:
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {room.features.map((feature, index) => {
-                      const IconComponent = getFeatureIcon(feature);
-                      return (
-                        <div
-                          key={index}
-                          className="flex items-center gap-1 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs rounded-full border border-emerald-500/20"
-                        >
-                          <IconComponent className="h-3 w-3" />
-                          {feature}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="grid grid-cols-3 gap-2 pt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="rounded-xl border-slate-300 dark:border-slate-600 transition-all hover:scale-105"
-                    onClick={() => handleViewDetails(room.id)}
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="rounded-xl border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400 transition-all hover:scale-105"
-                    onClick={() => handleEditRoom(room.id)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 transition-all hover:scale-105"
-                    onClick={() => handleDeleteRoom(room.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-
-              {/* Hover Effect */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-r ${getStatusGradient(
-                  room.status
-                )} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl`}
-              ></div>
-            </Card>
-          );
-        })}
+      {/* Pagination */}
+      <div className="flex items-center justify-between mt-6">
+        <div className="text-sm text-slate-500">Showing {rooms.length} of {totalRooms} rooms</div>
+        <div className="flex items-center gap-2">
+          <Button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
+          <div className="px-3">Page {page}</div>
+          <Button disabled={(page * pageSize) >= totalRooms} onClick={() => setPage((p) => p + 1)}>Next</Button>
+        </div>
       </div>
+
+      {/* Create / Edit modal */}
+      <Dialog open={isCreateOpen} onOpenChange={(v) => setIsCreateOpen(v)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingRoom ? "Edit Room" : "Create Room"}
+            </DialogTitle>
+            <DialogDescription>
+              {editingRoom ? "Edit room details" : "Fill in new room"}
+            </DialogDescription>
+          </DialogHeader>
+          <RoomForm
+            initialValues={editingRoom}
+            onCancel={() => setIsCreateOpen(false)}
+            onSubmit={async (values) => {
+              try {
+                if (editingRoom) {
+                  await updateRoom.mutateAsync({ id: editingRoom.id, body: values });
+                  toast({ title: "Room updated", description: `Room ${values.room_number} updated`, variant: "success" });
+                } else {
+                  await createRoom.mutateAsync(values as any);
+                  toast({ title: "Room created", description: `Room ${values.room_number} created`, variant: "success" });
+                }
+                setIsCreateOpen(false);
+              } catch (e) {
+                toast({ title: "Save failed", description: extractError(e), variant: "destructive" });
+              }
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm delete</DialogTitle>
+            <DialogDescription>Are you sure you want to delete this room? This action cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setConfirmOpen(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => confirmDelete()}>Delete</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* View dialog */}
+      <Dialog open={!!viewingRoom} onOpenChange={() => setViewingRoom(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Room details</DialogTitle>
+            <DialogDescription>Full room information</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <pre className="whitespace-pre-wrap">
+              {JSON.stringify(viewingRoom, null, 2)}
+            </pre>
+            <div className="flex justify-end">
+              <Button onClick={() => setViewingRoom(null)}>Close</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

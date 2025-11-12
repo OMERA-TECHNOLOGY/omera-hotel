@@ -6,16 +6,14 @@ class RoomController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            error: "Validation failed",
-            details: errors.array(),
-          });
+        return res.status(400).json({
+          success: false,
+          error: "Validation failed",
+          details: errors.array(),
+        });
       }
       const room = await RoomsService.create(req.body);
-      res.status(201).json({ success: true, data: { room } });
+      return res.status(201).json({ success: true, data: { room } });
     } catch (error) {
       res.status(500).json({ success: false, error: error.message });
     }
@@ -23,8 +21,18 @@ class RoomController {
 
   static async getAllRooms(req, res) {
     try {
-      const rooms = await RoomsService.list();
-      res.json({ success: true, data: { rooms } });
+      const { limit, offset, status, room_type_id, search } = req.query;
+      const parsed = await RoomsService.list({
+        limit: Number(limit) || 100,
+        offset: Number(offset) || 0,
+        status,
+        room_type_id,
+        search,
+      });
+      res.json({
+        success: true,
+        data: { rooms: parsed.rows, total: parsed.total },
+      });
     } catch (error) {
       res.status(500).json({ success: false, error: error.message });
     }
@@ -55,10 +63,10 @@ class RoomController {
 
   static async deleteRoom(req, res) {
     try {
-      await RoomsService.remove(req.params.id);
+      const deleted = await RoomsService.remove(req.params.id);
       res.json({
         success: true,
-        data: { message: "Room deleted successfully" },
+        data: { message: "Room deleted successfully", deleted },
       });
     } catch (error) {
       res.status(500).json({ success: false, error: error.message });
@@ -70,12 +78,10 @@ class RoomController {
       const { check_in, check_out } = req.query;
 
       if (!check_in || !check_out) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            error: "Check-in and check-out dates are required",
-          });
+        return res.status(400).json({
+          success: false,
+          error: "Check-in and check-out dates are required",
+        });
       }
       // Simplified: filter by vacant for now; advanced availability would require complex joins
       const rooms = await RoomsService.list({ status: "vacant" });
