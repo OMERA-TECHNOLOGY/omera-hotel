@@ -1,4 +1,4 @@
-import supabase from "../config/supabase";
+import supabase from "../config/supabase.js";
 import bcrypt from "bcryptjs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -20,9 +20,12 @@ async function initializeDatabase() {
 
     // Insert initial data without conflicts
     await insertInitialData();
-  } catch (error: any) {
+  } catch (error) {
     console.error("\n❌ Data insertion failed:");
-    console.error("Error:", error.message);
+    console.error(
+      "Error:",
+      error && error.message ? error.message : String(error)
+    );
   }
 }
 
@@ -63,15 +66,15 @@ async function createAdminUser() {
     // Create admin user if it doesn't exist
     const hashedPassword = await bcrypt.hash("admin123", 12);
 
+    // Insert minimal required columns according to database.sql
     const { data, error } = await supabase
       .from("users")
       .insert([
         {
-          full_name: "System Administrator",
           email: "admin@omerahotel.com",
           password_hash: hashedPassword,
           role: "admin",
-          status: "active",
+          is_active: true,
         },
       ])
       .select();
@@ -81,62 +84,62 @@ async function createAdminUser() {
     } else {
       console.log("   ✅ Admin user created successfully");
     }
-  } catch (error: any) {
-    console.log("   ⚠️  Failed to create admin user:", error.message);
+  } catch (error) {
+    console.log(
+      "   ⚠️  Failed to create admin user:",
+      error && error.message ? error.message : String(error)
+    );
   }
 }
 
 async function createSampleRooms() {
   console.log("📋 Checking/Creating sample rooms...");
 
+  // Ensure some room types exist
+  await createSampleRoomTypes();
+
   const sampleRooms = [
     {
       room_number: "101",
-      type: "single",
+      room_type: "Single",
       floor: 1,
-      price_per_night: 99.99,
-      description: "Comfortable single room with basic amenities",
-      status: "available",
+      base_price_birr: 99.99,
+      status: "vacant",
     },
     {
       room_number: "102",
-      type: "single",
+      room_type: "Single",
       floor: 1,
-      price_per_night: 99.99,
-      description: "Comfortable single room with basic amenities",
-      status: "available",
+      base_price_birr: 99.99,
+      status: "vacant",
     },
     {
       room_number: "201",
-      type: "double",
+      room_type: "Deluxe",
       floor: 2,
-      price_per_night: 149.99,
-      description: "Spacious double room with premium amenities",
-      status: "available",
+      base_price_birr: 149.99,
+      status: "vacant",
     },
     {
       room_number: "202",
-      type: "double",
+      room_type: "Deluxe",
       floor: 2,
-      price_per_night: 149.99,
-      description: "Spacious double room with premium amenities",
-      status: "available",
+      base_price_birr: 149.99,
+      status: "vacant",
     },
     {
       room_number: "301",
-      type: "suite",
+      room_type: "Suite",
       floor: 3,
-      price_per_night: 249.99,
-      description: "Luxurious suite with separate living area",
-      status: "available",
+      base_price_birr: 249.99,
+      status: "vacant",
     },
     {
       room_number: "302",
-      type: "suite",
+      room_type: "Presidential",
       floor: 3,
-      price_per_night: 279.99,
-      description: "Executive suite with ocean view",
-      status: "available",
+      base_price_birr: 279.99,
+      status: "vacant",
     },
   ];
 
@@ -157,8 +160,25 @@ async function createSampleRooms() {
         continue;
       }
 
+      // Lookup room_type id by name
+      const { data: types } = await supabase
+        .from("room_types")
+        .select("id, name")
+        .eq("name", room.room_type)
+        .limit(1);
+
+      const room_type_id = types && types[0] ? types[0].id : null;
+
+      const payload = {
+        room_number: room.room_number,
+        room_type_id,
+        floor: room.floor,
+        base_price_birr: room.base_price_birr,
+        status: room.status,
+      };
+
       // Insert room if it doesn't exist
-      const { error } = await supabase.from("rooms").insert(room);
+      const { error } = await supabase.from("rooms").insert(payload);
 
       if (error) {
         console.log(
@@ -169,10 +189,10 @@ async function createSampleRooms() {
         console.log(`   ✅ Room ${room.room_number} created`);
         createdCount++;
       }
-    } catch (error: any) {
+    } catch (error) {
       console.log(
         `   ⚠️  Failed to check/create room ${room.room_number}:`,
-        error.message
+        error && error.message ? error.message : String(error)
       );
     }
   }
@@ -182,241 +202,276 @@ async function createSampleRooms() {
   );
 }
 
+async function createSampleRoomTypes() {
+  console.log("📋 Checking/Creating room types...");
+
+  const types = [
+    {
+      name: "Single",
+      description_english: "Single room",
+      base_price_birr: 99.99,
+      max_occupancy: 1,
+    },
+    {
+      name: "Deluxe",
+      description_english: "Deluxe room",
+      base_price_birr: 149.99,
+      max_occupancy: 2,
+    },
+    {
+      name: "Suite",
+      description_english: "Suite",
+      base_price_birr: 249.99,
+      max_occupancy: 4,
+    },
+    {
+      name: "Presidential",
+      description_english: "Presidential suite",
+      base_price_birr: 399.99,
+      max_occupancy: 6,
+    },
+  ];
+
+  let created = 0;
+  for (const t of types) {
+    try {
+      const { data: existing } = await supabase
+        .from("room_types")
+        .select("id")
+        .eq("name", t.name)
+        .limit(1);
+
+      if (existing && existing.length > 0) continue;
+
+      const { error } = await supabase.from("room_types").insert(t);
+      if (!error) created++;
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  console.log(`   📊 Room types created: ${created}`);
+}
+
 async function createSampleEmployees() {
   console.log("📋 Checking/Creating sample employees...");
-
   const sampleEmployees = [
     {
-      user_id: 1,
-      department: "management",
-      position: "General Manager",
-      salary: 75000,
+      first_name: "Amanuel",
+      father_name: "Bekele",
+      last_name: "Tadesse",
+      email: "amanuel.manager@omera.test",
+      phone: "+251911000001",
+      role: "manager",
+      department: "administration",
+      shift: "day",
+      salary_birr: 75000,
       hire_date: "2023-01-15",
-      contact_number: "+1234567890",
-      address: "123 Main St, City",
       status: "active",
     },
     {
-      user_id: 1,
-      department: "front desk",
-      position: "Receptionist",
-      salary: 35000,
+      first_name: "Sara",
+      father_name: "Kassa",
+      last_name: "Abebe",
+      email: "sara.reception@omera.test",
+      phone: "+251911000002",
+      role: "receptionist",
+      department: "front_desk",
+      shift: "morning",
+      salary_birr: 35000,
       hire_date: "2023-03-20",
-      contact_number: "+1234567891",
-      address: "456 Oak Ave, City",
       status: "active",
     },
     {
-      user_id: 1,
+      first_name: "Dagmawi",
+      father_name: "Solomon",
+      last_name: "Yosef",
+      email: "dag.house@omera.test",
+      phone: "+251911000003",
+      role: "housekeeper",
       department: "housekeeping",
-      position: "Housekeeper",
-      salary: 28000,
+      shift: "day",
+      salary_birr: 28000,
       hire_date: "2023-02-10",
-      contact_number: "+1234567892",
-      address: "789 Pine Rd, City",
       status: "active",
     },
     {
-      user_id: 1,
+      first_name: "Marta",
+      father_name: "Gebre",
+      last_name: "Haile",
+      email: "marta.chef@omera.test",
+      phone: "+251911000004",
+      role: "chef",
       department: "restaurant",
-      position: "Head Chef",
-      salary: 52000,
+      shift: "day",
+      salary_birr: 52000,
       hire_date: "2023-04-05",
-      contact_number: "+1234567893",
-      address: "321 Elm St, City",
       status: "active",
     },
   ];
 
   let createdCount = 0;
-  let existingCount = 0;
-
-  for (const employee of sampleEmployees) {
+  for (const emp of sampleEmployees) {
     try {
-      // Check if employee already exists (by department and position)
-      const { data: existingEmployee, error: checkError } = await supabase
+      const { data: existing } = await supabase
         .from("employees")
         .select("id")
-        .eq("department", employee.department)
-        .eq("position", employee.position)
-        .single();
+        .eq("email", emp.email)
+        .limit(1);
 
-      if (existingEmployee) {
-        existingCount++;
-        continue;
-      }
+      if (existing && existing.length > 0) continue;
 
-      // Insert employee if it doesn't exist
-      const { error } = await supabase.from("employees").insert(employee);
-
+      const { error } = await supabase.from("employees").insert(emp);
       if (error) {
         console.log(
-          `   ⚠️  Error creating ${employee.position}:`,
+          `   ⚠️  Error creating employee ${emp.email}:`,
           error.message
         );
       } else {
-        console.log(`   ✅ ${employee.position} created`);
+        console.log(`   ✅ Employee ${emp.email} created`);
         createdCount++;
       }
-    } catch (error: any) {
+    } catch (e) {
       console.log(
-        `   ⚠️  Failed to check/create ${employee.position}:`,
-        error.message
+        `   ⚠️  Failed to create employee ${emp.email}:`,
+        e && e.message ? e.message : String(e)
       );
     }
   }
 
-  console.log(
-    `   📊 Employees: ${createdCount} created, ${existingCount} already exist`
-  );
+  console.log(`   📊 Employees: ${createdCount} created`);
 }
 
 async function createDefaultSettings() {
   console.log("📋 Checking/Creating default settings...");
-
-  const defaultSettings = [
-    { key: "hotel_name", value: "Omera Hotel", user_id: 1 },
-    { key: "check_in_time", value: "14:00", user_id: 1 },
-    { key: "check_out_time", value: "11:00", user_id: 1 },
-    { key: "tax_rate", value: "0.10", user_id: 1 },
-    { key: "currency", value: "USD", user_id: 1 },
-    { key: "contact_email", value: "info@omerahotel.com", user_id: 1 },
-    { key: "contact_phone", value: "+1-555-0123", user_id: 1 },
-    {
-      key: "address",
-      value: "123 Luxury Avenue, City, State 12345",
-      user_id: 1,
-    },
-  ];
-
-  let createdCount = 0;
-  let existingCount = 0;
-
-  for (const setting of defaultSettings) {
-    try {
-      // Check if setting already exists
-      const { data: existingSetting, error: checkError } = await supabase
-        .from("settings")
-        .select("key")
-        .eq("key", setting.key)
-        .single();
-
-      if (existingSetting) {
-        existingCount++;
-        continue;
-      }
-
-      // Insert setting if it doesn't exist
-      const { error } = await supabase.from("settings").insert(setting);
-
-      if (error) {
-        console.log(
-          `   ⚠️  Error creating setting ${setting.key}:`,
-          error.message
-        );
-      } else {
-        console.log(`   ✅ Setting ${setting.key} created`);
-        createdCount++;
-      }
-    } catch (error: any) {
-      console.log(
-        `   ⚠️  Failed to check/create setting ${setting.key}:`,
-        error.message
-      );
+  try {
+    // Check if a hotel_settings row exists
+    const { data: existing } = await supabase
+      .from("hotel_settings")
+      .select("id")
+      .limit(1);
+    if (existing && existing.length > 0) {
+      console.log("   ✅ Hotel settings already exist");
+      return;
     }
-  }
 
-  console.log(
-    `   📊 Settings: ${createdCount} created, ${existingCount} already exist`
-  );
+    const payload = {
+      hotel_name_english: "Omera Hotel",
+      contact_email: "info@omerahotel.com",
+      phone_numbers: JSON.stringify(["+251 11 123 4567"]),
+      address_english: "Bole Road, Addis Ababa, Ethiopia",
+      total_rooms: 60,
+      star_rating: 4,
+      vat_rate: 15.0,
+      primary_currency: "ETB",
+      usd_to_etb_rate: 56.5,
+      invoice_prefix: "INV-",
+      default_language: "en",
+      supported_languages: JSON.stringify(["en", "am", "om"]),
+      calendar_system: "both",
+      timezone: "Africa/Addis_Ababa",
+      business_hours: JSON.stringify({ check_in: "14:00", check_out: "12:00" }),
+    };
+
+    const { error } = await supabase.from("hotel_settings").insert(payload);
+    if (error)
+      console.log("   ⚠️  Error creating hotel settings:", error.message);
+    else console.log("   ✅ Hotel settings created");
+  } catch (e) {
+    console.log(
+      "   ⚠️  Failed to create hotel settings:",
+      e && e.message ? e.message : String(e)
+    );
+  }
 }
 
 async function createSampleBookings() {
   console.log("📋 Checking/Creating sample bookings...");
-
-  // Get the first room ID to use for bookings
-  const { data: rooms, error: roomsError } = await supabase
-    .from("rooms")
-    .select("id, room_number")
-    .limit(1);
-
-  if (roomsError || !rooms || rooms.length === 0) {
-    console.log("   ⚠️  No rooms available for bookings");
-    return;
-  }
-
-  const roomId = rooms[0].id;
-
-  const sampleBookings = [
-    {
-      customer_name: "John Smith",
-      customer_email: "john.smith@email.com",
-      customer_phone: "+1234567890",
-      room_id: roomId,
-      check_in_date: "2024-02-15",
-      check_out_date: "2024-02-18",
-      num_guests: 2,
-      total_amount: 299.97,
-      booking_status: "confirmed",
-      payment_status: "paid",
-      created_by: 1,
-    },
-    {
-      customer_name: "Sarah Johnson",
-      customer_email: "sarah.j@email.com",
-      customer_phone: "+1234567891",
-      room_id: roomId,
-      check_in_date: "2024-02-20",
-      check_out_date: "2024-02-22",
-      num_guests: 2,
-      total_amount: 299.98,
-      booking_status: "confirmed",
-      payment_status: "paid",
-      created_by: 1,
-    },
-  ];
-
-  let createdCount = 0;
-  let existingCount = 0;
-
-  for (const booking of sampleBookings) {
-    try {
-      // Check if booking already exists (by email and check-in date)
-      const { data: existingBooking, error: checkError } = await supabase
-        .from("bookings")
-        .select("id")
-        .eq("customer_email", booking.customer_email)
-        .eq("check_in_date", booking.check_in_date)
-        .single();
-
-      if (existingBooking) {
-        existingCount++;
-        continue;
-      }
-
-      // Insert booking if it doesn't exist
-      const { error } = await supabase.from("bookings").insert(booking);
-
-      if (error) {
-        console.log(
-          `   ⚠️  Error creating booking for ${booking.customer_name}:`,
-          error.message
-        );
-      } else {
-        console.log(`   ✅ Booking for ${booking.customer_name} created`);
-        createdCount++;
-      }
-    } catch (error: any) {
-      console.log(
-        `   ⚠️  Failed to check/create booking for ${booking.customer_name}:`,
-        error.message
-      );
+  // Ensure we have at least one guest and one room
+  try {
+    const { data: rooms, error: roomsError } = await supabase
+      .from("rooms")
+      .select("id")
+      .limit(1);
+    if (roomsError || !rooms || rooms.length === 0) {
+      console.log("   ⚠️  No rooms available for bookings");
+      return;
     }
-  }
 
-  console.log(
-    `   📊 Bookings: ${createdCount} created, ${existingCount} already exist`
-  );
+    // Create sample guests
+    const guestPayload = {
+      first_name: "John",
+      father_name: "M",
+      last_name: "Smith",
+      email: "john.smith@example.com",
+      phone: "+251911000010",
+      nationality: "Ethiopian",
+    };
+
+    const { data: existingGuest } = await supabase
+      .from("guests")
+      .select("id")
+      .eq("email", guestPayload.email)
+      .limit(1);
+
+    let guestId;
+    if (existingGuest && existingGuest.length > 0) {
+      guestId = existingGuest[0].id;
+    } else {
+      const { data: createdGuest, error: guestErr } = await supabase
+        .from("guests")
+        .insert(guestPayload)
+        .select();
+      if (guestErr) {
+        console.log("   ⚠️ Error creating sample guest:", guestErr.message);
+        return;
+      }
+      guestId = createdGuest && createdGuest[0] ? createdGuest[0].id : null;
+    }
+
+    const roomId = rooms[0].id;
+
+    const sampleBookings = [
+      {
+        guest_id: guestId,
+        room_id: roomId,
+        check_in: "2024-02-15",
+        check_out: "2024-02-18",
+        number_of_guests: 2,
+        status: "confirmed",
+        source: "walk_in",
+        total_price_birr: 300.0,
+        advance_payment_birr: 0,
+      },
+    ];
+
+    for (const booking of sampleBookings) {
+      try {
+        const { data: existingBooking } = await supabase
+          .from("bookings")
+          .select("id")
+          .eq("guest_id", booking.guest_id)
+          .eq("check_in", booking.check_in)
+          .limit(1);
+
+        if (existingBooking && existingBooking.length > 0) continue;
+
+        const { error } = await supabase.from("bookings").insert(booking);
+        if (error) console.log("   ⚠️ Error creating booking:", error.message);
+        else console.log("   ✅ Booking created");
+      } catch (e) {
+        console.log(
+          "   ⚠️ Failed to create booking:",
+          e && e.message ? e.message : String(e)
+        );
+      }
+    }
+  } catch (e) {
+    console.log(
+      "   ⚠️ Failed booking setup:",
+      e && e.message ? e.message : String(e)
+    );
+  }
 }
 
 async function createSampleOtherData() {
@@ -433,27 +488,29 @@ async function createSampleOtherData() {
       const sampleTasks = [
         {
           room_id: rooms[0].id,
-          assigned_to: 1,
-          task_description: "Full room cleaning and sanitization",
+          type: "cleaning",
+          title: "Full room cleaning",
+          description: "Full room cleaning and sanitization",
+          scheduled_date: "2024-01-28",
+          assigned_to: null,
           status: "completed",
-          date_assigned: "2024-01-28",
         },
         {
           room_id: rooms[1].id,
-          assigned_to: 1,
-          task_description: "Routine maintenance check",
+          type: "maintenance",
+          title: "Routine maintenance",
+          description: "Routine maintenance check",
+          scheduled_date: "2024-01-29",
+          assigned_to: null,
           status: "pending",
-          date_assigned: "2024-01-29",
         },
       ];
 
       for (const task of sampleTasks) {
-        const { error } = await supabase
-          .from("housekeeping_tasks")
-          .insert(task);
+        const { error } = await supabase.from("room_maintenance").insert(task);
         if (!error) {
           console.log(
-            `   ✅ Housekeeping task created for room ${task.room_id}`
+            `   ✅ Room maintenance task created for room ${task.room_id}`
           );
         }
       }
@@ -484,9 +541,17 @@ async function createSampleOtherData() {
     ];
 
     for (const record of financeRecords) {
-      const { error } = await supabase.from("finance_records").insert(record);
+      const payload = {
+        category: record.category === "income" ? "utilities" : "other",
+        description: record.description,
+        amount_birr: record.amount,
+        expense_date: record.record_date,
+        supplier_name: record.source,
+        recorded_by: null,
+      };
+      const { error } = await supabase.from("expenses").insert(payload);
       if (!error) {
-        console.log(`   ✅ Finance record created: ${record.source}`);
+        console.log(`   ✅ Expense record created: ${record.source}`);
       }
     }
   } catch (error) {
