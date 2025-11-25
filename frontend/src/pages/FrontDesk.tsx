@@ -113,7 +113,10 @@ const FrontDesk = () => {
 
   // Show a full-page placeholder while main front-desk data is loading
   const pageLoading =
-    statsLoading || currentGuestsLoading || arrivalsLoading || departuresLoading;
+    statsLoading ||
+    currentGuestsLoading ||
+    arrivalsLoading ||
+    departuresLoading;
 
   if (pageLoading) {
     return (
