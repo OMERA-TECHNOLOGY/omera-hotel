@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { useQuery } from "@tanstack/react-query";
 import type { Room, CreateRoomInput, RoomType } from "@/types/rooms";
 import { useToast } from "@/hooks/use-toast";
@@ -105,11 +106,7 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
                 <SelectItem value="">None</SelectItem>
                 {roomTypesQ.isLoading ? (
                   <div className="p-3">
-                    <div className="space-y-2">
-                      <div className="h-3 w-40 bg-muted animate-pulse rounded-md" />
-                      <div className="h-3 w-32 bg-muted animate-pulse rounded-md" />
-                      <div className="h-3 w-48 bg-muted animate-pulse rounded-md" />
-                    </div>
+                    <BubblingPlaceholder variant="small" count={3} />
                   </div>
                 ) : (
                   roomTypesQ.data?.map((rt: RoomType) => (

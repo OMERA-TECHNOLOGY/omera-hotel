@@ -41,9 +41,9 @@ export default function BubblingPlaceholder({
       <div className="grid gap-6 md:grid-cols-4 p-6">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="space-y-3">
-            <Skeleton className="h-6 w-32 rounded-xl" />
-            <Skeleton className="h-10 w-full rounded-2xl" />
-            <Skeleton className="h-3 w-3/5 rounded-xl" />
+            <Skeleton className="h-6 w-32 rounded-xl bg-white/20 dark:bg-white/10" />
+            <Skeleton className="h-10 w-full rounded-2xl bg-white/20 dark:bg-white/10" />
+            <Skeleton className="h-3 w-3/5 rounded-xl bg-white/20 dark:bg-white/10" />
           </div>
         ))}
       </div>

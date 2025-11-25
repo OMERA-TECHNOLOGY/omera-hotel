@@ -63,7 +63,7 @@ const FrontDesk = () => {
     nights?: number;
   };
 
-  const { data: statsData } = useQuery({
+  const { data: statsData, isLoading: statsLoading } = useQuery({
     queryKey: ["frontdesk", "stats"],
     queryFn: () => apiGet<{ success: true; data: any }>("/frontdesk/stats"),
   });
@@ -111,6 +111,18 @@ const FrontDesk = () => {
     ? roomsData
     : roomsData?.rooms || roomsData?.data || [];
 
+  // Show a full-page placeholder while main front-desk data is loading
+  const pageLoading =
+    statsLoading || currentGuestsLoading || arrivalsLoading || departuresLoading;
+
+  if (pageLoading) {
+    return (
+      <div className="p-6">
+        <BubblingPlaceholder variant="page" />
+      </div>
+    );
+  }
+
   // Removed static currentGuests sample; now using API data.
 
   // Removed static upcomingArrivals; fetched from API.
@@ -132,252 +144,266 @@ const FrontDesk = () => {
               </p>
             </div>
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                <div className="p-2 bg-amber-400/20 rounded-xl">
-                  <Crown className="h-6 w-6 text-amber-400" />
+              {statsLoading ? (
+                <div className="w-[480px]">
+                  <BubblingPlaceholder variant="stats" />
                 </div>
-                <div>
-                  <p className="text-sm font-semibold">VIP Lounge Active</p>
-                  <p className="text-xs text-blue-200">3 premium guests</p>
-                </div>
-              </div>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-2xl">
-                    <UserPlus className="h-5 w-5 mr-2" />
-                    {t.newCheckIn}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-2xl">
-                      <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
-                        <UserPlus className="h-6 w-6 text-white" />
-                      </div>
-                      {t.guestCheckIn}
-                    </DialogTitle>
-                    <DialogDescription className="text-lg">
-                      Complete the premium check-in experience
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <div className="grid gap-6 py-4">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="firstName"
-                          className="text-sm font-semibold"
-                        >
-                          First Name
-                        </Label>
-                        <Input
-                          id="firstName"
-                          placeholder="Enter first name"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="lastName"
-                          className="text-sm font-semibold"
-                        >
-                          Last Name
-                        </Label>
-                        <Input
-                          id="lastName"
-                          placeholder="Enter last name"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                        />
-                      </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                    <div className="p-2 bg-amber-400/20 rounded-xl">
+                      <Crown className="h-6 w-6 text-amber-400" />
                     </div>
-
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="email"
-                          className="text-sm font-semibold flex items-center gap-2"
-                        >
-                          <Mail className="h-4 w-4" />
-                          Email
-                        </Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="guest@example.com"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="phone"
-                          className="text-sm font-semibold flex items-center gap-2"
-                        >
-                          <Phone className="h-4 w-4" />
-                          Phone
-                        </Label>
-                        <Input
-                          id="phone"
-                          placeholder="+251 xxx xxx xxx"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                        />
-                      </div>
+                    <div>
+                      <p className="text-sm font-semibold">VIP Lounge Active</p>
+                      <p className="text-xs text-blue-200">3 premium guests</p>
                     </div>
+                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-2xl">
+                        <UserPlus className="h-5 w-5 mr-2" />
+                        {t.newCheckIn}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl">
+                      <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-2xl">
+                          <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl">
+                            <UserPlus className="h-6 w-6 text-white" />
+                          </div>
+                          {t.guestCheckIn}
+                        </DialogTitle>
+                        <DialogDescription className="text-lg">
+                          Complete the premium check-in experience
+                        </DialogDescription>
+                      </DialogHeader>
 
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="idType"
-                          className="text-sm font-semibold flex items-center gap-2"
-                        >
-                          <Shield className="h-4 w-4" />
-                          ID Type
-                        </Label>
-                        <Select>
-                          <SelectTrigger
-                            id="idType"
-                            className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                          >
-                            <SelectValue placeholder="Select ID type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="passport">Passport</SelectItem>
-                            <SelectItem value="id">ID Card</SelectItem>
-                            <SelectItem value="driver">
-                              Driver's License
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="idNumber"
-                          className="text-sm font-semibold"
-                        >
-                          ID Number
-                        </Label>
-                        <Input
-                          id="idNumber"
-                          placeholder="Enter ID number"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                        />
-                      </div>
-                    </div>
+                      <div className="grid gap-6 py-4">
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="firstName"
+                              className="text-sm font-semibold"
+                            >
+                              First Name
+                            </Label>
+                            <Input
+                              id="firstName"
+                              placeholder="Enter first name"
+                              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                            />
+                          </div>
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="lastName"
+                              className="text-sm font-semibold"
+                            >
+                              Last Name
+                            </Label>
+                            <Input
+                              id="lastName"
+                              placeholder="Enter last name"
+                              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                            />
+                          </div>
+                        </div>
 
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="roomType"
-                          className="text-sm font-semibold"
-                        >
-                          Room Type
-                        </Label>
-                        <Select>
-                          <SelectTrigger
-                            id="roomType"
-                            className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                          >
-                            <SelectValue placeholder="Select room type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="single">Single Room</SelectItem>
-                            <SelectItem value="deluxe">Deluxe Room</SelectItem>
-                            <SelectItem value="suite">
-                              Executive Suite
-                            </SelectItem>
-                            <SelectItem value="presidential">
-                              Presidential Suite
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="roomNumber"
-                          className="text-sm font-semibold"
-                        >
-                          Room Number
-                        </Label>
-                        <Select>
-                          <SelectTrigger
-                            id="roomNumber"
-                            className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                          >
-                            <SelectValue placeholder="Select room" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {roomsLoading ? (
-                              <div className="p-3">
-                                <div className="space-y-2">
-                                  <div className="h-3 w-40 bg-muted animate-pulse rounded-md" />
-                                  <div className="h-3 w-32 bg-muted animate-pulse rounded-md" />
-                                </div>
-                              </div>
-                            ) : rooms && rooms.length > 0 ? (
-                              rooms.map((r: any) => (
-                                <SelectItem
-                                  key={r.id || r.room_number}
-                                  value={r.room_number || r.id}
-                                >
-                                  {`Room ${r.room_number || r.id} • ${
-                                    r.room_type_name || r.type || ""
-                                  }`}
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="email"
+                              className="text-sm font-semibold flex items-center gap-2"
+                            >
+                              <Mail className="h-4 w-4" />
+                              Email
+                            </Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              placeholder="guest@example.com"
+                              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                            />
+                          </div>
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="phone"
+                              className="text-sm font-semibold flex items-center gap-2"
+                            >
+                              <Phone className="h-4 w-4" />
+                              Phone
+                            </Label>
+                            <Input
+                              id="phone"
+                              placeholder="+251 xxx xxx xxx"
+                              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="idType"
+                              className="text-sm font-semibold flex items-center gap-2"
+                            >
+                              <Shield className="h-4 w-4" />
+                              ID Type
+                            </Label>
+                            <Select>
+                              <SelectTrigger
+                                id="idType"
+                                className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                              >
+                                <SelectValue placeholder="Select ID type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="passport">
+                                  Passport
                                 </SelectItem>
-                              ))
-                            ) : (
-                              <SelectItem value="none">
-                                No rooms available
-                              </SelectItem>
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+                                <SelectItem value="id">ID Card</SelectItem>
+                                <SelectItem value="driver">
+                                  Driver's License
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="idNumber"
+                              className="text-sm font-semibold"
+                            >
+                              ID Number
+                            </Label>
+                            <Input
+                              id="idNumber"
+                              placeholder="Enter ID number"
+                              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                            />
+                          </div>
+                        </div>
 
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="checkIn"
-                          className="text-sm font-semibold flex items-center gap-2"
-                        >
-                          <Calendar className="h-4 w-4" />
-                          Check-in Date
-                        </Label>
-                        <Input
-                          id="checkIn"
-                          type="date"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="checkOut"
-                          className="text-sm font-semibold flex items-center gap-2"
-                        >
-                          <Calendar className="h-4 w-4" />
-                          Check-out Date
-                        </Label>
-                        <Input
-                          id="checkOut"
-                          type="date"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="roomType"
+                              className="text-sm font-semibold"
+                            >
+                              Room Type
+                            </Label>
+                            <Select>
+                              <SelectTrigger
+                                id="roomType"
+                                className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                              >
+                                <SelectValue placeholder="Select room type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="single">
+                                  Single Room
+                                </SelectItem>
+                                <SelectItem value="deluxe">
+                                  Deluxe Room
+                                </SelectItem>
+                                <SelectItem value="suite">
+                                  Executive Suite
+                                </SelectItem>
+                                <SelectItem value="presidential">
+                                  Presidential Suite
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="roomNumber"
+                              className="text-sm font-semibold"
+                            >
+                              Room Number
+                            </Label>
+                            <Select>
+                              <SelectTrigger
+                                id="roomNumber"
+                                className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                              >
+                                <SelectValue placeholder="Select room" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {roomsLoading ? (
+                                  <div className="p-3">
+                                    <BubblingPlaceholder
+                                      variant="small"
+                                      count={2}
+                                    />
+                                  </div>
+                                ) : rooms && rooms.length > 0 ? (
+                                  rooms.map((r: any) => (
+                                    <SelectItem
+                                      key={r.id || r.room_number}
+                                      value={r.room_number || r.id}
+                                    >
+                                      {`Room ${r.room_number || r.id} • ${
+                                        r.room_type_name || r.type || ""
+                                      }`}
+                                    </SelectItem>
+                                  ))
+                                ) : (
+                                  <SelectItem value="none">
+                                    No rooms available
+                                  </SelectItem>
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
 
-                  <div className="flex justify-end gap-3">
-                    <Button
-                      variant="outline"
-                      className="border-slate-300 dark:border-slate-600"
-                    >
-                      {t.cancel}
-                    </Button>
-                    <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
-                      Complete Premium Check-in
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="checkIn"
+                              className="text-sm font-semibold flex items-center gap-2"
+                            >
+                              <Calendar className="h-4 w-4" />
+                              Check-in Date
+                            </Label>
+                            <Input
+                              id="checkIn"
+                              type="date"
+                              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                            />
+                          </div>
+                          <div className="space-y-3">
+                            <Label
+                              htmlFor="checkOut"
+                              className="text-sm font-semibold flex items-center gap-2"
+                            >
+                              <Calendar className="h-4 w-4" />
+                              Check-out Date
+                            </Label>
+                            <Input
+                              id="checkOut"
+                              type="date"
+                              className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-3">
+                        <Button
+                          variant="outline"
+                          className="border-slate-300 dark:border-slate-600"
+                        >
+                          {t.cancel}
+                        </Button>
+                        <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                          Complete Premium Check-in
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              )}
             </div>
           </div>
         </div>
