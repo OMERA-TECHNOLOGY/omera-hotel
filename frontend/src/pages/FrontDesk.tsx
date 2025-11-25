@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { apiGet, extractError } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -304,7 +305,14 @@ const FrontDesk = () => {
                             <SelectValue placeholder="Select room" />
                           </SelectTrigger>
                           <SelectContent>
-                            {rooms && rooms.length > 0 ? (
+                            {roomsLoading ? (
+                              <div className="p-3">
+                                <div className="space-y-2">
+                                  <div className="h-3 w-40 bg-muted animate-pulse rounded-md" />
+                                  <div className="h-3 w-32 bg-muted animate-pulse rounded-md" />
+                                </div>
+                              </div>
+                            ) : rooms && rooms.length > 0 ? (
                               rooms.map((r: any) => (
                                 <SelectItem
                                   key={r.id || r.room_number}
@@ -437,16 +445,13 @@ const FrontDesk = () => {
         {/* Current Guests Tab */}
         <TabsContent value="current" className="space-y-4">
           <div className="grid gap-6">
-            {currentGuestsLoading && (
-              <div className="text-sm text-muted-foreground">
-                Loading current guests...
-              </div>
-            )}
-            {currentGuestsError && (
+            {currentGuestsLoading ? (
+              <BubblingPlaceholder variant="cardList" count={3} />
+            ) : currentGuestsError ? (
               <div className="text-sm text-red-600">
                 {extractError(currentGuestsError)}
               </div>
-            )}
+            ) : null}
             {(currentGuestsData?.data ?? []).map((guest) => (
               <Card
                 key={guest.id}
@@ -575,16 +580,13 @@ const FrontDesk = () => {
         {/* Check-out Today Tab */}
         <TabsContent value="checkout" className="space-y-4">
           <div className="grid gap-6">
-            {departuresLoading && (
-              <div className="text-sm text-muted-foreground">
-                Loading departures...
-              </div>
-            )}
-            {departuresError && (
+            {departuresLoading ? (
+              <BubblingPlaceholder variant="list" count={2} />
+            ) : departuresError ? (
               <div className="text-sm text-red-600">
                 {extractError(departuresError)}
               </div>
-            )}
+            ) : null}
             {(departuresData?.data ?? []).map((guest) => (
               <Card
                 key={guest.id}
@@ -633,16 +635,13 @@ const FrontDesk = () => {
         {/* Expected Arrivals Tab */}
         <TabsContent value="arrivals" className="space-y-4">
           <div className="grid gap-6">
-            {arrivalsLoading && (
-              <div className="text-sm text-muted-foreground">
-                Loading arrivals...
-              </div>
-            )}
-            {arrivalsError && (
+            {arrivalsLoading ? (
+              <BubblingPlaceholder variant="list" count={2} />
+            ) : arrivalsError ? (
               <div className="text-sm text-red-600">
                 {extractError(arrivalsError)}
               </div>
-            )}
+            ) : null}
             {(arrivalsData?.data ?? []).map((guest) => (
               <Card
                 key={guest.id}

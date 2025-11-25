@@ -19,6 +19,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { useLanguage } from "@/contexts/language-context";
 import { apiGet } from "@/lib/api";
 
@@ -161,7 +162,11 @@ const Dashboard = () => {
   const vipArrivals = metrics?.vip_arrivals || [];
 
   if (loading) {
-    return <div className="p-6">Loading dashboard...</div>;
+    return (
+      <div className="p-6">
+        <BubblingPlaceholder variant="page" />
+      </div>
+    );
   }
   if (error) {
     return <div className="p-6 text-red-600">{error}</div>;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -341,6 +342,12 @@ const Bookings = () => {
         return "from-slate-500 to-slate-600";
     }
   };
+  if (isLoading)
+    return (
+      <div className="p-6">
+        <BubblingPlaceholder variant="page" />
+      </div>
+    );
 
   return (
     <div className="space-y-8 p-6">

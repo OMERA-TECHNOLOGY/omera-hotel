@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -570,108 +571,116 @@ const Employees = () => {
 
         <TabsContent value="employees" className="space-y-4">
           <div className="grid gap-6">
-            {employees.map((employee) => (
-              <Card
-                key={employee.id}
-                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
-              >
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="p-3 bg-gradient-to-r from-purple-500 to-orange-500 rounded-2xl">
-                          <div className="text-white font-bold text-lg">
-                            {employee.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")}
+            {employeesLoading ? (
+              <BubblingPlaceholder variant="cardList" count={3} />
+            ) : (
+              employees.map((employee) => (
+                <Card
+                  key={employee.id}
+                  className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                >
+                  <CardHeader className="pb-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-4 mb-3">
+                          <div className="p-3 bg-gradient-to-r from-purple-500 to-orange-500 rounded-2xl">
+                            <div className="text-white font-bold text-lg">
+                              {employee.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <CardTitle className="text-xl font-bold text-slate-800 dark:text-white">
+                                {employee.name}
+                              </CardTitle>
+                              <Badge
+                                className={getRoleBadgeColor(employee.role)}
+                              >
+                                {employee.role}
+                              </Badge>
+                              <Badge
+                                className={getPerformanceColor(
+                                  employee.performance
+                                )}
+                              >
+                                {employee.performance}
+                              </Badge>
+                            </div>
+                            <CardDescription className="text-slate-600 dark:text-slate-400">
+                              {employee.department} • Joined {employee.joinDate}
+                            </CardDescription>
                           </div>
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <CardTitle className="text-xl font-bold text-slate-800 dark:text-white">
-                              {employee.name}
-                            </CardTitle>
-                            <Badge className={getRoleBadgeColor(employee.role)}>
-                              {employee.role}
-                            </Badge>
-                            <Badge
-                              className={getPerformanceColor(
-                                employee.performance
-                              )}
-                            >
-                              {employee.performance}
-                            </Badge>
-                          </div>
-                          <CardDescription className="text-slate-600 dark:text-slate-400">
-                            {employee.department} • Joined {employee.joinDate}
-                          </CardDescription>
-                        </div>
-                      </div>
 
-                      {/* Employee Details Grid */}
-                      <div className="grid grid-cols-3 gap-6 text-sm mb-4">
-                        <div>
-                          <p className="text-slate-500 dark:text-slate-400">
-                            Professional Email
-                          </p>
-                          <p className="font-semibold text-slate-800 dark:text-white">
-                            {employee.email}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-slate-500 dark:text-slate-400">
-                            Contact Number
-                          </p>
-                          <p className="font-semibold text-slate-800 dark:text-white">
-                            {employee.phone}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-slate-500 dark:text-slate-400">
-                            Work Schedule
-                          </p>
-                          <p className="font-semibold text-slate-800 dark:text-white">
-                            {employee.shift}
-                          </p>
+                        {/* Employee Details Grid */}
+                        <div className="grid grid-cols-3 gap-6 text-sm mb-4">
+                          <div>
+                            <p className="text-slate-500 dark:text-slate-400">
+                              Professional Email
+                            </p>
+                            <p className="font-semibold text-slate-800 dark:text-white">
+                              {employee.email}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-slate-500 dark:text-slate-400">
+                              Contact Number
+                            </p>
+                            <p className="font-semibold text-slate-800 dark:text-white">
+                              {employee.phone}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-slate-500 dark:text-slate-400">
+                              Work Schedule
+                            </p>
+                            <p className="font-semibold text-slate-800 dark:text-white">
+                              {employee.shift}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-xl border-slate-300 dark:border-slate-600"
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      View Profile
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-xl border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit Details
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400"
-                      onClick={() => deleteEmployee.mutate(String(employee.id))}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </CardContent>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-xl border-slate-300 dark:border-slate-600"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Profile
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-xl border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400"
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit Details
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400"
+                        onClick={() =>
+                          deleteEmployee.mutate(String(employee.id))
+                        }
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </CardContent>
 
-                {/* Hover Effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-orange-500 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-3xl"></div>
-              </Card>
-            ))}
+                  {/* Hover Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-orange-500 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-3xl"></div>
+                </Card>
+              ))
+            )}
           </div>
         </TabsContent>
 
@@ -763,9 +772,7 @@ const Employees = () => {
             </CardHeader>
             <CardContent>
               {activityLoading ? (
-                <div className="text-center py-8 text-lg text-slate-500">
-                  Loading activity logs...
-                </div>
+                <BubblingPlaceholder variant="list" count={4} />
               ) : activityError ? (
                 <div className="text-center py-8 text-lg text-red-500">
                   Failed to load activity logs.

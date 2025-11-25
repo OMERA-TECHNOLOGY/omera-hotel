@@ -37,6 +37,7 @@ import {
 import { useLanguage } from "@/contexts/language-context";
 import RoomList from "@/components/RoomList";
 import RoomForm from "@/components/RoomForm";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import {
   useRooms,
   useCreateRoom,
@@ -469,8 +470,18 @@ const Rooms = () => {
     setViewingRoom(room);
   };
 
-  if (isLoading) return <div className="p-6">Loading rooms...</div>;
-  if (error) return <div className="p-6 text-red-600">{String(error)}</div>;
+  if (isLoading)
+    return (
+      <div className="p-6">
+        <BubblingPlaceholder variant="page" />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="p-6">
+        <div className="text-red-600">Error loading rooms: {String(error)}</div>
+      </div>
+    );
   return (
     <div className="space-y-8 p-6">
       {/* Enhanced Header Section */}

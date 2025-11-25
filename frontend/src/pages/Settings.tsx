@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { apiGet, apiPut } from "@/lib/api";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -51,15 +52,18 @@ const Settings = () => {
   }
   const [settings, setSettings] = useState<SettingsDto | null>(null);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     let active = true;
     (async () => {
       try {
         const token = undefined; // plug auth later
-        const res = await apiGet("/settings", token);
+        const res = await apiGet("/settings");
         if (active) setSettings(res.data.settings);
       } catch (e) {
         console.error("Failed to load settings", e);
+      } finally {
+        if (active) setLoading(false);
       }
     })();
     return () => {
@@ -75,7 +79,7 @@ const Settings = () => {
     setSaving(true);
     try {
       const token = undefined;
-      const res = await apiPut("/settings", settings, token);
+      const res = await apiPut("/settings", settings);
       setSettings(res.data.settings);
     } catch (e) {
       console.error("Failed to save settings", e);
@@ -83,6 +87,18 @@ const Settings = () => {
       setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <BubblingPlaceholder variant="page" />
+      </div>
+    );
+  }
+
+  if (!settings) {
+    return <div className="p-6 text-red-600">Failed to load settings</div>;
+  }
 
   return (
     <div className="space-y-8 p-6">

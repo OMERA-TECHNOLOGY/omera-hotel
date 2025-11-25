@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -75,6 +76,8 @@ const Restaurant = () => {
 
   const [menuItems, setMenuItems] = useState<MenuItemDto[]>([]);
   const [orders, setOrders] = useState<UiOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<any | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -82,28 +85,31 @@ const Restaurant = () => {
       try {
         const token = undefined; // TODO: plug in auth token from context
         const [menuRes, ordersRes] = await Promise.all([
-          import("@/lib/api").then((m) => m.apiGet("/restaurant/menu", token)),
-          import("@/lib/api").then((m) =>
-            m.apiGet("/restaurant/orders", token)
-          ),
+          import("@/lib/api").then((m: any) => m.apiGet("/restaurant/menu")),
+          import("@/lib/api").then((m: any) => m.apiGet("/restaurant/orders")),
         ]);
         if (!isMounted) return;
-        setMenuItems(menuRes.data.menu || []);
+        setMenuItems((menuRes as any).data?.menu || []);
         // Map order shape for UI
-        const mapped = (ordersRes.data.orders || []).map((o: OrderDto) => ({
-          id: o.id,
-          orderNumber: o.order_number,
-          room: o.room_number || "",
-          guest: o.guest_name || "",
-          items: [],
-          total: o.total_amount_birr,
-          status: o.status,
-          time: new Date(o.created_at).toLocaleTimeString(),
-          priority: "normal",
-        }));
+        const mapped = ((ordersRes as any).data?.orders || []).map(
+          (o: OrderDto) => ({
+            id: o.id,
+            orderNumber: o.order_number,
+            room: o.room_number || "",
+            guest: o.guest_name || "",
+            items: [],
+            total: o.total_amount_birr,
+            status: o.status,
+            time: new Date(o.created_at).toLocaleTimeString(),
+            priority: "normal",
+          })
+        );
         setOrders(mapped);
       } catch (e) {
         console.error("Failed to load restaurant data", e);
+        setError(e);
+      } finally {
+        setLoading(false);
       }
     };
     load();
@@ -167,6 +173,19 @@ const Restaurant = () => {
         return null;
     }
   };
+
+  if (loading)
+    return (
+      <div className="p-6">
+        <BubblingPlaceholder variant="page" />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="p-6 text-red-600">
+        Error loading restaurant data: {String(error)}
+      </div>
+    );
 
   return (
     <div className="space-y-8 p-6">

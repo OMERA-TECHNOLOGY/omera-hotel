@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiGet, extractError } from "@/lib/api";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -323,10 +324,10 @@ const Finance = () => {
 
         <TabsContent value="invoices" className="space-y-4">
           {invoicesLoading ? (
-            <div className="p-8 text-center text-lg text-slate-500">
-              Loading invoices...
-            </div>
-          ) : invoicesError ? (
+              <div className="p-6">
+                <BubblingPlaceholder variant="cardList" count={3} />
+              </div>
+            ) : invoicesError ? (
             <div className="p-8 text-center text-lg text-red-500">
               {extractError(invoicesErrorObj)}
             </div>
@@ -556,10 +557,10 @@ const Finance = () => {
 
         <TabsContent value="expenses" className="space-y-4">
           {expensesLoading ? (
-            <div className="p-8 text-center text-lg text-slate-500">
-              Loading expenses...
-            </div>
-          ) : expensesError ? (
+              <div className="p-6">
+                <BubblingPlaceholder variant="list" count={4} />
+              </div>
+            ) : expensesError ? (
             <div className="p-8 text-center text-lg text-red-500">
               {extractError(expensesErrorObj)}
             </div>

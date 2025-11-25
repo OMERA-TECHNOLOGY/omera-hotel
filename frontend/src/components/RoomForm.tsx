@@ -103,11 +103,26 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">None</SelectItem>
-                {roomTypesQ.data?.map((rt: RoomType) => (
-                  <SelectItem key={rt.id} value={rt.id}>
-                    {rt.name}
-                  </SelectItem>
-                ))}
+                {roomTypesQ.isLoading ? (
+                  <div className="p-3">
+                    <div className="space-y-2">
+                      <div className="h-3 w-40 bg-muted animate-pulse rounded-md" />
+                      <div className="h-3 w-32 bg-muted animate-pulse rounded-md" />
+                      <div className="h-3 w-48 bg-muted animate-pulse rounded-md" />
+                    </div>
+                  </div>
+                ) : (
+                  roomTypesQ.data?.map((rt: RoomType) => (
+                    <SelectItem key={rt.id} value={rt.id}>
+                      {rt.name}
+                    </SelectItem>
+                  ))
+                )}
+                {roomTypesQ.error && (
+                  <div className="p-3 text-sm text-red-600">
+                    Failed to load room types
+                  </div>
+                )}
               </SelectContent>
             </Select>
           )}

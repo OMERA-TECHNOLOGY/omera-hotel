@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiGet } from "@/lib/api";
+import { BubblingPlaceholder } from "@/components/ui/bubbling-placeholder";
 import {
   Card,
   CardContent,
@@ -42,6 +43,8 @@ const Housekeeping = () => {
     status: string;
     scheduled_date: string;
     type: string;
+    priority?: string;
+    room?: string;
   };
   const [tasks, setTasks] = useState<Task[]>([]);
   useEffect(() => {
@@ -49,8 +52,8 @@ const Housekeeping = () => {
     const load = async () => {
       try {
         const token = undefined; // TODO: plug in auth token
-        const res = await import("@/lib/api").then((m) =>
-          m.apiGet("/housekeeping/maintenance", token)
+        const res = await import("@/lib/api").then((m: any) =>
+          m.apiGet("/housekeeping/maintenance")
         );
         if (!alive) return;
         interface RawTask {
@@ -61,14 +64,16 @@ const Housekeeping = () => {
           scheduled_date: string;
           type: string;
         }
-        const mapped: Task[] = (res.data.tasks || []).map((t: RawTask) => ({
-          id: t.id,
-          room_id: t.room_id,
-          title: t.title,
-          status: t.status,
-          scheduled_date: t.scheduled_date,
-          type: t.type,
-        }));
+        const mapped: Task[] = ((res as any).data?.tasks || []).map(
+          (t: RawTask) => ({
+            id: t.id,
+            room_id: t.room_id,
+            title: t.title,
+            status: t.status,
+            scheduled_date: t.scheduled_date,
+            type: t.type,
+          })
+        );
         setTasks(mapped);
       } catch (e) {
         console.error("Failed to load housekeeping tasks", e);
@@ -81,17 +86,41 @@ const Housekeeping = () => {
   }, []);
 
   // Fetch inventory from backend (replaces static inventory)
-  const { data: inventoryData, isLoading: inventoryLoading } = useQuery({
+  const {
+    data: inventoryData,
+    isLoading: inventoryLoading,
+    error: inventoryError,
+  } = useQuery({
     queryKey: ["housekeeping", "inventory"],
     queryFn: async () => {
       const res = await apiGet("/housekeeping/inventory");
-      return res.data?.items || res.items || res.data || res;
+      return (
+        (res as any).data?.items ||
+        (res as any).items ||
+        (res as any).data ||
+        res
+      );
     },
   });
 
   const inventory = Array.isArray(inventoryData)
     ? inventoryData
     : inventoryData?.items || inventoryData?.data || [];
+
+  const loading = inventoryLoading && tasks.length === 0;
+
+  if (loading)
+    return (
+      <div className="p-6">
+        <BubblingPlaceholder variant="page" />
+      </div>
+    );
+  if (inventoryError)
+    return (
+      <div className="p-6 text-red-600">
+        Error loading inventory: {String(inventoryError)}
+      </div>
+    );
 
   const getStatusColor = (status: string) => {
     switch (status) {
