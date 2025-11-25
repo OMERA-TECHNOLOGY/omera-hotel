@@ -237,75 +237,67 @@ const Bookings = () => {
 
   // Mutations for create/edit/delete can be added here
   // Create booking mutation (handles creating guest if necessary)
-  const createBookingMutation = useMutation<
-    { success: true; data: { booking: Booking } },
-    Error,
-    CreateBookingInput
-  >(
-    async (payload: CreateBookingInput) =>
+  const createBookingMutation = useMutation({
+    mutationFn: async (payload: CreateBookingInput) =>
       apiPost<
         { success: true; data: { booking: Booking } },
         CreateBookingInput
       >("/bookings", payload),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["bookings"] });
-        setIsCreateOpen(false);
-        toast({
-          title: "Booking created",
-          description: "Reservation created successfully",
-          duration: 4000,
-        });
-      },
-      onError: (err) => {
-        const message = extractError(err);
-        setFormError(message);
-        toast({
-          title: "Error creating booking",
-          description: message,
-          duration: 6000,
-        });
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      setIsCreateOpen(false);
+      toast({
+        title: "Booking created",
+        description: "Reservation created successfully",
+        duration: 4000,
+      });
+    },
+    onError: (err) => {
+      const message = extractError(err);
+      setFormError(message);
+      toast({
+        title: "Error creating booking",
+        description: message,
+        duration: 6000,
+      });
+    },
+  });
 
-  const updateBookingMutation = useMutation<
-    { success: true; data: { booking: Booking } },
-    Error,
-    { id: string; payload: UpdateBookingInput }
-  >(
-    async ({ id, payload }: { id: string; payload: UpdateBookingInput }) =>
+  const updateBookingMutation = useMutation({
+    mutationFn: async ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: UpdateBookingInput;
+    }) =>
       apiPut<{ success: true; data: { booking: Booking } }, UpdateBookingInput>(
         `/bookings/${id}`,
         payload
       ),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["bookings"] });
-        setIsEditOpen(false);
-        setEditingBooking(null);
-        toast({
-          title: "Booking updated",
-          description: "Reservation updated successfully",
-          duration: 3000,
-        });
-      },
-      onError: (err) => {
-        const message = extractError(err);
-        toast({
-          title: "Error updating booking",
-          description: message,
-          duration: 6000,
-        });
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      setIsEditOpen(false);
+      setEditingBooking(null);
+      toast({
+        title: "Booking updated",
+        description: "Reservation updated successfully",
+        duration: 3000,
+      });
+    },
+    onError: (err) => {
+      const message = extractError(err);
+      toast({
+        title: "Error updating booking",
+        description: message,
+        duration: 6000,
+      });
+    },
+  });
 
-  const deleteBookingMutation = useMutation<
-    { success: boolean },
-    Error,
-    string
-  >(async (id: string) => apiDelete<{ success: boolean }>(`/bookings/${id}`), {
+  const deleteBookingMutation = useMutation({
+    mutationFn: async (id: string) =>
+      apiDelete<{ success: boolean }>(`/bookings/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast({
