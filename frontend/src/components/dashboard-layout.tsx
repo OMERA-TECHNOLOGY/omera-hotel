@@ -1,5 +1,10 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { NaturalAppSidebar } from "@/components/app-sidebar";
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  Sidebar,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+import { NaturalSidebarContent } from "@/components/natural-sidebar-content";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSelector } from "@/components/language-selector";
 import { Bell, User } from "lucide-react";
@@ -12,18 +17,19 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <SidebarProvider>
-      <div className="h-screen flex w-full">
-        <NaturalAppSidebar />
-        <div className="flex-1 flex flex-col">
-          {/* Header */}
-          <header className="h-16 border-b border-border bg-white flex items-center justify-between px-6 sticky top-0 z-30 dark:bg-gray-900">
+      <div className="flex min-h-screen w-full">
+        <Sidebar>
+          <NaturalSidebarContent />
+        </Sidebar>
+        <SidebarInset>
+          <header className="flex h-16 items-center gap-4 border-b bg-background px-6 sticky top-0 z-30">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
               <div className="hidden md:block">
                 <h1 className="text-lg font-semibold">Omera Dashboard</h1>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="ml-auto flex items-center gap-2">
               <LanguageSelector />
               <ThemeToggle />
               <Button variant="ghost" size="icon" className="relative">
@@ -37,12 +43,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </Button>
             </div>
           </header>
-
-          {/* Main Content */}
-          <main className="flex-1 p-6 bg-background overflow-auto dark:bg-gray-950">
+          <main className="flex-1 p-6 bg-background overflow-auto">
             {children}
           </main>
-        </div>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );
