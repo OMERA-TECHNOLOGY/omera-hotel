@@ -163,11 +163,15 @@ const Restaurant = () => {
     switch (popularity) {
       case "bestseller":
         return (
-          <Badge className="bg-amber-500 text-white border-0">Bestseller</Badge>
+          <Badge className="bg-amber-500 text-white border-0 text-xs">
+            Bestseller
+          </Badge>
         );
       case "featured":
         return (
-          <Badge className="bg-orange-500 text-white border-0">Featured</Badge>
+          <Badge className="bg-orange-500 text-white border-0 text-xs">
+            Featured
+          </Badge>
         );
       default:
         return null;
@@ -176,82 +180,84 @@ const Restaurant = () => {
 
   if (loading)
     return (
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <BubblingPlaceholder variant="page" />
       </div>
     );
   if (error)
     return (
-      <div className="p-6 text-red-600">
+      <div className="p-4 sm:p-6 text-red-600 text-sm sm:text-base">
         Error loading restaurant data: {String(error)}
       </div>
     );
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Unique Header Structure - Not in Card Style */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-800 via-orange-900 to-amber-900 p-8 text-white border border-orange-500/20">
+    <div className="space-y-6 p-4 sm:p-6 sm:space-y-8">
+      {/* Mobile-Optimized Header */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-800 via-orange-900 to-amber-900 p-6 sm:p-8 text-white border border-orange-500/20">
         <div className="relative z-10">
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 sm:gap-6">
             <div className="flex-1">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-orange-500/20 rounded-2xl border border-orange-400/30">
-                  <ChefHat className="h-8 w-8 text-orange-400" />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
+                <div className="p-2 sm:p-3 bg-orange-500/20 rounded-xl sm:rounded-2xl border border-orange-400/30 w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
+                  <ChefHat className="h-5 w-5 sm:h-8 sm:w-8 text-orange-400" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-200 to-amber-200 bg-clip-text text-transparent">
+                  <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-orange-200 to-amber-200 bg-clip-text text-transparent">
                     Culinary Excellence
                   </h1>
-                  <p className="text-orange-100 text-lg mt-2">
+                  <p className="text-orange-100 text-sm sm:text-lg mt-2">
                     Craft unforgettable dining experiences with precision and
                     passion
                   </p>
                 </div>
               </div>
 
-              {/* Stats Row */}
-              <div className="flex items-center gap-6 mt-6">
-                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                  <Zap className="h-6 w-6 text-amber-400" />
+              {/* Mobile-Optimized Stats Row */}
+              <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-6">
+                <div className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
+                  <Zap className="h-4 w-4 sm:h-6 sm:w-6 text-amber-400" />
                   <div>
-                    <p className="text-2xl font-bold">12</p>
+                    <p className="text-lg sm:text-2xl font-bold">12</p>
                     <p className="text-xs text-orange-200">Active Orders</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                  <Star className="h-6 w-6 text-orange-400" />
+                <div className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
+                  <Star className="h-4 w-4 sm:h-6 sm:w-6 text-orange-400" />
                   <div>
-                    <p className="text-2xl font-bold">4.8</p>
+                    <p className="text-lg sm:text-2xl font-bold">4.8</p>
                     <p className="text-xs text-orange-200">Guest Rating</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                  <Coffee className="h-6 w-6 text-amber-400" />
+                <div className="col-span-2 sm:col-auto flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20 justify-center sm:justify-start">
+                  <Coffee className="h-4 w-4 sm:h-6 sm:w-6 text-amber-400" />
                   <div>
-                    <p className="text-2xl font-bold">45</p>
+                    <p className="text-lg sm:text-2xl font-bold">45</p>
                     <p className="text-xs text-orange-200">Today's Covers</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="text-right">
+            <div className="text-right mt-4 sm:mt-0">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-0 shadow-2xl rounded-2xl px-6 py-3">
-                    <Plus className="h-5 w-5 mr-2" />
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-0 shadow-xl sm:shadow-2xl rounded-xl sm:rounded-2xl px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base">
+                    <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     New Order
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-3xl">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-3 text-2xl">
-                      <div className="p-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl">
-                        <Plus className="h-6 w-6 text-white" />
+                <DialogContent className="max-w-[95vw] sm:max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader className="sticky top-0 bg-inherit z-10 pb-4 border-b border-slate-200 dark:border-slate-700">
+                    <DialogTitle className="flex flex-col sm:flex-row sm:items-center gap-3 text-lg sm:text-2xl">
+                      <div className="p-2 sm:p-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl sm:rounded-2xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
+                        <Plus className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                       </div>
                       <div>
-                        <div>Create Premium Order</div>
-                        <div className="text-sm font-normal text-slate-500">
+                        <div className="text-lg sm:text-2xl">
+                          Create Premium Order
+                        </div>
+                        <div className="text-xs sm:text-sm font-normal text-slate-500">
                           Place a new room service order with attention to
                           detail
                         </div>
@@ -259,61 +265,61 @@ const Restaurant = () => {
                     </DialogTitle>
                   </DialogHeader>
 
-                  <div className="grid gap-6 py-4">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
+                  <div className="grid gap-4 sm:gap-6 py-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      <div className="space-y-2 sm:space-y-3">
                         <Label
                           htmlFor="orderRoom"
-                          className="text-sm font-semibold"
+                          className="text-xs sm:text-sm font-semibold"
                         >
                           Room Details
                         </Label>
                         <Input
                           id="orderRoom"
                           placeholder="Enter room number and type"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2 sm:space-y-3">
                         <Label
                           htmlFor="orderGuest"
-                          className="text-sm font-semibold"
+                          className="text-xs sm:text-sm font-semibold"
                         >
                           Guest Information
                         </Label>
                         <Input
                           id="orderGuest"
                           placeholder="Guest full name"
-                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                          className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-3">
-                      <Label className="text-sm font-semibold">
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label className="text-xs sm:text-sm font-semibold">
                         Select Menu Items
                       </Label>
-                      <div className="border border-slate-200 dark:border-slate-600 rounded-2xl p-4 max-h-64 overflow-y-auto space-y-3">
+                      <div className="border border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-2xl p-3 sm:p-4 max-h-48 sm:max-h-64 overflow-y-auto space-y-2 sm:space-y-3">
                         {menuItems.map((item) => (
                           <div
                             key={item.id}
-                            className="flex items-center justify-between p-3 bg-white dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 hover:shadow-lg transition-all duration-300"
+                            className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-3 bg-white dark:bg-slate-700/50 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-600 hover:shadow-md sm:hover:shadow-lg transition-all duration-300 gap-2 sm:gap-3"
                           >
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-1">
-                                <p className="font-semibold text-slate-800 dark:text-white">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1">
+                                <p className="font-semibold text-slate-800 dark:text-white text-sm sm:text-base truncate">
                                   {item.name}
                                 </p>
                                 {getPopularityBadge(item.popularity)}
                               </div>
-                              <p className="text-sm text-slate-600 dark:text-slate-400">
+                              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                                 {item.description}
                               </p>
-                              <div className="flex items-center gap-4 mt-2">
-                                <span className="text-lg font-bold text-orange-600 dark:text-orange-400">
+                              <div className="flex items-center gap-3 sm:gap-4 mt-1 sm:mt-2">
+                                <span className="text-base sm:text-lg font-bold text-orange-600 dark:text-orange-400">
                                   {item.price} ETB
                                 </span>
-                                <span className="text-sm text-slate-500">
+                                <span className="text-xs sm:text-sm text-slate-500">
                                   ⏱️ {item.preparationTime}
                                 </span>
                               </div>
@@ -321,7 +327,7 @@ const Restaurant = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="rounded-xl border-orange-300 dark:border-orange-600 text-orange-600 dark:text-orange-400"
+                              className="rounded-lg sm:rounded-xl border-orange-300 dark:border-orange-600 text-orange-600 dark:text-orange-400 text-xs sm:text-sm mt-2 sm:mt-0"
                             >
                               Add to Order
                             </Button>
@@ -330,20 +336,20 @@ const Restaurant = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-3">
-                      <Label className="text-sm font-semibold">
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label className="text-xs sm:text-sm font-semibold">
                         Order Summary
                       </Label>
-                      <div className="border border-slate-200 dark:border-slate-600 rounded-2xl p-4 bg-slate-50 dark:bg-slate-800/50">
-                        <p className="text-sm text-slate-500 text-center py-8">
+                      <div className="border border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-2xl p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50">
+                        <p className="text-xs sm:text-sm text-slate-500 text-center py-4 sm:py-8">
                           Select items from the menu to build your order
                         </p>
-                        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600 hidden">
+                        <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-600 hidden">
                           <div className="flex justify-between items-center">
-                            <span className="font-bold text-lg">
+                            <span className="font-bold text-base sm:text-lg">
                               Total Amount:
                             </span>
-                            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                            <span className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                               0 ETB
                             </span>
                           </div>
@@ -352,14 +358,14 @@ const Restaurant = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-end gap-3">
+                  <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 sticky bottom-0 bg-inherit pt-4 border-t border-slate-200 dark:border-slate-700">
                     <Button
                       variant="outline"
-                      className="border-slate-300 dark:border-slate-600 rounded-xl"
+                      className="border-slate-300 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-2 sm:order-1"
                     >
                       Cancel
                     </Button>
-                    <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl">
+                    <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-1 sm:order-2">
                       Place Premium Order
                     </Button>
                   </div>
@@ -369,25 +375,25 @@ const Restaurant = () => {
           </div>
         </div>
 
-        {/* Unique Background Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-amber-500/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-amber-500/5 to-orange-500/5 rounded-full blur-3xl"></div>
+        {/* Background Elements */}
+        <div className="absolute top-0 right-0 w-48 h-48 sm:w-96 sm:h-96 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-40 h-40 sm:w-80 sm:h-80 bg-gradient-to-tr from-amber-500/10 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-r from-amber-500/5 to-orange-500/5 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Enhanced Search & Filters */}
-      <div className="flex items-center gap-4 p-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
+      {/* Mobile-Optimized Search & Filters */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 p-4 sm:p-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-slate-200 dark:border-slate-700">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
           <Input
             placeholder="Search orders by room number, guest name, or order ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 pr-4 py-3 text-lg border-0 bg-white dark:bg-slate-700 shadow-lg rounded-2xl"
+            className="pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border-0 bg-white dark:bg-slate-700 shadow-md sm:shadow-lg rounded-lg sm:rounded-xl"
           />
         </div>
         <Select defaultValue="all">
-          <SelectTrigger className="w-[200px] bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-xl">
+          <SelectTrigger className="w-full sm:w-[200px] bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
@@ -401,42 +407,45 @@ const Restaurant = () => {
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-xl"
+              className="border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg sm:rounded-xl text-xs sm:text-base"
             >
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Add Menu Item
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-3xl">
+          <DialogContent className="max-w-[95vw] sm:max-w-md bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                <ChefHat className="h-6 w-6 text-orange-500" />
+              <DialogTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
+                <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 text-orange-500" />
                 Add Culinary Creation
               </DialogTitle>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-3">
-                <Label htmlFor="itemName" className="text-sm font-semibold">
+            <div className="grid gap-3 sm:gap-4 py-3 sm:py-4">
+              <div className="space-y-2 sm:space-y-3">
+                <Label
+                  htmlFor="itemName"
+                  className="text-xs sm:text-sm font-semibold"
+                >
                   Dish Name
                 </Label>
                 <Input
                   id="itemName"
                   placeholder="Enter signature dish name"
-                  className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                  className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-2 sm:space-y-3">
                   <Label
                     htmlFor="itemCategory"
-                    className="text-sm font-semibold"
+                    className="text-xs sm:text-sm font-semibold"
                   >
                     Category
                   </Label>
                   <Select>
                     <SelectTrigger
                       id="itemCategory"
-                      className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                      className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                     >
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
@@ -448,40 +457,43 @@ const Restaurant = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-3">
-                  <Label htmlFor="itemPrice" className="text-sm font-semibold">
+                <div className="space-y-2 sm:space-y-3">
+                  <Label
+                    htmlFor="itemPrice"
+                    className="text-xs sm:text-sm font-semibold"
+                  >
                     Price (ETB)
                   </Label>
                   <Input
                     id="itemPrice"
                     type="number"
                     placeholder="0.00"
-                    className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                    className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                   />
                 </div>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <Label
                   htmlFor="itemDescription"
-                  className="text-sm font-semibold"
+                  className="text-xs sm:text-sm font-semibold"
                 >
                   Description
                 </Label>
                 <Input
                   id="itemDescription"
                   placeholder="Craft an enticing description"
-                  className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-xl"
+                  className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
               <Button
                 variant="outline"
-                className="border-slate-300 dark:border-slate-600 rounded-xl"
+                className="border-slate-300 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-2 sm:order-1"
               >
                 Cancel
               </Button>
-              <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl">
+              <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-1 sm:order-2">
                 Add to Menu
               </Button>
             </div>
@@ -489,47 +501,47 @@ const Restaurant = () => {
         </Dialog>
       </div>
 
-      <Tabs defaultValue="orders" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 p-2 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+      <Tabs defaultValue="orders" className="space-y-4 sm:space-y-6">
+        <TabsList className="grid w-full grid-cols-3 p-1 sm:p-2 bg-slate-100 dark:bg-slate-800 rounded-xl sm:rounded-2xl">
           <TabsTrigger
             value="orders"
-            className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700"
+            className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
             Active Orders
-            <span className="ml-2 px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
+            <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-orange-500 text-white text-xs rounded-full">
               {orders.filter((o) => o.status !== "delivered").length}
             </span>
           </TabsTrigger>
           <TabsTrigger
             value="menu"
-            className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700"
+            className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
             Menu Management
-            <span className="ml-2 px-2 py-1 bg-amber-500 text-white text-xs rounded-full">
+            <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-amber-500 text-white text-xs rounded-full">
               {menuItems.length}
             </span>
           </TabsTrigger>
           <TabsTrigger
             value="kitchen"
-            className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700"
+            className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
             Kitchen Display
-            <span className="ml-2 px-2 py-1 bg-emerald-500 text-white text-xs rounded-full">
+            <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-500 text-white text-xs rounded-full">
               {orders.filter((o) => o.status === "preparing").length}
             </span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="orders" className="space-y-4">
-          <div className="grid gap-6">
+        <TabsContent value="orders" className="space-y-3 sm:space-y-4">
+          <div className="grid gap-4 sm:gap-6">
             {orders.map((order) => (
               <Card
                 key={order.id}
-                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-2xl hover:shadow-3xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-lg sm:shadow-xl hover:shadow-xl sm:hover:shadow-2xl transition-all duration-500 group rounded-xl sm:rounded-3xl border border-slate-200 dark:border-slate-700"
               >
                 {/* Status Indicator */}
                 <div
-                  className={`absolute top-4 right-4 px-3 py-1 rounded-full text-white text-xs font-semibold bg-gradient-to-r ${getStatusGradient(
+                  className={`absolute top-3 sm:top-4 right-3 sm:right-4 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-white text-xs font-semibold bg-gradient-to-r ${getStatusGradient(
                     order.status
                   )} shadow-lg`}
                 >
@@ -538,60 +550,60 @@ const Restaurant = () => {
 
                 {/* Priority Indicator */}
                 {order.priority === "high" && (
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-red-100 text-red-800 border-red-200">
+                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
+                    <Badge className="bg-red-100 text-red-800 border-red-200 text-xs">
                       High Priority
                     </Badge>
                   </div>
                 )}
 
-                <CardHeader className="pb-4 pt-16">
+                <CardHeader className="pb-3 sm:pb-4 pt-12 sm:pt-16">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-3">
+                      <div className="flex items-start gap-3 sm:gap-4 mb-3">
                         <div
-                          className={`p-3 rounded-2xl ${
+                          className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl ${
                             order.priority === "high"
                               ? "bg-gradient-to-r from-red-500 to-orange-500"
                               : "bg-gradient-to-r from-slate-500 to-slate-600"
                           }`}
                         >
-                          <div className="text-white font-bold text-lg">
+                          <div className="text-white font-bold text-base sm:text-lg">
                             {order.orderNumber.split("-")[1]}
                           </div>
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <CardTitle className="text-xl font-bold text-slate-800 dark:text-white">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                            <CardTitle className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">
                               {order.orderNumber}
                             </CardTitle>
                           </div>
-                          <CardDescription className="text-slate-600 dark:text-slate-400">
+                          <CardDescription className="text-slate-600 dark:text-slate-400 text-sm">
                             {order.room} • {order.guest} • {order.time}
                           </CardDescription>
                         </div>
                       </div>
 
                       {/* Order Items */}
-                      <div className="space-y-3">
+                      <div className="space-y-2 sm:space-y-3">
                         <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                           Order Details:
                         </p>
-                        <div className="grid gap-2">
+                        <div className="grid gap-1.5 sm:gap-2">
                           {order.items.map((item, index) => (
                             <div
                               key={index}
-                              className="flex items-center justify-between p-2 bg-white dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600"
+                              className="flex items-center justify-between p-2 bg-white dark:bg-slate-700/50 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-600"
                             >
-                              <div>
-                                <p className="font-medium text-slate-800 dark:text-white">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-slate-800 dark:text-white text-sm sm:text-base truncate">
                                   {item.name}
                                 </p>
-                                <p className="text-sm text-slate-500">
+                                <p className="text-xs sm:text-sm text-slate-500">
                                   Qty: {item.quantity} × {item.price} ETB
                                 </p>
                               </div>
-                              <p className="font-semibold text-slate-800 dark:text-white">
+                              <p className="font-semibold text-slate-800 dark:text-white text-sm sm:text-base ml-2">
                                 {item.quantity * item.price} ETB
                               </p>
                             </div>
@@ -602,18 +614,18 @@ const Restaurant = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
-                    <div className="text-right">
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                         Total Amount
                       </p>
-                      <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                      <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                         {order.total} ETB
                       </p>
                     </div>
                     {order.status !== "delivered" && (
                       <Button
-                        className={`rounded-xl ${
+                        className={`rounded-lg sm:rounded-xl text-xs sm:text-sm ${
                           order.status === "preparing"
                             ? "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600"
                             : "bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
@@ -631,23 +643,23 @@ const Restaurant = () => {
                 <div
                   className={`absolute inset-0 bg-gradient-to-r ${getStatusGradient(
                     order.status
-                  )} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-3xl`}
+                  )} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl sm:rounded-3xl`}
                 ></div>
               </Card>
             ))}
           </div>
         </TabsContent>
 
-        <TabsContent value="menu" className="space-y-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <TabsContent value="menu" className="space-y-3 sm:space-y-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {menuItems.map((item) => (
               <Card
                 key={item.id}
-                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-xl hover:shadow-2xl transition-all duration-500 group rounded-3xl border border-slate-200 dark:border-slate-700"
+                className="relative overflow-hidden bg-white dark:bg-slate-800 shadow-lg sm:shadow-xl hover:shadow-xl sm:hover:shadow-2xl transition-all duration-500 group rounded-xl sm:rounded-3xl border border-slate-200 dark:border-slate-700"
               >
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-2 sm:pb-3">
                   <div className="flex items-start justify-between">
-                    <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
+                    <CardTitle className="text-base sm:text-lg font-bold text-slate-800 dark:text-white truncate">
                       {item.name}
                     </CardTitle>
                     {getPopularityBadge(item.popularity)}
@@ -660,30 +672,30 @@ const Restaurant = () => {
                   </Badge>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-2 sm:mb-3">
                     {item.description}
                   </p>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
-                      <Clock className="h-4 w-4" />
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-slate-500">
+                      <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                       {item.preparationTime}
                     </div>
-                    <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
+                    <p className="text-lg sm:text-xl font-bold text-orange-600 dark:text-orange-400">
                       {item.price} ETB
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5 sm:gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 rounded-xl border-slate-300 dark:border-slate-600"
+                      className="flex-1 rounded-lg sm:rounded-xl border-slate-300 dark:border-slate-600 text-xs sm:text-sm"
                     >
                       Edit
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400"
+                      className="flex-1 rounded-lg sm:rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 text-xs sm:text-sm"
                     >
                       Delete
                     </Button>
@@ -694,23 +706,25 @@ const Restaurant = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="kitchen" className="space-y-4">
-          <Card className="border-0 bg-white dark:bg-slate-800 shadow-2xl rounded-3xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-slate-800 dark:text-white text-2xl">
-                <div className="p-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl">
-                  <ChefHat className="h-6 w-6 text-white" />
+        <TabsContent value="kitchen" className="space-y-3 sm:space-y-4">
+          <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg sm:shadow-2xl rounded-xl sm:rounded-3xl">
+            <CardHeader className="pb-3 sm:pb-4">
+              <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-3 text-slate-800 dark:text-white text-xl sm:text-2xl">
+                <div className="p-2 sm:p-3 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl sm:rounded-2xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
+                  <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div>
-                  <div>Kitchen Command Center</div>
-                  <CardDescription className="text-lg">
+                  <div className="text-lg sm:text-2xl">
+                    Kitchen Command Center
+                  </div>
+                  <CardDescription className="text-sm sm:text-lg">
                     Live order tracking and preparation status
                   </CardDescription>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid gap-4 sm:gap-6">
                 {orders
                   .filter(
                     (order) =>
@@ -719,19 +733,19 @@ const Restaurant = () => {
                   .map((order) => (
                     <Card
                       key={order.id}
-                      className={`border-0 shadow-2xl rounded-3xl ${
+                      className={`border-0 shadow-lg sm:shadow-2xl rounded-xl sm:rounded-3xl ${
                         order.status === "ready"
                           ? "bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-2 border-orange-300 dark:border-orange-600"
                           : "bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 border-2 border-amber-300 dark:border-amber-600"
                       }`}
                     >
                       <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-2xl font-bold text-slate-800 dark:text-white">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+                          <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">
                             {order.orderNumber}
                           </CardTitle>
                           <Badge
-                            className={`text-lg ${
+                            className={`text-sm sm:text-lg ${
                               order.status === "ready"
                                 ? "bg-orange-500 text-white"
                                 : "bg-amber-500 text-white"
@@ -740,19 +754,19 @@ const Restaurant = () => {
                             {order.time}
                           </Badge>
                         </div>
-                        <CardDescription className="text-lg text-slate-600 dark:text-slate-400">
+                        <CardDescription className="text-sm sm:text-lg text-slate-600 dark:text-slate-400">
                           {order.room} • {order.guest}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <ul className="space-y-3 text-lg mb-6">
+                        <ul className="space-y-2 sm:space-y-3 text-sm sm:text-lg mb-4 sm:mb-6">
                           {order.items.map((item, index) => (
                             <li
                               key={index}
-                              className="font-semibold text-slate-800 dark:text-white flex items-center gap-2"
+                              className="font-semibold text-slate-800 dark:text-white flex items-center gap-1 sm:gap-2"
                             >
                               <div
-                                className={`w-2 h-2 rounded-full ${
+                                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${
                                   order.status === "ready"
                                     ? "bg-orange-500"
                                     : "bg-amber-500"
@@ -763,7 +777,7 @@ const Restaurant = () => {
                           ))}
                         </ul>
                         <Button
-                          className={`w-full rounded-xl text-lg py-3 ${
+                          className={`w-full rounded-lg sm:rounded-xl text-sm sm:text-lg py-2 sm:py-3 ${
                             order.status === "ready"
                               ? "bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
                               : "bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600"

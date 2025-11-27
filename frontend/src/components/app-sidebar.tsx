@@ -18,10 +18,15 @@ import {
   Menu,
   Leaf,
   Waves,
+  X,
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useLanguage } from "@/contexts/language-context";
 import { useSidebar } from "@/components/ui/sidebar";
+
+interface NaturalAppSidebarProps {
+  onMobileClose?: () => void;
+}
 
 // Organic floating elements - inspired by nature
 const OrganicFloaters = () => {
@@ -91,17 +96,17 @@ const NaturalNavLink = ({
   item,
   isActive,
   isCollapsed,
-  onClick,
+  onNavigate,
 }: {
   item: any;
   isActive: boolean;
   isCollapsed: boolean;
-  onClick: () => void;
+  onNavigate: () => void;
 }) => {
   return (
     <NavLink
       to={item.url}
-      onClick={onClick}
+      onClick={onNavigate}
       className={`
         group relative flex items-center gap-3 px-4 py-3 rounded-xl 
         transition-all duration-500 overflow-hidden
@@ -236,7 +241,7 @@ const OrganicLogo = ({ isCollapsed }: { isCollapsed: boolean }) => (
 );
 
 // Main natural sidebar component
-export function NaturalAppSidebar() {
+export function NaturalAppSidebar({ onMobileClose }: NaturalAppSidebarProps) {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const location = useLocation();
@@ -263,9 +268,29 @@ export function NaturalAppSidebar() {
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
-  }, [location.pathname]);
+  }, [location.pathname, menuItems]);
 
   const isCollapsed = state === "collapsed";
+
+  // Handle navigation click - close sidebar on mobile
+  const handleNavClick = () => {
+    // Close mobile sidebar if on mobile
+    if (window.innerWidth < 1024 && onMobileClose) {
+      onMobileClose();
+    }
+  };
+
+  // Handle mobile close
+  const handleMobileClose = () => {
+    if (onMobileClose) {
+      onMobileClose();
+    }
+  };
+
+  // Handle desktop toggle
+  const handleDesktopToggle = () => {
+    setOpen(!isCollapsed);
+  };
 
   return (
     <div
@@ -279,6 +304,9 @@ export function NaturalAppSidebar() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Organic Background Elements */}
+      <OrganicFloaters />
+
       {/* Sidebar Content */}
       <div className="relative z-10 h-full flex flex-col">
         {/* Header */}
@@ -304,17 +332,18 @@ export function NaturalAppSidebar() {
               </div>
             )}
 
-            {/* Organic Collapse Toggle */}
+            {/* Mobile Close Button - Only visible on mobile */}
             <button
-              onClick={() => setOpen(!isCollapsed)}
-              className={`
-                p-2 rounded-lg transition-all duration-500 group
-                bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm
-                border border-stone-200/60 dark:border-stone-700/60
-                hover:bg-white/70 dark:hover:bg-stone-700/70
-                hover:shadow-lg hover:scale-105
-                ${isHovered ? "opacity-100" : "opacity-80"}
-              `}
+              onClick={handleMobileClose}
+              className="lg:hidden p-2 rounded-lg transition-all duration-500 group bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm border border-stone-200/60 dark:border-stone-700/60 hover:bg-white/70 dark:hover:bg-stone-700/70 hover:shadow-lg hover:scale-105"
+            >
+              <X className="h-4 w-4 text-stone-600 dark:text-stone-400" />
+            </button>
+
+            {/* Desktop Collapse Toggle - Only visible on desktop */}
+            <button
+              onClick={handleDesktopToggle}
+              className="hidden lg:flex p-2 rounded-lg transition-all duration-500 group bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm border border-stone-200/60 dark:border-stone-700/60 hover:bg-white/70 dark:hover:bg-stone-700/70 hover:shadow-lg hover:scale-105"
             >
               <Menu
                 className={`
@@ -335,7 +364,7 @@ export function NaturalAppSidebar() {
                 item={item}
                 isActive={activeIndex === index}
                 isCollapsed={isCollapsed}
-                onClick={() => setActiveIndex(index)}
+                onNavigate={handleNavClick}
               />
             ))}
           </div>
@@ -370,18 +399,19 @@ export function NaturalAppSidebar() {
         </div>
       </div>
 
-      {/* Hover expansion area for collapsed state */}
+      {/* Hover expansion area for collapsed state - Only on desktop */}
       {isCollapsed && (
         <div
-          className="absolute inset-0 z-20 cursor-pointer"
+          className="absolute inset-0 z-20 cursor-pointer hidden lg:block"
           onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         />
       )}
     </div>
   );
 }
 
-// Organic CSS animations
+// Organic CSS animations (keep the same styles as before)
 const organicStyles = `
 @keyframes organic-float {
   0%, 100% { 
@@ -457,13 +487,6 @@ const organicStyles = `
   transition-property: color, background-color, border-color, opacity, transform, box-shadow;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 400ms;
-}
-
-/* Natural color scheme adjustments */
-@media (prefers-color-scheme: dark) {
-  .dark\:scrollbar-thumb {
-    background: linear-gradient(to bottom, #a8a29e, #d6d3d1);
-  }
 }
 `;
 

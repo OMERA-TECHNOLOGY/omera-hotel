@@ -33,6 +33,7 @@ import {
   Edit,
   Trash2,
   Eye,
+  Search,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import RoomList from "@/components/RoomList";
@@ -472,37 +473,41 @@ const Rooms = () => {
 
   if (isLoading)
     return (
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <BubblingPlaceholder variant="page" />
       </div>
     );
   if (error)
     return (
-      <div className="p-6">
-        <div className="text-red-600">Error loading rooms: {String(error)}</div>
+      <div className="p-4 sm:p-6">
+        <div className="text-red-600 text-sm sm:text-base">
+          Error loading rooms: {String(error)}
+        </div>
       </div>
     );
   return (
-    <div className="space-y-8 p-6">
-      {/* Enhanced Header Section */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-emerald-900 to-amber-900 p-8 text-white">
+    <div className="space-y-6 p-4 sm:p-6 sm:space-y-8">
+      {/* Mobile-Optimized Header Section */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-emerald-900 to-amber-900 p-6 sm:p-8 text-white">
         <div className="relative z-10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
                 {t.roomManagement}
               </h1>
-              <p className="mt-2 text-emerald-200 text-lg">
+              <p className="mt-1 sm:mt-2 text-emerald-200 text-sm sm:text-lg">
                 Premium Room Inventory & Status Management
               </p>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                <div className="p-2 bg-emerald-400/20 rounded-xl">
-                  <Home className="h-6 w-6 text-emerald-400" />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-6">
+              <div className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
+                <div className="p-1.5 sm:p-2 bg-emerald-400/20 rounded-lg sm:rounded-xl">
+                  <Home className="h-4 w-4 sm:h-6 sm:w-6 text-emerald-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold">Room Analytics</p>
+                  <p className="text-xs sm:text-sm font-semibold">
+                    Room Analytics
+                  </p>
                   <p className="text-xs text-emerald-200">60 total rooms</p>
                 </div>
               </div>
@@ -511,9 +516,9 @@ const Rooms = () => {
                   setIsCreateOpen(true);
                   setEditingRoom(null);
                 }}
-                className="bg-gradient-to-r from-emerald-500 to-amber-500 hover:from-emerald-600 hover:to-amber-600 border-0 shadow-2xl"
+                className="bg-gradient-to-r from-emerald-500 to-amber-500 hover:from-emerald-600 hover:to-amber-600 border-0 shadow-xl sm:shadow-2xl rounded-xl sm:rounded-2xl text-sm sm:text-base"
               >
-                <Plus className="h-5 w-5 mr-2" />
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {t.addRoom}
               </Button>
             </div>
@@ -521,25 +526,25 @@ const Rooms = () => {
         </div>
 
         {/* Background Elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-400/20 to-amber-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-amber-400/20 to-emerald-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-emerald-400/20 to-amber-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 sm:w-48 sm:h-48 bg-gradient-to-tr from-amber-400/20 to-emerald-400/20 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Enhanced Status Overview */}
-      <div className="grid gap-6 md:grid-cols-4">
-        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-slate-800 dark:to-emerald-900/20 shadow-xl group">
-          <CardHeader className="pb-3">
+      {/* Mobile-Optimized Status Overview */}
+      <div className="grid gap-4 sm:gap-6 grid-cols-2 lg:grid-cols-4">
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-slate-800 dark:to-emerald-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
+          <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.vacant}
               </CardTitle>
-              <div className="p-2 bg-emerald-500/10 rounded-xl">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+              <div className="p-1.5 sm:p-2 bg-emerald-500/10 rounded-lg sm:rounded-xl">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-500 rounded-full"></div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+            <div className="text-xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
               {statusCounts.vacant}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -556,19 +561,19 @@ const Rooms = () => {
           </div>
         </Card>
 
-        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-amber-50 dark:from-slate-800 dark:to-amber-900/20 shadow-xl group">
-          <CardHeader className="pb-3">
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-amber-50 dark:from-slate-800 dark:to-amber-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
+          <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.occupied}
               </CardTitle>
-              <div className="p-2 bg-amber-500/10 rounded-xl">
-                <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+              <div className="p-1.5 sm:p-2 bg-amber-500/10 rounded-lg sm:rounded-xl">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-amber-500 rounded-full"></div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">
+            <div className="text-xl sm:text-3xl font-bold text-amber-600 dark:text-amber-400">
               {statusCounts.occupied}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -585,19 +590,19 @@ const Rooms = () => {
           </div>
         </Card>
 
-        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-orange-50 dark:from-slate-800 dark:to-orange-900/20 shadow-xl group">
-          <CardHeader className="pb-3">
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-orange-50 dark:from-slate-800 dark:to-orange-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
+          <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.cleaning}
               </CardTitle>
-              <div className="p-2 bg-orange-500/10 rounded-xl">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              <div className="p-1.5 sm:p-2 bg-orange-500/10 rounded-lg sm:rounded-xl">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-orange-500 rounded-full"></div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
+            <div className="text-xl sm:text-3xl font-bold text-orange-600 dark:text-orange-400">
               {statusCounts.cleaning}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -614,19 +619,19 @@ const Rooms = () => {
           </div>
         </Card>
 
-        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-red-50 dark:from-slate-800 dark:to-red-900/20 shadow-xl group">
-          <CardHeader className="pb-3">
+        <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-red-50 dark:from-slate-800 dark:to-red-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
+          <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.maintenance}
               </CardTitle>
-              <div className="p-2 bg-red-500/10 rounded-xl">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              <div className="p-1.5 sm:p-2 bg-red-500/10 rounded-lg sm:rounded-xl">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full"></div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-red-600 dark:text-red-400">
+            <div className="text-xl sm:text-3xl font-bold text-red-600 dark:text-red-400">
               {statusCounts.maintenance}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -644,56 +649,65 @@ const Rooms = () => {
         </Card>
       </div>
 
-      {/* Enhanced Filters */}
-      <div className="flex items-center gap-4 p-6 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 rounded-2xl shadow-xl border-0">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-emerald-500/10 rounded-xl">
-            <Filter className="h-5 w-5 text-emerald-500" />
+      {/* Mobile-Optimized Filters */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 p-4 sm:p-6 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="p-1.5 sm:p-2 bg-emerald-500/10 rounded-lg sm:rounded-xl">
+            <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" />
           </div>
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">
             Advanced Filters:
           </span>
         </div>
-        <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-[200px] bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-xl">
-            <SelectValue placeholder="All Statuses" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="vacant">Vacant</SelectItem>
-            <SelectItem value="occupied">Occupied</SelectItem>
-            <SelectItem value="cleaning">Cleaning</SelectItem>
-            <SelectItem value="maintenance">Maintenance</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-[200px] bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-xl">
-            <SelectValue placeholder="All Types" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="Single">Single Room</SelectItem>
-            <SelectItem value="Deluxe">Deluxe Room</SelectItem>
-            <SelectItem value="Executive Suite">Executive Suite</SelectItem>
-            <SelectItem value="Presidential">Presidential Suite</SelectItem>
-          </SelectContent>
-        </Select>
-        <div className="ml-4 w-[320px]">
-          <Input
-            placeholder="Search room number..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className="rounded-xl bg-white/80 dark:bg-slate-700/80"
-          />
+
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-4 w-full sm:w-auto">
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-full bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-sm">
+              <SelectValue placeholder="All Statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="vacant">Vacant</SelectItem>
+              <SelectItem value="occupied">Occupied</SelectItem>
+              <SelectItem value="cleaning">Cleaning</SelectItem>
+              <SelectItem value="maintenance">Maintenance</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-full bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-sm">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="Single">Single Room</SelectItem>
+              <SelectItem value="Deluxe">Deluxe Room</SelectItem>
+              <SelectItem value="Executive Suite">Executive Suite</SelectItem>
+              <SelectItem value="Presidential">Presidential Suite</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+
+        <div className="w-full sm:w-[200px] lg:w-[320px]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              placeholder="Search room number..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="pl-10 rounded-lg sm:rounded-xl bg-white/80 dark:bg-slate-700/80 text-sm sm:text-base"
+            />
+          </div>
+        </div>
+
         <Button
           variant="outline"
-          className="ml-auto border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-xl"
+          className="border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-lg sm:rounded-xl text-xs sm:text-base mt-2 sm:mt-0"
         >
-          <Zap className="h-4 w-4 mr-2" />
+          <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
           Quick Actions
         </Button>
       </div>
@@ -706,22 +720,26 @@ const Rooms = () => {
         onDelete={(r) => handleDeleteRoom((r as any).id)}
       />
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between mt-6">
-        <div className="text-sm text-slate-500">
+      {/* Mobile-Optimized Pagination */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4 sm:mt-6">
+        <div className="text-xs sm:text-sm text-slate-500 text-center sm:text-left">
           Showing {rooms.length} of {totalRooms} rooms
         </div>
         <div className="flex items-center gap-2">
           <Button
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
+            size="sm"
+            className="rounded-lg sm:rounded-xl text-xs sm:text-sm"
           >
             Previous
           </Button>
-          <div className="px-3">Page {page}</div>
+          <div className="px-2 sm:px-3 text-xs sm:text-sm">Page {page}</div>
           <Button
             disabled={page * pageSize >= totalRooms}
             onClick={() => setPage((p) => p + 1)}
+            size="sm"
+            className="rounded-lg sm:rounded-xl text-xs sm:text-sm"
           >
             Next
           </Button>
@@ -730,12 +748,12 @@ const Rooms = () => {
 
       {/* Create / Edit modal */}
       <Dialog open={isCreateOpen} onOpenChange={(v) => setIsCreateOpen(v)}>
-        <DialogContent>
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl rounded-xl sm:rounded-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">
               {editingRoom ? "Edit Room" : "Create Room"}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm sm:text-base">
               {editingRoom ? "Edit room details" : "Fill in new room"}
             </DialogDescription>
           </DialogHeader>
@@ -777,19 +795,29 @@ const Rooms = () => {
 
       {/* Delete confirmation dialog */}
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[95vw] sm:max-w-md rounded-xl sm:rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Confirm delete</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">
+              Confirm delete
+            </DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">
               Are you sure you want to delete this room? This action cannot be
               undone.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={() => setConfirmOpen(false)}>
+          <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => setConfirmOpen(false)}
+              className="order-2 sm:order-1 text-sm sm:text-base"
+            >
               Cancel
             </Button>
-            <Button variant="destructive" onClick={() => confirmDelete()}>
+            <Button
+              variant="destructive"
+              onClick={() => confirmDelete()}
+              className="order-1 sm:order-2 text-sm sm:text-base"
+            >
               Delete
             </Button>
           </div>
@@ -798,17 +826,26 @@ const Rooms = () => {
 
       {/* View dialog */}
       <Dialog open={!!viewingRoom} onOpenChange={() => setViewingRoom(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl rounded-xl sm:rounded-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Room details</DialogTitle>
-            <DialogDescription>Full room information</DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">
+              Room details
+            </DialogTitle>
+            <DialogDescription className="text-sm sm:text-base">
+              Full room information
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-2">
-            <pre className="whitespace-pre-wrap">
+          <div className="space-y-3 sm:space-y-4">
+            <pre className="whitespace-pre-wrap text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 p-3 sm:p-4 rounded-lg sm:rounded-xl overflow-auto">
               {JSON.stringify(viewingRoom, null, 2)}
             </pre>
             <div className="flex justify-end">
-              <Button onClick={() => setViewingRoom(null)}>Close</Button>
+              <Button
+                onClick={() => setViewingRoom(null)}
+                className="text-sm sm:text-base"
+              >
+                Close
+              </Button>
             </div>
           </div>
         </DialogContent>
