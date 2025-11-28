@@ -369,10 +369,10 @@ const Bookings = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-amber-200 to-white bg-clip-text text-transparent">
-                    Booking Management
+                    {t.bookingsTitle}
                   </h1>
                   <p className="text-amber-100 text-sm sm:text-base md:text-lg mt-1 sm:mt-2">
-                    Orchestrate exceptional guest experiences with precision
+                    {t.bookingsSubtitle}
                   </p>
                 </div>
               </div>
@@ -386,7 +386,7 @@ const Bookings = () => {
                       89%
                     </p>
                     <p className="text-xs text-amber-200 truncate">
-                      Occupancy Rate
+                      {t.occupancyRate}
                     </p>
                   </div>
                 </div>
@@ -397,7 +397,7 @@ const Bookings = () => {
                       4.8
                     </p>
                     <p className="text-xs text-amber-200 truncate">
-                      Guest Rating
+                      {t.guestRating}
                     </p>
                   </div>
                 </div>
@@ -408,7 +408,7 @@ const Bookings = () => {
                       24
                     </p>
                     <p className="text-xs text-amber-200 truncate">
-                      Active Stays
+                      {t.activeStays}
                     </p>
                   </div>
                 </div>
@@ -424,7 +424,7 @@ const Bookings = () => {
                 className="w-full lg:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-xl lg:shadow-2xl rounded-xl lg:rounded-2xl px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base"
               >
                 <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                Create Reservation
+                {t.createReservation}
               </Button>
             </div>
           </div>
@@ -441,7 +441,7 @@ const Bookings = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
           <Input
-            placeholder="Search reservations by guest name, room number, or booking reference..."
+            placeholder={t.searchBookingsPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border-0 bg-white dark:bg-slate-700 shadow-lg rounded-xl"
@@ -449,13 +449,13 @@ const Bookings = () => {
         </div>
         <Select defaultValue="all">
           <SelectTrigger className="w-full sm:w-[200px] bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-xl text-sm sm:text-base">
-            <SelectValue placeholder="Filter by status" />
+            <SelectValue placeholder={t.filterByStatus} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Reservations</SelectItem>
-            <SelectItem value="confirmed">Confirmed</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
+            <SelectItem value="all">{t.allReservations}</SelectItem>
+            <SelectItem value="confirmed">{t.statusConfirmed}</SelectItem>
+            <SelectItem value="pending">{t.statusPending}</SelectItem>
+            <SelectItem value="cancelled">{t.statusCancelled}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -467,13 +467,13 @@ const Bookings = () => {
             value="list"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Reservation List
+            {t.reservationList}
           </TabsTrigger>
           <TabsTrigger
             value="calendar"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Calendar Overview
+            {t.calendarOverview}
           </TabsTrigger>
         </TabsList>
 
@@ -523,8 +523,10 @@ const Bookings = () => {
                           </div>
                           <CardDescription className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                             {booking.room} • {booking.guests}{" "}
-                            {booking.guests === 1 ? "Guest" : "Guests"} •{" "}
-                            {booking.nights} nights
+                            {booking.guests === 1
+                              ? t.guestSingular
+                              : t.guestPlural}{" "}
+                            • {booking.nights} {t.nightsLabel}
                           </CardDescription>
                         </div>
                       </div>
@@ -533,7 +535,7 @@ const Bookings = () => {
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 sm:gap-6 text-xs sm:text-sm">
                         <div>
                           <p className="text-slate-500 dark:text-slate-400 text-xs">
-                            Check-in
+                            {t.checkInLabel}
                           </p>
                           <p className="font-semibold text-slate-800 dark:text-white truncate">
                             {booking.checkIn}
@@ -541,7 +543,7 @@ const Bookings = () => {
                         </div>
                         <div>
                           <p className="text-slate-500 dark:text-slate-400 text-xs">
-                            Check-out
+                            {t.checkOutLabel}
                           </p>
                           <p className="font-semibold text-slate-800 dark:text-white truncate">
                             {booking.checkOut}
@@ -549,7 +551,7 @@ const Bookings = () => {
                         </div>
                         <div>
                           <p className="text-slate-500 dark:text-slate-400 text-xs">
-                            Source
+                            {t.sourceLabel}
                           </p>
                           <p className="font-semibold text-slate-800 dark:text-white truncate">
                             {booking.source}
@@ -557,7 +559,7 @@ const Bookings = () => {
                         </div>
                         <div>
                           <p className="text-slate-500 dark:text-slate-400 text-xs">
-                            Total Amount
+                            {t.totalAmount}
                           </p>
                           <p className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm sm:text-base md:text-lg">
                             {booking.totalPrice.toLocaleString()} ETB
@@ -569,7 +571,7 @@ const Bookings = () => {
                       {booking.specialRequests && (
                         <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-700">
                           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-2">
-                            Special Requests:
+                            {t.specialRequestsLabel}
                           </p>
                           <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl">
                             {booking.specialRequests}
@@ -594,18 +596,18 @@ const Bookings = () => {
                           <DropdownMenuItem
                             onClick={() => openViewFor(booking.typed)}
                           >
-                            View Details
+                            {t.viewDetails}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => openEditFor(booking)}
                           >
-                            Edit Booking
+                            {t.editBooking}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => confirmDelete(booking.id)}
                             className="text-red-600"
                           >
-                            Cancel Booking
+                            {t.cancelBooking}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -619,7 +621,7 @@ const Bookings = () => {
                         className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg sm:rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-all text-xs sm:text-sm"
                         onClick={() => openViewFor(booking.typed)}
                       >
-                        View
+                        {t.view}
                       </Button>
                       <Button
                         variant="outline"
@@ -627,7 +629,7 @@ const Bookings = () => {
                         className="border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400 rounded-lg sm:rounded-xl hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all text-xs sm:text-sm"
                         onClick={() => openEditFor(booking)}
                       >
-                        Edit
+                        {t.edit}
                       </Button>
                       <Button
                         variant="outline"
@@ -635,7 +637,7 @@ const Bookings = () => {
                         className="border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 rounded-lg sm:rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-xs sm:text-sm"
                         onClick={() => confirmDelete(booking.id)}
                       >
-                        Cancel
+                        {t.cancel}
                       </Button>
                     </div>
                   </div>
@@ -654,7 +656,7 @@ const Bookings = () => {
                   <div className="p-2 sm:p-3 bg-amber-500 rounded-xl sm:rounded-2xl">
                     <CalendarIcon className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                   </div>
-                  <span>Reservation Calendar</span>
+                  <span>{t.bookingCalendar}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 sm:p-4">
@@ -673,7 +675,9 @@ const Bookings = () => {
                   <div className="p-2 sm:p-3 bg-emerald-500 rounded-xl sm:rounded-2xl">
                     <Users className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                   </div>
-                  <span>Arrivals on {selectedDate?.toLocaleDateString()}</span>
+                  <span>
+                    {t.arrivalsOn} {selectedDate?.toLocaleDateString()}
+                  </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 sm:p-4">

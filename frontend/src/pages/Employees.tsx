@@ -122,8 +122,8 @@ const Employees = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["employees"]);
       toast({
-        title: "Employee onboarded",
-        description: "New employee created successfully",
+        title: t.employeeOnboardedTitle,
+        description: t.employeeOnboardedDesc,
       });
       setForm({
         first_name: "",
@@ -136,7 +136,7 @@ const Employees = () => {
       });
     },
     onError: (err) => {
-      toast({ title: "Failed to create", description: extractError(err) });
+      toast({ title: t.failedToCreateTitle, description: extractError(err) });
     },
   });
 
@@ -146,10 +146,13 @@ const Employees = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["employees"]);
-      toast({ title: "Deleted", description: "Employee removed" });
+      toast({
+        title: t.employeeDeletedTitle,
+        description: t.employeeDeletedDesc,
+      });
     },
     onError: (err) => {
-      toast({ title: "Delete failed", description: extractError(err) });
+      toast({ title: t.deleteFailedTitle, description: extractError(err) });
     },
   });
 
@@ -234,11 +237,10 @@ const Employees = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-200 to-orange-200 bg-clip-text text-transparent">
-                    Team Excellence
+                    {t.employeesTitle}
                   </h1>
                   <p className="text-purple-100 text-sm sm:text-base md:text-lg mt-1 sm:mt-2">
-                    Empower your workforce with precision management and growth
-                    opportunities
+                    {t.employeesSubtitle}
                   </p>
                 </div>
               </div>
@@ -252,7 +254,7 @@ const Employees = () => {
                       98%
                     </p>
                     <p className="text-xs text-purple-200 truncate">
-                      Staff Retention
+                      {t.statsStaffRetention}
                     </p>
                   </div>
                 </div>
@@ -263,7 +265,7 @@ const Employees = () => {
                       4.7
                     </p>
                     <p className="text-xs text-purple-200 truncate">
-                      Avg. Performance
+                      {t.statsAvgPerformance}
                     </p>
                   </div>
                 </div>
@@ -274,7 +276,7 @@ const Employees = () => {
                       24/7
                     </p>
                     <p className="text-xs text-purple-200 truncate">
-                      Shift Coverage
+                      {t.statsShiftCoverage}
                     </p>
                   </div>
                 </div>
@@ -286,7 +288,7 @@ const Employees = () => {
                 <DialogTrigger asChild>
                   <Button className="w-full lg:w-auto bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 border-0 shadow-xl lg:shadow-2xl rounded-xl lg:rounded-2xl px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base">
                     <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    Onboard Talent
+                    {t.onboardTalent}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-[95vw] sm:max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
@@ -296,10 +298,9 @@ const Employees = () => {
                         <Users className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                       </div>
                       <div>
-                        <div>Onboard New Team Member</div>
+                        <div>{t.onboardNewMember}</div>
                         <div className="text-xs sm:text-sm font-normal text-slate-500">
-                          Create comprehensive employee profile and system
-                          access
+                          {t.onboardNewMemberDesc}
                         </div>
                       </div>
                     </DialogTitle>
@@ -312,7 +313,7 @@ const Employees = () => {
                           htmlFor="empFirstName"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          First Name
+                          {t.firstName}
                         </Label>
                         <Input
                           id="empFirstName"
@@ -320,7 +321,7 @@ const Employees = () => {
                           onChange={(e) =>
                             setForm({ ...form, first_name: e.target.value })
                           }
-                          placeholder="Enter first name"
+                          placeholder={t.firstNamePlaceholder}
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
@@ -329,7 +330,7 @@ const Employees = () => {
                           htmlFor="empLastName"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          Last Name
+                          {t.lastName}
                         </Label>
                         <Input
                           id="empLastName"
@@ -337,7 +338,7 @@ const Employees = () => {
                           onChange={(e) =>
                             setForm({ ...form, last_name: e.target.value })
                           }
-                          placeholder="Enter last name"
+                          placeholder={t.lastNamePlaceholder}
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
@@ -348,7 +349,7 @@ const Employees = () => {
                           htmlFor="empEmail"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          Professional Email
+                          {t.professionalEmail}
                         </Label>
                         <Input
                           id="empEmail"
@@ -357,7 +358,7 @@ const Employees = () => {
                           onChange={(e) =>
                             setForm({ ...form, email: e.target.value })
                           }
-                          placeholder="team.member@Omera.com"
+                          placeholder={t.emailPlaceholder}
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
@@ -366,7 +367,7 @@ const Employees = () => {
                           htmlFor="empPhone"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          Contact Number
+                          {t.contactNumber}
                         </Label>
                         <Input
                           id="empPhone"
@@ -374,7 +375,7 @@ const Employees = () => {
                           onChange={(e) =>
                             setForm({ ...form, phone: e.target.value })
                           }
-                          placeholder="+251 xxx xxx xxx"
+                          placeholder={t.phonePlaceholder}
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
@@ -385,7 +386,7 @@ const Employees = () => {
                           htmlFor="empRole"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          Position & Role
+                          {t.positionRole}
                         </Label>
                         <Select
                           value={form.role}
@@ -397,27 +398,29 @@ const Employees = () => {
                             id="empRole"
                             className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                           >
-                            <SelectValue placeholder="Select position" />
+                            <SelectValue
+                              placeholder={t.selectPositionPlaceholder}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="admin">
-                              System Administrator
+                              {t.roleSystemAdmin}
                             </SelectItem>
                             <SelectItem value="manager">
-                              Department Manager
+                              {t.roleManager}
                             </SelectItem>
                             <SelectItem value="receptionist">
-                              Front Desk Receptionist
+                              {t.roleReceptionist}
                             </SelectItem>
                             <SelectItem value="housekeeper">
-                              Housekeeping Specialist
+                              {t.roleHousekeeper}
                             </SelectItem>
-                            <SelectItem value="chef">Executive Chef</SelectItem>
+                            <SelectItem value="chef">{t.roleChef}</SelectItem>
                             <SelectItem value="waiter">
-                              Service Professional
+                              {t.roleWaiter}
                             </SelectItem>
                             <SelectItem value="accountant">
-                              Finance Specialist
+                              {t.roleAccountant}
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -427,7 +430,7 @@ const Employees = () => {
                           htmlFor="empDepartment"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          Department
+                          {t.departmentLabel}
                         </Label>
                         <Select
                           value={form.department}
@@ -439,26 +442,28 @@ const Employees = () => {
                             id="empDepartment"
                             className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                           >
-                            <SelectValue placeholder="Select department" />
+                            <SelectValue
+                              placeholder={t.selectDepartmentPlaceholder}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="administration">
-                              Executive Administration
+                              {t.deptExecutiveAdministration}
                             </SelectItem>
                             <SelectItem value="front-desk">
-                              Front Desk Operations
+                              {t.deptFrontDesk}
                             </SelectItem>
                             <SelectItem value="housekeeping">
-                              Housekeeping Excellence
+                              {t.deptHousekeeping}
                             </SelectItem>
                             <SelectItem value="restaurant">
-                              Culinary Operations
+                              {t.deptRestaurant}
                             </SelectItem>
                             <SelectItem value="finance">
-                              Financial Management
+                              {t.deptFinance}
                             </SelectItem>
                             <SelectItem value="maintenance">
-                              Facility Maintenance
+                              {t.deptMaintenance}
                             </SelectItem>
                           </SelectContent>
                         </Select>
@@ -469,7 +474,7 @@ const Employees = () => {
                         htmlFor="empShift"
                         className="text-xs sm:text-sm font-semibold"
                       >
-                        Work Schedule
+                        {t.workSchedule}
                       </Label>
                       <Select
                         value={form.shift}
@@ -481,24 +486,18 @@ const Employees = () => {
                           id="empShift"
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         >
-                          <SelectValue placeholder="Select shift pattern" />
+                          <SelectValue placeholder={t.selectShiftPlaceholder} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="morning">
-                            Morning Excellence (6 AM - 2 PM)
+                            {t.shiftMorning}
                           </SelectItem>
-                          <SelectItem value="day">
-                            Day Operations (10 AM - 6 PM)
-                          </SelectItem>
+                          <SelectItem value="day">{t.shiftDay}</SelectItem>
                           <SelectItem value="afternoon">
-                            Afternoon Service (2 PM - 10 PM)
+                            {t.shiftAfternoon}
                           </SelectItem>
-                          <SelectItem value="night">
-                            Night Operations (10 PM - 6 AM)
-                          </SelectItem>
-                          <SelectItem value="split">
-                            Split Shift (Peak Coverage)
-                          </SelectItem>
+                          <SelectItem value="night">{t.shiftNight}</SelectItem>
+                          <SelectItem value="split">{t.shiftSplit}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -509,7 +508,7 @@ const Employees = () => {
                       variant="outline"
                       className="border-slate-300 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base order-2 sm:order-1"
                     >
-                      Cancel
+                      {t.cancel}
                     </Button>
                     <Button
                       className="bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600 rounded-lg sm:rounded-xl text-sm sm:text-base order-1 sm:order-2"
@@ -517,8 +516,8 @@ const Employees = () => {
                       disabled={createEmployee.isLoading}
                     >
                       {createEmployee.isLoading
-                        ? "Onboarding..."
-                        : "Onboard Team Member"}
+                        ? t.onboardingInProgress
+                        : t.onboardTeamMember}
                     </Button>
                   </div>
                 </DialogContent>
@@ -538,7 +537,7 @@ const Employees = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
           <Input
-            placeholder="Search team members by name, role, or department..."
+            placeholder={t.searchEmployeesPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border-0 bg-white dark:bg-slate-700 shadow-lg rounded-xl"
@@ -546,16 +545,14 @@ const Employees = () => {
         </div>
         <Select defaultValue="all">
           <SelectTrigger className="w-full sm:w-[200px] bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-xl text-sm sm:text-base">
-            <SelectValue placeholder="Filter by department" />
+            <SelectValue placeholder={t.filterByDepartmentPlaceholder} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Departments</SelectItem>
-            <SelectItem value="front-desk">Front Desk Operations</SelectItem>
-            <SelectItem value="housekeeping">
-              Housekeeping Excellence
-            </SelectItem>
-            <SelectItem value="restaurant">Culinary Operations</SelectItem>
-            <SelectItem value="finance">Financial Management</SelectItem>
+            <SelectItem value="all">{t.filterAllDepartments}</SelectItem>
+            <SelectItem value="front-desk">{t.deptFrontDesk}</SelectItem>
+            <SelectItem value="housekeeping">{t.deptHousekeeping}</SelectItem>
+            <SelectItem value="restaurant">{t.deptRestaurant}</SelectItem>
+            <SelectItem value="finance">{t.deptFinance}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -567,7 +564,7 @@ const Employees = () => {
             value="employees"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            <span className="truncate">Team Directory</span>
+            <span className="truncate">{t.tabDirectory}</span>
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-purple-500 text-white text-xs rounded-full">
               {employees.length}
             </span>
@@ -576,7 +573,7 @@ const Employees = () => {
             value="shifts"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            <span className="truncate">Shifts</span>
+            <span className="truncate">{t.tabShifts}</span>
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-orange-500 text-white text-xs rounded-full">
               4
             </span>
@@ -585,7 +582,7 @@ const Employees = () => {
             value="activity"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            <span className="truncate">Activity</span>
+            <span className="truncate">{t.tabActivity}</span>
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-500 text-white text-xs rounded-full">
               {activityLoading ? "..." : activityLogs.length}
             </span>
@@ -638,7 +635,8 @@ const Employees = () => {
                               )}
                             </div>
                             <CardDescription className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                              {employee.department} • Joined {employee.joinDate}
+                              {employee.department} • {t.joinedLabel}{" "}
+                              {employee.joinDate}
                             </CardDescription>
                           </div>
                         </div>
@@ -647,7 +645,7 @@ const Employees = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 sm:gap-6 text-xs sm:text-sm mb-3 sm:mb-4">
                           <div>
                             <p className="text-slate-500 dark:text-slate-400 text-xs">
-                              Email
+                              {t.emailLabel}
                             </p>
                             <p className="font-semibold text-slate-800 dark:text-white truncate">
                               {employee.email}
@@ -655,7 +653,7 @@ const Employees = () => {
                           </div>
                           <div>
                             <p className="text-slate-500 dark:text-slate-400 text-xs">
-                              Phone
+                              {t.phoneLabel}
                             </p>
                             <p className="font-semibold text-slate-800 dark:text-white truncate">
                               {employee.phone}
@@ -663,7 +661,7 @@ const Employees = () => {
                           </div>
                           <div>
                             <p className="text-slate-500 dark:text-slate-400 text-xs">
-                              Schedule
+                              {t.scheduleLabel}
                             </p>
                             <p className="font-semibold text-slate-800 dark:text-white truncate">
                               {employee.shift}
@@ -687,11 +685,11 @@ const Employees = () => {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem>
                               <Eye className="h-4 w-4 mr-2" />
-                              View Profile
+                              {t.actionViewProfile}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Edit className="h-4 w-4 mr-2" />
-                              Edit Details
+                              {t.actionEditDetails}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
@@ -699,7 +697,7 @@ const Employees = () => {
                               }
                               className="text-red-600"
                             >
-                              Delete Employee
+                              {t.actionDeleteEmployee}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -713,7 +711,7 @@ const Employees = () => {
                           className="rounded-lg sm:rounded-xl border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-all text-xs sm:text-sm"
                         >
                           <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                          View
+                          {t.actionView}
                         </Button>
                         <Button
                           variant="outline"
@@ -721,7 +719,7 @@ const Employees = () => {
                           className="rounded-lg sm:rounded-xl border-amber-300 dark:border-amber-600 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all text-xs sm:text-sm"
                         >
                           <Edit className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                          Edit
+                          {t.actionEdit}
                         </Button>
                         <Button
                           variant="outline"
@@ -731,7 +729,7 @@ const Employees = () => {
                             deleteEmployee.mutate(String(employee.id))
                           }
                         >
-                          Delete
+                          {t.actionDelete}
                         </Button>
                       </div>
                     </div>
@@ -754,9 +752,9 @@ const Employees = () => {
                   <Clock className="h-4 w-4 sm:h-5 sm:w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div>
-                  <div>Shift Coordination Center</div>
+                  <div>{t.shiftsCenterTitle}</div>
                   <CardDescription className="text-sm sm:text-base md:text-lg">
-                    Optimized workforce scheduling and coverage management
+                    {t.shiftsCenterDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -783,7 +781,7 @@ const Employees = () => {
                             emp.shift.includes(shift.split(" ")[0])
                           ).length
                         }{" "}
-                        Team Members
+                        {t.teamMembers}
                       </Badge>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -826,9 +824,9 @@ const Employees = () => {
                   <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div>
-                  <div>Activity Intelligence Dashboard</div>
+                  <div>{t.activityDashboardTitle}</div>
                   <CardDescription className="text-sm sm:text-base md:text-lg">
-                    Real-time team performance and system engagement metrics
+                    {t.activityDashboardDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -838,13 +836,13 @@ const Employees = () => {
                 <BubblingPlaceholder variant="list" count={4} />
               ) : activityError ? (
                 <div className="text-center py-6 sm:py-8 text-sm sm:text-lg text-red-500">
-                  Failed to load activity logs.
+                  {t.failedToLoadActivity}
                 </div>
               ) : (
                 <div className="space-y-3 sm:space-y-4">
                   {activityLogs.length === 0 ? (
                     <div className="text-center py-6 sm:py-8 text-sm sm:text-lg text-slate-500">
-                      No activity logs found.
+                      {t.noActivityLogs}
                     </div>
                   ) : (
                     activityLogs.map((log, index) => (

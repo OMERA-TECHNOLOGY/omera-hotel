@@ -164,13 +164,13 @@ const Restaurant = () => {
       case "bestseller":
         return (
           <Badge className="bg-amber-500 text-white border-0 text-xs">
-            Bestseller
+            {t.bestseller}
           </Badge>
         );
       case "featured":
         return (
           <Badge className="bg-orange-500 text-white border-0 text-xs">
-            Featured
+            {t.featured}
           </Badge>
         );
       default:
@@ -204,11 +204,10 @@ const Restaurant = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-orange-200 to-amber-200 bg-clip-text text-transparent">
-                    Culinary Excellence
+                    {t.restaurantTitle}
                   </h1>
                   <p className="text-orange-100 text-sm sm:text-lg mt-2">
-                    Craft unforgettable dining experiences with precision and
-                    passion
+                    {t.restaurantSubtitle}
                   </p>
                 </div>
               </div>
@@ -219,21 +218,27 @@ const Restaurant = () => {
                   <Zap className="h-4 w-4 sm:h-6 sm:w-6 text-amber-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">12</p>
-                    <p className="text-xs text-orange-200">Active Orders</p>
+                    <p className="text-xs text-orange-200">
+                      {t.statsActiveOrders}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
                   <Star className="h-4 w-4 sm:h-6 sm:w-6 text-orange-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">4.8</p>
-                    <p className="text-xs text-orange-200">Guest Rating</p>
+                    <p className="text-xs text-orange-200">
+                      {t.statsGuestRating}
+                    </p>
                   </div>
                 </div>
                 <div className="col-span-2 sm:col-auto flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20 justify-center sm:justify-start">
                   <Coffee className="h-4 w-4 sm:h-6 sm:w-6 text-amber-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">45</p>
-                    <p className="text-xs text-orange-200">Today's Covers</p>
+                    <p className="text-xs text-orange-200">
+                      {t.statsTodaysCovers}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -244,7 +249,7 @@ const Restaurant = () => {
                 <DialogTrigger asChild>
                   <Button className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border-0 shadow-xl sm:shadow-2xl rounded-xl sm:rounded-2xl px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base">
                     <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    New Order
+                    {t.newOrder}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-[95vw] sm:max-w-4xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
@@ -255,11 +260,10 @@ const Restaurant = () => {
                       </div>
                       <div>
                         <div className="text-lg sm:text-2xl">
-                          Create Premium Order
+                          {t.createPremiumOrder}
                         </div>
                         <div className="text-xs sm:text-sm font-normal text-slate-500">
-                          Place a new room service order with attention to
-                          detail
+                          {t.createPremiumOrderDesc}
                         </div>
                       </div>
                     </DialogTitle>
@@ -272,11 +276,11 @@ const Restaurant = () => {
                           htmlFor="orderRoom"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          Room Details
+                          {t.roomDetailsLabel}
                         </Label>
                         <Input
                           id="orderRoom"
-                          placeholder="Enter room number and type"
+                          placeholder={t.roomDetailsPlaceholder}
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
@@ -285,11 +289,11 @@ const Restaurant = () => {
                           htmlFor="orderGuest"
                           className="text-xs sm:text-sm font-semibold"
                         >
-                          Guest Information
+                          {t.guestInformationLabel}
                         </Label>
                         <Input
                           id="orderGuest"
-                          placeholder="Guest full name"
+                          placeholder={t.guestNamePlaceholder}
                           className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                         />
                       </div>
@@ -297,7 +301,7 @@ const Restaurant = () => {
 
                     <div className="space-y-2 sm:space-y-3">
                       <Label className="text-xs sm:text-sm font-semibold">
-                        Select Menu Items
+                        {t.selectMenuItemsLabel}
                       </Label>
                       <div className="border border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-2xl p-3 sm:p-4 max-h-48 sm:max-h-64 overflow-y-auto space-y-2 sm:space-y-3">
                         {menuItems.map((item) => (
@@ -329,7 +333,7 @@ const Restaurant = () => {
                               size="sm"
                               className="rounded-lg sm:rounded-xl border-orange-300 dark:border-orange-600 text-orange-600 dark:text-orange-400 text-xs sm:text-sm mt-2 sm:mt-0"
                             >
-                              Add to Order
+                              {t.addToOrder}
                             </Button>
                           </div>
                         ))}
@@ -338,11 +342,11 @@ const Restaurant = () => {
 
                     <div className="space-y-2 sm:space-y-3">
                       <Label className="text-xs sm:text-sm font-semibold">
-                        Order Summary
+                        {t.orderSummaryLabel}
                       </Label>
                       <div className="border border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-2xl p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50">
                         <p className="text-xs sm:text-sm text-slate-500 text-center py-4 sm:py-8">
-                          Select items from the menu to build your order
+                          {t.selectItemsBuildOrder}
                         </p>
                         <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-600 hidden">
                           <div className="flex justify-between items-center">
@@ -363,10 +367,10 @@ const Restaurant = () => {
                       variant="outline"
                       className="border-slate-300 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-2 sm:order-1"
                     >
-                      Cancel
+                      {t.cancel}
                     </Button>
                     <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-1 sm:order-2">
-                      Place Premium Order
+                      {t.placePremiumOrder}
                     </Button>
                   </div>
                 </DialogContent>
@@ -386,7 +390,7 @@ const Restaurant = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
           <Input
-            placeholder="Search orders by room number, guest name, or order ID..."
+            placeholder={t.searchOrdersPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border-0 bg-white dark:bg-slate-700 shadow-md sm:shadow-lg rounded-lg sm:rounded-xl"
@@ -394,13 +398,13 @@ const Restaurant = () => {
         </div>
         <Select defaultValue="all">
           <SelectTrigger className="w-full sm:w-[200px] bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base">
-            <SelectValue placeholder="Filter by status" />
+            <SelectValue placeholder={t.filterByStatusPlaceholder} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Orders</SelectItem>
-            <SelectItem value="preparing">Preparing</SelectItem>
-            <SelectItem value="ready">Ready</SelectItem>
-            <SelectItem value="delivered">Delivered</SelectItem>
+            <SelectItem value="all">{t.allOrders}</SelectItem>
+            <SelectItem value="preparing">{t.statusPreparing}</SelectItem>
+            <SelectItem value="ready">{t.statusReady}</SelectItem>
+            <SelectItem value="delivered">{t.statusDelivered}</SelectItem>
           </SelectContent>
         </Select>
         <Dialog>
@@ -410,14 +414,14 @@ const Restaurant = () => {
               className="border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg sm:rounded-xl text-xs sm:text-base"
             >
               <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              Add Menu Item
+              {t.addMenuItem}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-[95vw] sm:max-w-md bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
                 <ChefHat className="h-5 w-5 sm:h-6 sm:w-6 text-orange-500" />
-                Add Culinary Creation
+                {t.addCulinaryCreation}
               </DialogTitle>
             </DialogHeader>
             <div className="grid gap-3 sm:gap-4 py-3 sm:py-4">
@@ -426,11 +430,11 @@ const Restaurant = () => {
                   htmlFor="itemName"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Dish Name
+                  {t.dishName}
                 </Label>
                 <Input
                   id="itemName"
-                  placeholder="Enter signature dish name"
+                  placeholder={t.dishNamePlaceholder}
                   className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
@@ -440,20 +444,22 @@ const Restaurant = () => {
                     htmlFor="itemCategory"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Category
+                    {t.categoryLabel}
                   </Label>
                   <Select>
                     <SelectTrigger
                       id="itemCategory"
                       className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                     >
-                      <SelectValue placeholder="Select category" />
+                      <SelectValue placeholder={t.selectCategoryPlaceholder} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="appetizer">Appetizer</SelectItem>
-                      <SelectItem value="main">Main Course</SelectItem>
-                      <SelectItem value="dessert">Dessert</SelectItem>
-                      <SelectItem value="beverage">Beverage</SelectItem>
+                      <SelectItem value="appetizer">
+                        {t.catAppetizer}
+                      </SelectItem>
+                      <SelectItem value="main">{t.catMainCourse}</SelectItem>
+                      <SelectItem value="dessert">{t.catDessert}</SelectItem>
+                      <SelectItem value="beverage">{t.catBeverage}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -462,12 +468,12 @@ const Restaurant = () => {
                     htmlFor="itemPrice"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Price (ETB)
+                    {t.priceLabel}
                   </Label>
                   <Input
                     id="itemPrice"
                     type="number"
-                    placeholder="0.00"
+                    placeholder={t.pricePlaceholder}
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                   />
                 </div>
@@ -477,11 +483,11 @@ const Restaurant = () => {
                   htmlFor="itemDescription"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Description
+                  {t.descriptionLabel}
                 </Label>
                 <Input
                   id="itemDescription"
-                  placeholder="Craft an enticing description"
+                  placeholder={t.descriptionPlaceholder}
                   className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
@@ -491,10 +497,10 @@ const Restaurant = () => {
                 variant="outline"
                 className="border-slate-300 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-2 sm:order-1"
               >
-                Cancel
+                {t.cancel}
               </Button>
               <Button className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-lg sm:rounded-xl text-xs sm:text-base order-1 sm:order-2">
-                Add to Menu
+                {t.addToMenu}
               </Button>
             </div>
           </DialogContent>
@@ -507,7 +513,7 @@ const Restaurant = () => {
             value="orders"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Active Orders
+            {t.tabActiveOrders}
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-orange-500 text-white text-xs rounded-full">
               {orders.filter((o) => o.status !== "delivered").length}
             </span>
@@ -516,7 +522,7 @@ const Restaurant = () => {
             value="menu"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Menu Management
+            {t.tabMenuManagement}
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-amber-500 text-white text-xs rounded-full">
               {menuItems.length}
             </span>
@@ -525,7 +531,7 @@ const Restaurant = () => {
             value="kitchen"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Kitchen Display
+            {t.tabKitchenDisplay}
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-500 text-white text-xs rounded-full">
               {orders.filter((o) => o.status === "preparing").length}
             </span>
@@ -552,7 +558,7 @@ const Restaurant = () => {
                 {order.priority === "high" && (
                   <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
                     <Badge className="bg-red-100 text-red-800 border-red-200 text-xs">
-                      High Priority
+                      {t.highPriority}
                     </Badge>
                   </div>
                 )}
@@ -587,7 +593,7 @@ const Restaurant = () => {
                       {/* Order Items */}
                       <div className="space-y-2 sm:space-y-3">
                         <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                          Order Details:
+                          {t.orderDetails}
                         </p>
                         <div className="grid gap-1.5 sm:gap-2">
                           {order.items.map((item, index) => (
@@ -600,7 +606,8 @@ const Restaurant = () => {
                                   {item.name}
                                 </p>
                                 <p className="text-xs sm:text-sm text-slate-500">
-                                  Qty: {item.quantity} × {item.price} ETB
+                                  {t.qtyLabel} {item.quantity} × {item.price}{" "}
+                                  ETB
                                 </p>
                               </div>
                               <p className="font-semibold text-slate-800 dark:text-white text-sm sm:text-base ml-2">
@@ -617,7 +624,7 @@ const Restaurant = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-700">
                     <div className="text-left sm:text-right">
                       <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                        Total Amount
+                        {t.totalAmount}
                       </p>
                       <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                         {order.total} ETB
@@ -632,8 +639,8 @@ const Restaurant = () => {
                         }`}
                       >
                         {order.status === "preparing"
-                          ? "Mark Ready"
-                          : "Mark Delivered"}
+                          ? t.orderMarkReady
+                          : t.orderMarkDelivered}
                       </Button>
                     )}
                   </div>
@@ -690,14 +697,14 @@ const Restaurant = () => {
                       size="sm"
                       className="flex-1 rounded-lg sm:rounded-xl border-slate-300 dark:border-slate-600 text-xs sm:text-sm"
                     >
-                      Edit
+                      {t.edit}
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
                       className="flex-1 rounded-lg sm:rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 text-xs sm:text-sm"
                     >
-                      Delete
+                      {t.delete}
                     </Button>
                   </div>
                 </CardContent>
@@ -715,10 +722,10 @@ const Restaurant = () => {
                 </div>
                 <div>
                   <div className="text-lg sm:text-2xl">
-                    Kitchen Command Center
+                    {t.kitchenCommandTitle}
                   </div>
                   <CardDescription className="text-sm sm:text-lg">
-                    Live order tracking and preparation status
+                    {t.kitchenCommandDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -784,8 +791,8 @@ const Restaurant = () => {
                           }`}
                         >
                           {order.status === "preparing"
-                            ? "Mark as Ready"
-                            : "Complete Order"}
+                            ? t.orderMarkAsReady
+                            : t.orderCompleteOrder}
                         </Button>
                       </CardContent>
                     </Card>

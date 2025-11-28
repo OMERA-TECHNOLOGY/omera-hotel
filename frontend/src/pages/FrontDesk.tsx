@@ -574,10 +574,10 @@ const FrontDesk = () => {
                       {/* Mobile-Optimized Guest Details */}
                       <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:gap-6 text-xs sm:text-sm">
                         <div>
-                            <p className="text-slate-600 dark:text-slate-400 text-xs flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {t.checkInLabel}
-                            </p>
+                          <p className="text-slate-600 dark:text-slate-400 text-xs flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {t.checkInLabel}
+                          </p>
                           <p className="font-semibold text-slate-800 dark:text-white text-sm">
                             {guest.check_in}
                           </p>
