@@ -34,8 +34,8 @@ const EarthIcon = ({
     <Icon
       className={`h-5 w-5 transition-all duration-300 ${
         isActive
-          ? "text-stone-100 scale-110"
-          : "text-stone-600 dark:text-stone-400 group-hover:text-stone-700 dark:group-hover:text-stone-300"
+          ? "text-sidebar-primary-foreground scale-110"
+          : "text-sidebar-foreground dark:text-sidebar-foreground group-hover:text-sidebar-accent dark:group-hover:text-sidebar-accent"
       }`}
     />
   </div>
@@ -59,21 +59,23 @@ const NaturalNavLink = ({
       onClick={onClick}
       title={isCollapsed ? item.title : undefined}
       className={`
-        group relative flex items-center rounded-xl 
-        transition-all duration-300 overflow-hidden
-        border border-stone-200/50 dark:border-stone-700/50
-        ${
-          isActive
-            ? "text-stone-100 shadow-lg border-stone-600/30 bg-stone-700 dark:bg-stone-600"
-            : "text-stone-700 dark:text-stone-300 bg-white/50 dark:bg-stone-800/50 hover:bg-white/70 dark:hover:bg-stone-700/70"
-        }
-        ${isCollapsed ? "justify-center p-3" : "justify-start px-4 py-3 gap-3"}
-        w-full
-      `}
+          group relative flex items-center rounded-xl 
+          transition-all duration-300 overflow-hidden
+          border border-sidebar-border/50 dark:border-sidebar-border/50
+          ${
+            isActive
+              ? "text-sidebar-primary-foreground shadow-lg border-sidebar-border/30 bg-sidebar-primary dark:bg-sidebar-primary"
+              : "text-sidebar-foreground dark:text-sidebar-foreground bg-sidebar/50 dark:bg-sidebar/80 hover:bg-sidebar/70 dark:hover:bg-sidebar/70"
+          }
+          ${
+            isCollapsed ? "justify-center p-3" : "justify-start px-4 py-3 gap-3"
+          }
+          w-full
+        `}
     >
       {/* Active state overlay */}
       {isActive && (
-        <div className="absolute inset-0 bg-stone-600/90 dark:bg-stone-500/90 rounded-xl" />
+        <div className="absolute inset-0 bg-sidebar-primary/90 dark:bg-sidebar-primary/90 rounded-xl" />
       )}
 
       {/* Accent line */}
@@ -96,7 +98,7 @@ const NaturalNavLink = ({
           {isActive ? (
             <Leaf className="w-4 h-4 text-amber-300 animate-soft-bounce" />
           ) : (
-            <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all duration-300 text-stone-400" />
+            <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all duration-300 text-sidebar-foreground" />
           )}
         </div>
       )}
@@ -120,8 +122,8 @@ const NaturalThemeToggle = ({ isCollapsed }: { isCollapsed: boolean }) => {
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className={`
         relative rounded-xl transition-all duration-300
-        bg-stone-100 dark:bg-stone-800
-        hover:shadow-lg border border-stone-200 dark:border-stone-700
+        bg-sidebar/90 dark:bg-sidebar/80
+        hover:shadow-lg border border-sidebar-border/50 dark:border-sidebar-border/50
         ${isCollapsed ? "p-2" : "p-3"}
         flex items-center justify-center
       `}
@@ -129,7 +131,7 @@ const NaturalThemeToggle = ({ isCollapsed }: { isCollapsed: boolean }) => {
       {theme === "dark" ? (
         <Sun className="h-5 w-5 text-amber-500" />
       ) : (
-        <Moon className="h-5 w-5 text-stone-600" />
+        <Moon className="h-5 w-5 text-sidebar-foreground" />
       )}
     </button>
   );
@@ -149,10 +151,10 @@ const OrganicLogo = ({
   >
     <div className={`relative ${isCollapsed ? "w-10 h-10" : "w-12 h-12"}`}>
       <div
-        className="absolute inset-0 bg-stone-700 dark:bg-stone-600 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl"
+        className="absolute inset-0 bg-sidebar-primary dark:bg-sidebar-primary rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl"
         style={{ borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%" }}
       />
-      <Building className="absolute inset-0 m-auto text-stone-100 h-5 w-5" />
+      <Building className="absolute inset-0 m-auto text-sidebar-primary-foreground h-5 w-5" />
       <div
         className="absolute -bottom-1 -right-1 w-3 h-3 bg-amber-500 rounded-full transition-all duration-300 hover:scale-110"
         style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
@@ -199,17 +201,17 @@ export function NaturalSidebarContent() {
   // Mobile Section
   if (isMobile) {
     return (
-      <div className="relative h-full flex flex-col bg-white dark:bg-gray-900">
+      <div className="relative h-full flex flex-col bg-sidebar">
         {/* Header with close button */}
-        <div className="p-6 border-b border-stone-200/50 dark:border-stone-700/50">
+        <div className="p-6 border-b border-sidebar-border/50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <OrganicLogo isCollapsed={false} onToggle={toggleSidebar} />
               <div className="flex-1 min-w-0">
-                <h2 className="text-xl font-serif font-bold text-stone-800 dark:text-stone-200">
+                <h2 className="text-xl font-serif font-bold text-sidebar-foreground">
                   Omera
                 </h2>
-                <p className="text-sm text-stone-600 dark:text-stone-400 font-medium mt-1 flex items-center gap-1">
+                <p className="text-sm text-sidebar-foreground font-medium mt-1 flex items-center gap-1">
                   <Waves className="w-3 h-3" />
                   Natural Retreat
                 </p>
@@ -218,9 +220,9 @@ export function NaturalSidebarContent() {
             {/* Close button - top right */}
             <button
               onClick={() => setOpenMobile(false)}
-              className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+              className="p-2 rounded-lg hover:bg-sidebar/70 transition-colors"
             >
-              <X className="h-5 w-5 text-stone-600 dark:text-stone-400" />
+              <X className="h-5 w-5 text-sidebar-foreground" />
             </button>
           </div>
         </div>
@@ -241,13 +243,13 @@ export function NaturalSidebarContent() {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-stone-200/50 dark:border-stone-700/50">
+        <div className="p-6 border-t border-sidebar-border/50">
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
+              <p className="text-sm font-medium text-sidebar-foreground">
                 {theme === "dark" ? "Evening Mode" : "Daylight Mode"}
               </p>
-              <p className="text-xs text-stone-500 dark:text-stone-500">
+              <p className="text-xs text-sidebar-foreground">
                 Natural lighting
               </p>
             </div>
@@ -260,10 +262,10 @@ export function NaturalSidebarContent() {
 
   // Desktop Section
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-900 border-r border-stone-200/80 dark:border-stone-700/80 w-full">
+    <div className="h-full flex flex-col bg-sidebar border-r border-sidebar-border/80 dark:border-sidebar-border/80 w-full">
       {/* Header with clickable logo */}
       <div
-        className={`p-6 border-b border-stone-200/50 dark:border-stone-700/50 ${
+        className={`p-6 border-b border-sidebar-border/50 ${
           isCollapsed ? "px-4" : ""
         }`}
       >
@@ -271,10 +273,10 @@ export function NaturalSidebarContent() {
           <OrganicLogo isCollapsed={isCollapsed} onToggle={handleLogoClick} />
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl font-serif font-bold text-stone-800 dark:text-stone-200">
+              <h2 className="text-xl font-serif font-bold text-sidebar-foreground">
                 Omera
               </h2>
-              <p className="text-sm text-stone-600 dark:text-stone-400 font-medium mt-1 flex items-center gap-1">
+              <p className="text-sm text-sidebar-foreground font-medium mt-1 flex items-center gap-1">
                 <Waves className="w-3 h-3" />
                 Natural Retreat
               </p>
@@ -300,7 +302,7 @@ export function NaturalSidebarContent() {
 
       {/* Footer */}
       <div
-        className={`p-6 border-t border-stone-200/50 dark:border-stone-700/50 ${
+        className={`p-6 border-t border-sidebar-border/50 ${
           isCollapsed ? "px-4" : ""
         }`}
       >
@@ -311,10 +313,10 @@ export function NaturalSidebarContent() {
         >
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
+              <p className="text-sm font-medium text-sidebar-foreground">
                 {theme === "dark" ? "Evening Mode" : "Daylight Mode"}
               </p>
-              <p className="text-xs text-stone-500 dark:text-stone-500">
+              <p className="text-xs text-sidebar-foreground">
                 Natural lighting
               </p>
             </div>
