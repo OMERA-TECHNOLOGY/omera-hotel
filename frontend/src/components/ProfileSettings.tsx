@@ -10,9 +10,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/contexts/language-context";
 
 export const ProfileSettings: React.FC = () => {
   const { profile, loading, updateProfile, changePassword } = useProfile();
+  const { t } = useLanguage();
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
@@ -54,15 +56,15 @@ export const ProfileSettings: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Profile Settings</CardTitle>
+        <CardTitle>{t.profileSettings}</CardTitle>
       </CardHeader>
       <CardContent>
-        {loading && <div>Loading...</div>}
+        {loading && <div>{t.loading ?? "Loading..."}</div>}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Avatar
+              {t.avatar}
             </label>
             <div className="mt-2">
               <AvatarUploader
@@ -79,7 +81,7 @@ export const ProfileSettings: React.FC = () => {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              First name
+              {t.firstName}
             </label>
             <Input
               value={form.first_name}
@@ -88,7 +90,7 @@ export const ProfileSettings: React.FC = () => {
             />
 
             <label className="block text-sm font-medium text-muted-foreground mt-3">
-              Last name
+              {t.lastName}
             </label>
             <Input
               value={form.last_name}
@@ -97,7 +99,7 @@ export const ProfileSettings: React.FC = () => {
             />
 
             <label className="block text-sm font-medium text-muted-foreground mt-3">
-              Phone
+              {t.phone}
             </label>
             <Input
               value={form.phone}
@@ -108,11 +110,11 @@ export const ProfileSettings: React.FC = () => {
         </div>
 
         <div className="mt-6">
-          <h3 className="font-semibold text-base">Security</h3>
+          <h3 className="font-semibold text-base">{t.security}</h3>
           <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Change Password
+                {t.changePassword}
               </label>
               <div className="mt-2">
                 <PasswordChange onChange={changePassword} />
@@ -120,13 +122,14 @@ export const ProfileSettings: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Two-factor authentication
+                {t.twoFactorAuth}
               </label>
               <div className="mt-2 text-sm text-muted-foreground">
-                Enable 2FA to add an extra layer of security to your account.
+                {t.enable2FADesc ??
+                  "Enable 2FA to add an extra layer of security to your account."}
               </div>
               <Button variant="outline" className="mt-3">
-                Manage 2FA
+                {t.manage2FA}
               </Button>
             </div>
           </div>
@@ -135,15 +138,15 @@ export const ProfileSettings: React.FC = () => {
       <CardFooter>
         <div className="flex items-center gap-3 w-full justify-between">
           <div>
-            <Button onClick={() => save(false)}>Save</Button>
+            <Button onClick={() => save(false)}>{t.save}</Button>
           </div>
           <div className="text-sm text-muted-foreground">
             {status === "saving"
-              ? "Saving..."
+              ? t.saving
               : status === "saved"
-              ? "Saved"
+              ? t.saved
               : status === "error"
-              ? "Error saving"
+              ? t.errorSaving
               : ""}
           </div>
         </div>

@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import type { Room, CreateRoomInput, RoomType } from "@/types/rooms";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { apiGet } from "@/lib/api";
 import {
   Select,
@@ -82,9 +84,9 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
     <form onSubmit={handleSubmit(submit)} className="space-y-4">
       <div>
         <label className="block text-sm font-medium">Room number</label>
-        <input
+        <Input
           {...register("room_number")}
-          className="mt-1 block w-full rounded-md border p-2"
+          className="mt-1"
           placeholder="e.g. 101"
         />
       </div>
@@ -96,14 +98,16 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
           name="room_type_id"
           render={({ field }) => (
             <Select
-              value={field.value || ""}
-              onValueChange={(v) => field.onChange(v || undefined)}
+              value={field.value ?? "none"}
+              onValueChange={(v) =>
+                field.onChange(v === "none" ? undefined : v)
+              }
             >
               <SelectTrigger className="mt-1 w-full">
                 <SelectValue placeholder="Select room type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {roomTypesQ.isLoading ? (
                   <div className="p-3">
                     <BubblingPlaceholder variant="small" count={3} />
@@ -129,26 +133,26 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
       <div className="grid grid-cols-3 gap-3">
         <div>
           <label className="block text-sm font-medium">Floor</label>
-          <input
+          <Input
             type="number"
             {...register("floor", { valueAsNumber: true })}
-            className="mt-1 block w-full rounded-md border p-2"
+            className="mt-1"
           />
         </div>
         <div>
           <label className="block text-sm font-medium">Capacity</label>
-          <input
+          <Input
             type="number"
             {...register("capacity", { valueAsNumber: true })}
-            className="mt-1 block w-full rounded-md border p-2"
+            className="mt-1"
           />
         </div>
         <div>
           <label className="block text-sm font-medium">Price (ETB)</label>
-          <input
+          <Input
             type="number"
             {...register("base_price_birr", { valueAsNumber: true })}
-            className="mt-1 block w-full rounded-md border p-2"
+            className="mt-1"
           />
         </div>
       </div>
@@ -157,7 +161,7 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
         <label className="block text-sm font-medium">Status</label>
         <select
           {...register("status")}
-          className="mt-1 block w-full rounded-md border p-2"
+          className="mt-1 flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <option value="vacant">Vacant</option>
           <option value="occupied">Occupied</option>
@@ -168,19 +172,12 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
 
       <div>
         <label className="block text-sm font-medium">View type</label>
-        <input
-          {...register("view_type")}
-          className="mt-1 block w-full rounded-md border p-2"
-        />
+        <Input {...register("view_type")} className="mt-1" />
       </div>
 
       <div>
         <label className="block text-sm font-medium">Description</label>
-        <textarea
-          {...register("description")}
-          className="mt-1 block w-full rounded-md border p-2"
-          rows={3}
-        />
+        <Textarea {...register("description")} className="mt-1" rows={3} />
       </div>
 
       <div className="flex items-center gap-3">

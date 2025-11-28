@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useProfile } from "../hooks/useProfile";
+import { useProfile } from "@/hooks/useProfile";
+import { useLanguage } from "@/contexts/language-context";
 
 export const ProfileDropdown: React.FC = () => {
   const { profile } = useProfile();
+  const { t } = useLanguage();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(false);
   const id = "profile";
@@ -128,11 +130,11 @@ export const ProfileDropdown: React.FC = () => {
                   profile.first_name ??
                   profile.employee?.first_name ??
                   profile.user?.email ??
-                  "Account"
+                  t.account
                 } ${
                   profile.last_name ?? profile.employee?.last_name ?? ""
                 }`.trim()
-              : "Account"}
+              : t.account}
           </span>
         </button>
 
@@ -157,23 +159,23 @@ export const ProfileDropdown: React.FC = () => {
             </div>
             <div className="flex flex-col">
               <Link to="/profile" className="px-4 py-2 hover:bg-gray-50">
-                Profile Settings
+                {t.profileSettings}
               </Link>
               <Link to="/notifications" className="px-4 py-2 hover:bg-gray-50">
-                Notifications
+                {t.notifications}
               </Link>
               <Link to="/billing" className="px-4 py-2 hover:bg-gray-50">
-                Billing
+                {t.billing}
               </Link>
               <Link to="/connected" className="px-4 py-2 hover:bg-gray-50">
-                Connected Accounts
+                {t.connectedAccounts}
               </Link>
               <div className="border-t mt-2" />
               <button
                 onClick={onLogout}
                 className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
               >
-                Logout
+                {t.logout}
               </button>
             </div>
           </div>
