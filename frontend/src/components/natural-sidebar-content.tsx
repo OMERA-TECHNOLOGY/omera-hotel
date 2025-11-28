@@ -16,6 +16,7 @@ import {
   Building,
   Leaf,
   Waves,
+  X,
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useLanguage } from "@/contexts/language-context";
@@ -164,7 +165,7 @@ export function NaturalSidebarContent() {
   const { theme } = useTheme();
   const { t } = useLanguage();
   const location = useLocation();
-  const { state, setOpen } = useSidebar(); // Added setOpen from useSidebar
+  const { state, toggleSidebar, isMobile, setOpenMobile } = useSidebar();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const menuItems = [
@@ -192,9 +193,72 @@ export function NaturalSidebarContent() {
 
   // Toggle function for the logo
   const handleLogoClick = () => {
-    setOpen(!isCollapsed);
+    toggleSidebar();
   };
 
+  // Mobile Section
+  if (isMobile) {
+    return (
+      <div className="relative h-full flex flex-col bg-white dark:bg-gray-900">
+        {/* Header with close button */}
+        <div className="p-6 border-b border-stone-200/50 dark:border-stone-700/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <OrganicLogo isCollapsed={false} onToggle={toggleSidebar} />
+              <div className="flex-1 min-w-0">
+                <h2 className="text-xl font-serif font-bold text-stone-800 dark:text-stone-200">
+                  Omera
+                </h2>
+                <p className="text-sm text-stone-600 dark:text-stone-400 font-medium mt-1 flex items-center gap-1">
+                  <Waves className="w-3 h-3" />
+                  Natural Retreat
+                </p>
+              </div>
+            </div>
+            {/* Close button - top right */}
+            <button
+              onClick={() => setOpenMobile(false)}
+              className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            >
+              <X className="h-5 w-5 text-stone-600 dark:text-stone-400" />
+            </button>
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <div className="flex-1 overflow-y-auto py-6">
+          <div className="space-y-2 px-4">
+            {menuItems.map((item, index) => (
+              <NaturalNavLink
+                key={item.title}
+                item={item}
+                isActive={activeIndex === index}
+                isCollapsed={false}
+                onClick={() => setActiveIndex(index)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="p-6 border-t border-stone-200/50 dark:border-stone-700/50">
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
+                {theme === "dark" ? "Evening Mode" : "Daylight Mode"}
+              </p>
+              <p className="text-xs text-stone-500 dark:text-stone-500">
+                Natural lighting
+              </p>
+            </div>
+            <NaturalThemeToggle isCollapsed={false} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop Section
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-900 border-r border-stone-200/80 dark:border-stone-700/80 w-full">
       {/* Header with clickable logo */}
