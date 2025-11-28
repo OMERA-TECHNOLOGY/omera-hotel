@@ -2,15 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
     /* Luxury Hotel Color Palette - Light Mode */
-    --background: 36 10% 96%; /* Off-white with warmth */
-    --foreground: 0 0% 17%; /* Deep charcoal */
+    --background: 36 10% 96%;
+    --foreground: 0 0% 17%;
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 17%;
@@ -18,16 +14,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 17%;
 
-    --primary: 95 50% 20%; /* Forest Green */
+    --primary: 95 50% 20%;
     --primary-foreground: 36 10% 96%;
 
-    --secondary: 340 75% 25%; /* Burgundy */
+    --secondary: 340 75% 25%;
     --secondary-foreground: 36 10% 96%;
 
-    --muted: 30 8% 55%; /* Warm Grey */
-    --muted-foreground: 0 0% 17%;
+    --muted: 30 8% 55%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 30 45% 40%; /* Bronze */
+    --accent: 30 45% 40%;
     --accent-foreground: 36 10% 96%;
 
     --destructive: 0 75% 40%;
@@ -56,8 +52,8 @@ All colors MUST be HSL.
 
   .dark {
     /* Luxury Hotel Color Palette - Dark Mode */
-    --background: 0 0% 10%; /* Deep charcoal background */
-    --foreground: 36 10% 96%; /* Off-white text */
+    --background: 0 0% 10%;
+    --foreground: 36 10% 96%;
 
     --card: 0 0% 13%;
     --card-foreground: 36 10% 96%;
@@ -65,16 +61,16 @@ All colors MUST be HSL.
     --popover: 0 0% 13%;
     --popover-foreground: 36 10% 96%;
 
-    --primary: 95 45% 35%; /* Lighter forest green for dark mode */
+    --primary: 95 45% 35%;
     --primary-foreground: 36 10% 96%;
 
-    --secondary: 340 60% 35%; /* Lighter burgundy */
+    --secondary: 340 60% 35%;
     --secondary-foreground: 36 10% 96%;
 
-    --muted: 30 8% 25%; /* Dark warm grey */
-    --muted-foreground: 30 8% 70%;
+    --muted: 30 8% 25%;
+    --muted-foreground: 30 8% 80%;
 
-    --accent: 30 45% 45%; /* Lighter bronze */
+    --accent: 30 45% 45%;
     --accent-foreground: 0 0% 10%;
 
     --destructive: 0 75% 45%;
@@ -103,6 +99,10 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
+  }
+
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 
   body {
@@ -135,6 +135,10 @@ All colors MUST be HSL.
   .glass-effect {
     background: hsl(var(--background) / 0.8);
     backdrop-filter: blur(10px);
+  }
+
+  .smooth-collapse {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -175,4 +179,29 @@ All colors MUST be HSL.
 
 .premium-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #78716c, #57534e);
+}
+
+/* Enhanced hover effects for collapsed state */
+@media (min-width: 1024px) {
+  .sidebar-collapsed .nav-item {
+    position: relative;
+  }
+
+  .sidebar-collapsed .nav-item:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 4px 12px hsl(var(--luxury-shadow) / 0.15);
+    border: 1px solid hsl(var(--border));
+    pointer-events: none;
+  }
 }

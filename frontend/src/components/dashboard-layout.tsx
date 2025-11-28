@@ -7,65 +7,30 @@ import {
 import { NaturalSidebarContent } from "@/components/natural-sidebar-content";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSelector } from "@/components/language-selector";
-import { Bell, User, Menu } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-// Mobile sidebar overlay component
-const MobileSidebarOverlay = ({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) => {
-  if (!isOpen) return null;
-
-  return (
-    <>
-      {/* Backdrop Overlay */}
-      <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-        onClick={onClose}
-      />
-
-      {/* Sidebar Overlay */}
-      <div className="fixed left-0 top-0 h-full w-80 bg-white dark:bg-gray-900 shadow-2xl z-50 lg:hidden">
-        <NaturalAppSidebar onMobileClose={onClose} />
-      </div>
-    </>
-  );
-};
-
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
-        <Sidebar>
-          <NaturalSidebarContent />
+        <Sidebar
+          collapsible="icon"
+          variant="floating"
+          className="!bg-transparent !border-none !shadow-none !p-0"
+        >
+          <div className="w-full h-full">
+            <NaturalSidebarContent />
+          </div>
         </Sidebar>
-        <SidebarInset>
-          <header className="flex h-16 items-center gap-4 border-b bg-background px-6 sticky top-0 z-30">
+        <SidebarInset className="flex-1 flex flex-col min-w-0">
+          <header className="flex h-16 items-center gap-4 border-b bg-background px-6 sticky top-0 z-30 shrink-0">
             <div className="flex items-center gap-4">
-              {/* Mobile Menu Button - Always visible on mobile */}
-              <button
-                onClick={() => setMobileSidebarOpen(true)}
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                <Menu className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-              </button>
-
-              {/* Desktop Sidebar Trigger - Hidden on mobile */}
-              <div className="hidden lg:block">
-                <SidebarTrigger />
-              </div>
-
+              <SidebarTrigger />
               <div className="hidden md:block">
                 <h1 className="text-lg font-semibold">Omera Dashboard</h1>
               </div>
@@ -84,7 +49,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </Button>
             </div>
           </header>
-          <main className="flex-1 p-6 bg-background overflow-auto">
+          <main className="flex-1 p-6 bg-background overflow-auto min-h-0">
             {children}
           </main>
         </SidebarInset>
