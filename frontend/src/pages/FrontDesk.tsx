@@ -144,7 +144,7 @@ const FrontDesk = () => {
                 {t.frontDesk}
               </h1>
               <p className="mt-1 sm:mt-2 text-blue-200 text-sm sm:text-base md:text-lg">
-                Premium Guest Experience Management
+                {t.frontDeskPremiumDescription}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 lg:gap-6">
@@ -160,9 +160,11 @@ const FrontDesk = () => {
                     </div>
                     <div>
                       <p className="text-xs sm:text-sm font-semibold">
-                        VIP Lounge Active
+                        {t.vipLoungeActive}
                       </p>
-                      <p className="text-xs text-blue-200">3 premium guests</p>
+                      <p className="text-xs text-blue-200">
+                        {statsData?.data?.vipCount ?? 3} {t.premiumGuests}
+                      </p>
                     </div>
                   </div>
                   <Dialog>
@@ -181,7 +183,7 @@ const FrontDesk = () => {
                           {t.guestCheckIn}
                         </DialogTitle>
                         <DialogDescription className="text-sm sm:text-base">
-                          Complete the premium check-in experience
+                          {t.premiumCheckinDesc}
                         </DialogDescription>
                       </DialogHeader>
 
@@ -192,11 +194,11 @@ const FrontDesk = () => {
                               htmlFor="firstName"
                               className="text-xs sm:text-sm font-semibold"
                             >
-                              First Name
+                              {t.firstName}
                             </Label>
                             <Input
                               id="firstName"
-                              placeholder="Enter first name"
+                              placeholder={t.placeholderFirstName}
                               className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                             />
                           </div>
@@ -205,11 +207,11 @@ const FrontDesk = () => {
                               htmlFor="lastName"
                               className="text-xs sm:text-sm font-semibold"
                             >
-                              Last Name
+                              {t.lastName}
                             </Label>
                             <Input
                               id="lastName"
-                              placeholder="Enter last name"
+                              placeholder={t.placeholderLastName}
                               className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                             />
                           </div>
@@ -222,12 +224,12 @@ const FrontDesk = () => {
                               className="text-xs sm:text-sm font-semibold flex items-center gap-2"
                             >
                               <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                              Email
+                              {t.email}
                             </Label>
                             <Input
                               id="email"
                               type="email"
-                              placeholder="guest@example.com"
+                              placeholder={t.emailPlaceholder}
                               className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                             />
                           </div>
@@ -237,11 +239,11 @@ const FrontDesk = () => {
                               className="text-xs sm:text-sm font-semibold flex items-center gap-2"
                             >
                               <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                              Phone
+                              {t.phone}
                             </Label>
                             <Input
                               id="phone"
-                              placeholder="+251 xxx xxx xxx"
+                              placeholder={t.placeholderPhone}
                               className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                             />
                           </div>
@@ -254,22 +256,26 @@ const FrontDesk = () => {
                               className="text-xs sm:text-sm font-semibold flex items-center gap-2"
                             >
                               <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-                              ID Type
+                              {t.idType}
                             </Label>
                             <Select>
                               <SelectTrigger
                                 id="idType"
                                 className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                               >
-                                <SelectValue placeholder="Select ID type" />
+                                <SelectValue
+                                  placeholder={t.selectIdTypePlaceholder}
+                                />
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="passport">
-                                  Passport
+                                  {t.idTypePassport}
                                 </SelectItem>
-                                <SelectItem value="id">ID Card</SelectItem>
+                                <SelectItem value="id">
+                                  {t.idTypeCard}
+                                </SelectItem>
                                 <SelectItem value="driver">
-                                  Driver's License
+                                  {t.idTypeDriver}
                                 </SelectItem>
                               </SelectContent>
                             </Select>
@@ -279,11 +285,11 @@ const FrontDesk = () => {
                               htmlFor="idNumber"
                               className="text-xs sm:text-sm font-semibold"
                             >
-                              ID Number
+                              {t.idNumber}
                             </Label>
                             <Input
                               id="idNumber"
-                              placeholder="Enter ID number"
+                              placeholder={t.placeholderIdNumber}
                               className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                             />
                           </div>
@@ -295,27 +301,29 @@ const FrontDesk = () => {
                               htmlFor="roomType"
                               className="text-xs sm:text-sm font-semibold"
                             >
-                              Room Type
+                              {t.roomType}
                             </Label>
                             <Select>
                               <SelectTrigger
                                 id="roomType"
                                 className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                               >
-                                <SelectValue placeholder="Select room type" />
+                                <SelectValue
+                                  placeholder={t.selectRoomTypePlaceholder}
+                                />
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="single">
-                                  Single Room
+                                  {t.roomTypeSingle}
                                 </SelectItem>
                                 <SelectItem value="deluxe">
-                                  Deluxe Room
+                                  {t.roomTypeDeluxe}
                                 </SelectItem>
                                 <SelectItem value="suite">
-                                  Executive Suite
+                                  {t.roomTypeExecutive}
                                 </SelectItem>
                                 <SelectItem value="presidential">
-                                  Presidential Suite
+                                  {t.roomTypePresidential}
                                 </SelectItem>
                               </SelectContent>
                             </Select>
@@ -332,7 +340,9 @@ const FrontDesk = () => {
                                 id="roomNumber"
                                 className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                               >
-                                <SelectValue placeholder="Select room" />
+                                <SelectValue
+                                  placeholder={t.selectRoomPlaceholder}
+                                />
                               </SelectTrigger>
                               <SelectContent>
                                 {roomsLoading ? (
@@ -355,7 +365,7 @@ const FrontDesk = () => {
                                   ))
                                 ) : (
                                   <SelectItem value="none">
-                                    No rooms available
+                                    {t.noRoomsAvailable}
                                   </SelectItem>
                                 )}
                               </SelectContent>
@@ -370,7 +380,7 @@ const FrontDesk = () => {
                               className="text-xs sm:text-sm font-semibold flex items-center gap-2"
                             >
                               <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                              Check-in Date
+                              {t.checkInLabel}
                             </Label>
                             <Input
                               id="checkIn"
@@ -384,7 +394,7 @@ const FrontDesk = () => {
                               className="text-xs sm:text-sm font-semibold flex items-center gap-2"
                             >
                               <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                              Check-out Date
+                              {t.checkOutLabel}
                             </Label>
                             <Input
                               id="checkOut"
@@ -403,7 +413,7 @@ const FrontDesk = () => {
                           {t.cancel}
                         </Button>
                         <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-lg sm:rounded-xl text-sm sm:text-base order-1 sm:order-2">
-                          Complete Premium Check-in
+                          {t.completePremiumCheckin}
                         </Button>
                       </div>
                     </DialogContent>
@@ -426,7 +436,7 @@ const FrontDesk = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400" />
             <Input
-              placeholder="Search guests by name, room number, or booking reference..."
+              placeholder={t.searchGuestsPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-xl sm:shadow-2xl rounded-xl sm:rounded-2xl"
@@ -449,7 +459,7 @@ const FrontDesk = () => {
             value="current"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            <span className="truncate">Current</span>
+            <span className="truncate">{t.tabCurrent}</span>
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-blue-500 text-white text-xs rounded-full">
               3
             </span>
@@ -458,7 +468,7 @@ const FrontDesk = () => {
             value="checkout"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            <span className="truncate">Check-out</span>
+            <span className="truncate">{t.tabCheckout}</span>
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-amber-500 text-white text-xs rounded-full">
               2
             </span>
@@ -467,7 +477,7 @@ const FrontDesk = () => {
             value="arrivals"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            <span className="truncate">Arrivals</span>
+            <span className="truncate">{t.tabArrivals}</span>
             <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-emerald-500 text-white text-xs rounded-full">
               2
             </span>
@@ -545,17 +555,17 @@ const FrontDesk = () => {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem>
                               <Key className="h-4 w-4 mr-2" />
-                              Issue Key
+                              {t.issueKey}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Clock className="h-4 w-4 mr-2" />
-                              Extend Stay
+                              {t.extendStay}
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <UserCheck className="h-4 w-4 mr-2" />
                               {guest.status === "Checking Out"
-                                ? "Process Check-out"
-                                : "Check-out"}
+                                ? t.processCheckout
+                                : t.checkOut}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -564,18 +574,18 @@ const FrontDesk = () => {
                       {/* Mobile-Optimized Guest Details */}
                       <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:gap-6 text-xs sm:text-sm">
                         <div>
-                          <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            Check-in
-                          </p>
+                            <p className="text-slate-600 dark:text-slate-400 text-xs flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {t.checkInLabel}
+                            </p>
                           <p className="font-semibold text-slate-800 dark:text-white text-sm">
                             {guest.check_in}
                           </p>
                         </div>
                         <div>
-                          <p className="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+                          <p className="text-slate-600 dark:text-slate-400 text-xs flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            Check-out
+                            {t.checkOutLabel}
                           </p>
                           <p className="font-semibold text-slate-800 dark:text-white text-sm">
                             {guest.check_out}
@@ -583,10 +593,10 @@ const FrontDesk = () => {
                         </div>
                         <div>
                           <p className="text-slate-500 dark:text-slate-400 text-xs">
-                            Total Stay
+                            {t.totalStay}
                           </p>
                           <p className="font-semibold text-slate-800 dark:text-white text-sm">
-                            {guest.nights || 1} nights
+                            {guest.nights || 1} {t.nightsLabel}
                           </p>
                         </div>
                         <div>
@@ -603,7 +613,7 @@ const FrontDesk = () => {
                       {/* Services Section */}
                       <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-700">
                         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-2">
-                          Active Services:
+                          {t.activeServicesLabel}
                         </p>
                         <div className="flex flex-wrap gap-1 sm:gap-2">
                           {(guest.services || []).map((service, index) => (
@@ -646,7 +656,7 @@ const FrontDesk = () => {
                       >
                         <UserCheck className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                         {guest.status === "Checking Out"
-                          ? "Process Check-out"
+                          ? t.processCheckout
                           : t.checkOut}
                       </Button>
                     </div>
@@ -704,10 +714,10 @@ const FrontDesk = () => {
                   </div>
                   <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <p className="text-slate-600 dark:text-slate-400 text-sm">
-                      Scheduled: {guest.time}
+                      {t.scheduled} {guest.time}
                     </p>
                     <Button className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 text-sm">
-                      Process Check-out
+                      {t.processCheckout}
                     </Button>
                   </div>
                 </CardContent>
