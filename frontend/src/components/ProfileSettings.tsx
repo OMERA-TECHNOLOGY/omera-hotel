@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useProfile } from "../hooks/useProfile";
-import AvatarUploader from "./AvatarUploader";
+import { useProfile } from "@/hooks/useProfile";
+import AvatarUploader from "@/components/AvatarUploader";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export const ProfileSettings: React.FC = () => {
   const { profile, loading, updateProfile, changePassword } = useProfile();
@@ -43,93 +52,103 @@ export const ProfileSettings: React.FC = () => {
   }, [form, avatarFile]);
 
   return (
-    <div className="p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">Profile Settings</h2>
-      {loading && <div>Loading...</div>}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Avatar
-          </label>
-          <AvatarUploader
-            value={profile?.avatar_url || null}
-            name={
-              (profile?.first_name ??
-                profile?.employee?.first_name ??
-                profile?.user?.email) as string
-            }
-            onChange={(f) => setAvatarFile(f)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            First name
-          </label>
-          <input
-            value={form.first_name}
-            onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-            className="mt-1 block w-full border rounded px-3 py-2"
-          />
-          <label className="block text-sm font-medium text-gray-700 mt-3">
-            Last name
-          </label>
-          <input
-            value={form.last_name}
-            onChange={(e) => setForm({ ...form, last_name: e.target.value })}
-            className="mt-1 block w-full border rounded px-3 py-2"
-          />
-          <label className="block text-sm font-medium text-gray-700 mt-3">
-            Phone
-          </label>
-          <input
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="mt-1 block w-full border rounded px-3 py-2"
-          />
-        </div>
-      </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Profile Settings</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {loading && <div>Loading...</div>}
 
-      <div className="mt-6">
-        <h3 className="font-semibold">Security</h3>
-        <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Change Password
+            <label className="block text-sm font-medium text-muted-foreground">
+              Avatar
             </label>
-            <PasswordChange onChange={changePassword} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Two-factor authentication
-            </label>
-            <div className="mt-2 text-sm text-gray-600">
-              Enable 2FA to add an extra layer of security to your account.
+            <div className="mt-2">
+              <AvatarUploader
+                value={profile?.avatar_url || null}
+                name={
+                  (profile?.first_name ??
+                    profile?.employee?.first_name ??
+                    profile?.email) as string
+                }
+                onChange={(f) => setAvatarFile(f)}
+              />
             </div>
-            <button className="mt-2 px-3 py-1 border rounded">
-              Manage 2FA
-            </button>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-muted-foreground">
+              First name
+            </label>
+            <Input
+              value={form.first_name}
+              onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+              className="mt-1"
+            />
+
+            <label className="block text-sm font-medium text-muted-foreground mt-3">
+              Last name
+            </label>
+            <Input
+              value={form.last_name}
+              onChange={(e) => setForm({ ...form, last_name: e.target.value })}
+              className="mt-1"
+            />
+
+            <label className="block text-sm font-medium text-muted-foreground mt-3">
+              Phone
+            </label>
+            <Input
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              className="mt-1"
+            />
           </div>
         </div>
-      </div>
 
-      <div className="mt-6 flex items-center gap-3">
-        <button
-          onClick={() => save(false)}
-          className="px-4 py-2 bg-indigo-600 text-white rounded"
-        >
-          Save
-        </button>
-        <div className="text-sm text-gray-500">
-          {status === "saving"
-            ? "Saving..."
-            : status === "saved"
-            ? "Saved"
-            : status === "error"
-            ? "Error saving"
-            : ""}
+        <div className="mt-6">
+          <h3 className="font-semibold text-base">Security</h3>
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground">
+                Change Password
+              </label>
+              <div className="mt-2">
+                <PasswordChange onChange={changePassword} />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground">
+                Two-factor authentication
+              </label>
+              <div className="mt-2 text-sm text-muted-foreground">
+                Enable 2FA to add an extra layer of security to your account.
+              </div>
+              <Button variant="outline" className="mt-3">
+                Manage 2FA
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter>
+        <div className="flex items-center gap-3 w-full justify-between">
+          <div>
+            <Button onClick={() => save(false)}>Save</Button>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {status === "saving"
+              ? "Saving..."
+              : status === "saved"
+              ? "Saved"
+              : status === "error"
+              ? "Error saving"
+              : ""}
+          </div>
+        </div>
+      </CardFooter>
+    </Card>
   );
 };
 
@@ -154,34 +173,31 @@ const PasswordChange: React.FC<{
 
   return (
     <div>
-      <input
+      <Input
         type="password"
         placeholder="Current password"
         value={curr}
         onChange={(e) => setCurr(e.target.value)}
-        className="mt-1 block w-full border rounded px-3 py-2"
+        className="mt-1"
       />
-      <input
+      <Input
         type="password"
         placeholder="New password"
         value={next}
         onChange={(e) => setNext(e.target.value)}
-        className="mt-2 block w-full border rounded px-3 py-2"
+        className="mt-2"
       />
-      <input
+      <Input
         type="password"
         placeholder="Confirm new password"
         value={confirm}
         onChange={(e) => setConfirm(e.target.value)}
-        className="mt-2 block w-full border rounded px-3 py-2"
+        className="mt-2"
       />
-      <button
-        onClick={submit}
-        className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded"
-      >
+      <Button onClick={submit} className="mt-3">
         Change password
-      </button>
-      {msg && <div className="mt-2 text-sm text-gray-500">{msg}</div>}
+      </Button>
+      {msg && <div className="mt-2 text-sm text-muted-foreground">{msg}</div>}
     </div>
   );
 };
