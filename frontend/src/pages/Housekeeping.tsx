@@ -180,11 +180,10 @@ const Housekeeping = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-amber-200 to-emerald-200 bg-clip-text text-transparent">
-                    Housekeeping Excellence
+                    {t.housekeepingTitle}
                   </h1>
                   <p className="text-amber-100 text-sm sm:text-lg mt-2">
-                    Maintain pristine standards with precision cleaning
-                    operations
+                    {t.housekeepingSubtitle}
                   </p>
                 </div>
               </div>
@@ -195,21 +194,21 @@ const Housekeeping = () => {
                   <Shield className="h-4 w-4 sm:h-6 sm:w-6 text-emerald-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">98%</p>
-                    <p className="text-xs text-amber-200">Quality Score</p>
+                    <p className="text-xs text-amber-200">{t.statsQualityScore}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
                   <Zap className="h-4 w-4 sm:h-6 sm:w-6 text-amber-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">24m</p>
-                    <p className="text-xs text-amber-200">Avg. Clean Time</p>
+                    <p className="text-xs text-amber-200">{t.statsAvgCleanTime}</p>
                   </div>
                 </div>
                 <div className="col-span-2 sm:col-auto flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20 justify-center sm:justify-start">
                   <Home className="h-4 w-4 sm:h-6 sm:w-6 text-green-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">45</p>
-                    <p className="text-xs text-amber-200">Rooms Today</p>
+                    <p className="text-xs text-amber-200">{t.statsRoomsToday}</p>
                   </div>
                 </div>
               </div>
@@ -228,8 +227,8 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
-                Pending Tasks
+                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.pendingTasks}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-slate-500/10 rounded-lg sm:rounded-xl">
                 <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4 text-slate-500" />
@@ -241,7 +240,7 @@ const Housekeeping = () => {
               {tasks.filter((t) => t.status === "pending").length}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Awaiting assignment
+              {t.awaitingAssignment}
             </p>
           </CardContent>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
@@ -255,8 +254,8 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-amber-50 dark:from-slate-800 dark:to-amber-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
-                In Progress
+                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.inProgress}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-amber-500/10 rounded-lg sm:rounded-xl">
                 <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-amber-500" />
@@ -268,7 +267,7 @@ const Housekeeping = () => {
               {tasks.filter((t) => t.status === "in-progress").length}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Currently cleaning
+              {t.currentlyCleaning}
             </p>
           </CardContent>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
@@ -282,8 +281,8 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-slate-800 dark:to-emerald-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
-                Completed Today
+                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.completedToday}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-emerald-500/10 rounded-lg sm:rounded-xl">
                 <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-500" />
@@ -295,7 +294,7 @@ const Housekeeping = () => {
               {tasks.filter((t) => t.status === "completed").length}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Ready for guests
+              {t.readyForGuests}
             </p>
           </CardContent>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
@@ -309,8 +308,8 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-red-50 dark:from-slate-800 dark:to-red-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
-                Low Stock Items
+                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+                {t.lowStockItems}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-red-500/10 rounded-lg sm:rounded-xl">
                 <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
@@ -322,7 +321,7 @@ const Housekeeping = () => {
               {inventory.filter((i) => i.status === "low").length}
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Needs restocking
+              {t.needsRestocking}
             </p>
           </CardContent>
           <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-200 dark:bg-slate-700">
@@ -341,12 +340,12 @@ const Housekeeping = () => {
             <div className="p-2 sm:p-3 bg-gradient-to-r from-amber-500 to-emerald-500 rounded-xl sm:rounded-2xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
               <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
-            <div>
+              <div>
               <div className="text-lg sm:text-2xl">
-                Today's Cleaning Operations
+                {t.todaysCleaningOps}
               </div>
               <CardDescription className="text-sm sm:text-lg">
-                Room cleaning assignments and real-time progress tracking
+                {t.cleaningOpsDesc}
               </CardDescription>
             </div>
           </CardTitle>
@@ -392,9 +391,7 @@ const Housekeeping = () => {
                                 task.priority
                               )} text-xs`}
                             >
-                              {task.priority === "high"
-                                ? "High Priority"
-                                : "Standard"}
+                              {task.priority === "high" ? t.highPriority : t.standard}
                             </Badge>
                           </div>
                           <CardDescription className="text-slate-600 dark:text-slate-400 text-sm">
@@ -406,7 +403,7 @@ const Housekeeping = () => {
                       {/* Enhanced Checklist */}
                       <div className="space-y-2 sm:space-y-3">
                         <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                          Cleaning Checklist:
+                          {t.cleaningChecklist}
                         </p>
                         <div className="grid gap-1.5 sm:gap-2">
                           {[
@@ -438,7 +435,7 @@ const Housekeeping = () => {
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                    {task.status !== "completed" && (
+                        {task.status !== "completed" && (
                       <Button
                         className={`rounded-lg sm:rounded-xl text-xs sm:text-sm ${
                           task.status === "pending"
@@ -447,8 +444,8 @@ const Housekeeping = () => {
                         }`}
                       >
                         {task.status === "pending"
-                          ? "Start Cleaning"
-                          : "Mark Complete"}
+                          ? t.startCleaning
+                          : t.markComplete}
                       </Button>
                     )}
                     <Dialog>
@@ -458,18 +455,17 @@ const Housekeeping = () => {
                           className="rounded-lg sm:rounded-xl border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs sm:text-sm"
                         >
                           <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                          Report Issue
+                          {t.reportIssue}
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-[95vw] sm:max-w-md bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                          <DialogTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
+                            <DialogTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
                             <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
-                            Report Room Issue
+                            {t.reportRoomIssue}
                           </DialogTitle>
                           <DialogDescription className="text-sm sm:text-base">
-                            Document any damages or maintenance issues in{" "}
-                            {task.room}
+                            {t.reportRoomIssueDesc} {task.room}
                           </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
@@ -564,7 +560,7 @@ const Housekeeping = () => {
                     <div className="flex gap-2">
                       {item.status === "low" && (
                         <Badge className="bg-red-100 text-red-800 border-red-200 text-xs">
-                          Low Stock
+                          {t.lowStock}
                         </Badge>
                       )}
                       <Badge
@@ -606,7 +602,7 @@ const Housekeeping = () => {
                         : "border-emerald-300 dark:border-emerald-600 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
                     }`}
                   >
-                    {item.status === "low" ? "Urgent Restock" : "Restock"}
+                    {item.status === "low" ? t.urgentRestock : t.restock}
                   </Button>
                 </div>
               </div>
