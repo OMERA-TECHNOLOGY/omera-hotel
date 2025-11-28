@@ -254,8 +254,8 @@ const Bookings = () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       setIsCreateOpen(false);
       toast({
-        title: "Booking created",
-        description: "Reservation created successfully",
+        title: t.bookingCreated,
+        description: t.bookingCreatedDesc,
         duration: 4000,
       });
     },
@@ -263,7 +263,7 @@ const Bookings = () => {
       const message = extractError(err);
       setFormError(message);
       toast({
-        title: "Error creating booking",
+        title: t.errorCreatingBooking,
         description: message,
         duration: 6000,
       });
@@ -287,15 +287,15 @@ const Bookings = () => {
       setIsEditOpen(false);
       setEditingBooking(null);
       toast({
-        title: "Booking updated",
-        description: "Reservation updated successfully",
+        title: t.bookingUpdated,
+        description: t.bookingUpdatedDesc,
         duration: 3000,
       });
     },
     onError: (err) => {
       const message = extractError(err);
       toast({
-        title: "Error updating booking",
+        title: t.errorUpdatingBooking,
         description: message,
         duration: 6000,
       });
@@ -308,15 +308,15 @@ const Bookings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast({
-        title: "Booking removed",
-        description: "Reservation cancelled",
+        title: t.bookingRemoved,
+        description: t.bookingRemovedDesc,
         duration: 3000,
       });
     },
     onError: (err) => {
       const message = extractError(err);
       toast({
-        title: "Error deleting booking",
+        title: t.errorDeletingBooking,
         description: message,
         duration: 6000,
       });
@@ -722,9 +722,9 @@ const Bookings = () => {
                 <Plus className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
               </div>
               <div>
-                <div>New Reservation</div>
+                <div>{t.newBooking}</div>
                 <div className="text-xs sm:text-sm font-normal text-slate-500">
-                  Create a premium booking experience
+                  {t.newBookingDesc}
                 </div>
               </div>
             </DialogTitle>
@@ -738,7 +738,7 @@ const Bookings = () => {
                   htmlFor="firstName"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  First Name
+                  {t.firstName}
                 </Label>
                 <Input
                   id="firstName"
@@ -749,7 +749,7 @@ const Bookings = () => {
                       firstName: e.target.value,
                     })
                   }
-                  placeholder="First name"
+                  placeholder={t.placeholderFirstName}
                   className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
@@ -758,7 +758,7 @@ const Bookings = () => {
                   htmlFor="lastName"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Last Name
+                  {t.lastName}
                 </Label>
                 <Input
                   id="lastName"
@@ -769,7 +769,7 @@ const Bookings = () => {
                       lastName: e.target.value,
                     })
                   }
-                  placeholder="Last name"
+                  placeholder={t.placeholderLastName}
                   className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
@@ -778,7 +778,7 @@ const Bookings = () => {
                   htmlFor="guestPhone"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Phone Number
+                  {t.phoneLabel}
                 </Label>
                 <Input
                   id="guestPhone"
@@ -786,7 +786,7 @@ const Bookings = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
-                  placeholder="+251 xxx xxx xxx"
+                  placeholder={t.placeholderPhone}
                   className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
@@ -795,7 +795,7 @@ const Bookings = () => {
                   htmlFor="guestEmail"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Email Address
+                  {t.emailLabel}
                 </Label>
                 <Input
                   id="guestEmail"
@@ -804,7 +804,7 @@ const Bookings = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  placeholder="guest@example.com"
+                  placeholder={t.emailPlaceholder}
                   className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 />
               </div>
@@ -816,7 +816,7 @@ const Bookings = () => {
                   htmlFor="numberOfGuests"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Number of Guests
+                  {t.numberOfGuests}
                 </Label>
                 <Input
                   id="numberOfGuests"
@@ -837,14 +837,14 @@ const Bookings = () => {
                   htmlFor="bookingSource"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Booking Source
+                  {t.sourceLabel}
                 </Label>
                 <Select>
                   <SelectTrigger
                     id="bookingSource"
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                   >
-                    <SelectValue placeholder="Select source" />
+                    <SelectValue placeholder={t.selectSourcePlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem
@@ -853,7 +853,7 @@ const Bookings = () => {
                         setFormData({ ...formData, source: "website" })
                       }
                     >
-                      Website
+                      {t.sourceWebsite}
                     </SelectItem>
                     <SelectItem
                       value="phone"
@@ -861,7 +861,7 @@ const Bookings = () => {
                         setFormData({ ...formData, source: "phone" })
                       }
                     >
-                      Phone
+                      {t.sourcePhone}
                     </SelectItem>
                     <SelectItem
                       value="walk-in"
@@ -869,7 +869,7 @@ const Bookings = () => {
                         setFormData({ ...formData, source: "walk-in" })
                       }
                     >
-                      Walk-in
+                      {t.sourceWalkin}
                     </SelectItem>
                     <SelectItem
                       value="agent"
@@ -877,7 +877,7 @@ const Bookings = () => {
                         setFormData({ ...formData, source: "agent" })
                       }
                     >
-                      Travel Agent
+                      {t.sourceAgent}
                     </SelectItem>
                     <SelectItem
                       value="other"
@@ -885,7 +885,7 @@ const Bookings = () => {
                         setFormData({ ...formData, source: "other" })
                       }
                     >
-                      Other
+                      {t.sourceOther}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -898,7 +898,7 @@ const Bookings = () => {
                   htmlFor="bookingCheckIn"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Check-in Date
+                  {t.checkInLabel}
                 </Label>
                 <Input
                   id="bookingCheckIn"
@@ -918,7 +918,7 @@ const Bookings = () => {
                   htmlFor="bookingCheckOut"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Check-out Date
+                  {t.checkOutLabel}
                 </Label>
                 <Input
                   id="bookingCheckOut"
@@ -941,14 +941,14 @@ const Bookings = () => {
                   htmlFor="bookingRoomType"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Room
+                  {t.room}
                 </Label>
                 <Select>
                   <SelectTrigger
                     id="bookingRoomType"
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                   >
-                    <SelectValue placeholder="Select room" />
+                    <SelectValue placeholder={t.selectRoomPlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
                     {(roomsData || []).map((r: Room) => (
@@ -978,7 +978,7 @@ const Bookings = () => {
                 htmlFor="specialRequests"
                 className="text-xs sm:text-sm font-semibold"
               >
-                Special Requests & Notes
+                {t.specialRequestsLabel}
               </Label>
               <Input
                 id="specialRequests"
@@ -989,7 +989,7 @@ const Bookings = () => {
                     specialRequests: e.target.value,
                   })
                 }
-                placeholder="Any special requirements, celebrations, or additional notes"
+                placeholder={t.placeholderSpecialRequests}
                 className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
               />
             </div>
@@ -1007,7 +1007,7 @@ const Bookings = () => {
               onClick={() => setIsCreateOpen(false)}
               className="border-slate-300 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base order-2 sm:order-1"
             >
-              Cancel
+              {t.cancel}
             </Button>
             <Button
               disabled={createBookingMutation.isLoading}
@@ -1015,10 +1015,12 @@ const Bookings = () => {
                 setFormError(null);
                 // ALL ORIGINAL VALIDATION LOGIC PRESERVED
                 if (!formData.roomId)
-                  return setFormError("Please select a room");
+                  return setFormError(
+                    t.formPleaseSelectRoom as unknown as string
+                  );
                 if (!formData.checkIn || !formData.checkOut)
                   return setFormError(
-                    "Please select check-in and check-out dates"
+                    t.formPleaseSelectDates as unknown as string
                   );
                 setFormLoading(true);
                 try {
@@ -1058,7 +1060,7 @@ const Bookings = () => {
                   const message = extractError(err);
                   setFormError(message);
                   toast({
-                    title: "Error",
+                    title: t.errorSaving,
                     description: message,
                     duration: 6000,
                   });
@@ -1068,9 +1070,7 @@ const Bookings = () => {
               }}
               className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-lg sm:rounded-xl text-sm sm:text-base order-1 sm:order-2"
             >
-              {createBookingMutation.isLoading
-                ? "Creating..."
-                : "Create Reservation"}
+              {createBookingMutation.isLoading ? t.saving : t.createReservation}
             </Button>
           </div>
         </DialogContent>
@@ -1081,10 +1081,10 @@ const Bookings = () => {
         <DialogContent className="max-w-[95vw] sm:max-w-2xl rounded-xl sm:rounded-2xl">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">
-              Booking Details
+              {t.bookingDetailsTitle}
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Full booking information
+              {t.bookingDetailsDesc}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto">
@@ -1122,7 +1122,7 @@ const Bookings = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-slate-500 dark:text-slate-400 text-xs">
-                      Room
+                      {t.room}
                     </p>
                     <p className="font-semibold">
                       {viewingBooking.rooms?.room_number ||
@@ -1131,7 +1131,7 @@ const Bookings = () => {
                   </div>
                   <div>
                     <p className="text-slate-500 dark:text-slate-400 text-xs">
-                      Guests
+                      {t.guestPlural}
                     </p>
                     <p className="font-semibold">
                       {viewingBooking.number_of_guests}
@@ -1139,25 +1139,25 @@ const Bookings = () => {
                   </div>
                   <div>
                     <p className="text-slate-500 dark:text-slate-400 text-xs">
-                      Check-in
+                      {t.checkInLabel}
                     </p>
                     <p className="font-semibold">{viewingBooking.check_in}</p>
                   </div>
                   <div>
                     <p className="text-slate-500 dark:text-slate-400 text-xs">
-                      Check-out
+                      {t.checkOutLabel}
                     </p>
                     <p className="font-semibold">{viewingBooking.check_out}</p>
                   </div>
                   <div>
                     <p className="text-slate-500 dark:text-slate-400 text-xs">
-                      Status
+                      {t.status}
                     </p>
                     <p className="font-semibold">{viewingBooking.status}</p>
                   </div>
                   <div>
                     <p className="text-slate-500 dark:text-slate-400 text-xs">
-                      Total
+                      {t.total}
                     </p>
                     <p className="font-semibold text-emerald-600">
                       {viewingBooking.total_price_birr ?? 0} ETB
@@ -1168,7 +1168,7 @@ const Bookings = () => {
                 {viewingBooking.special_requests && (
                   <div>
                     <p className="text-slate-500 dark:text-slate-400 text-xs mb-2">
-                      Special Requests
+                      {t.specialRequestsLabel}
                     </p>
                     <p className="text-sm bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg">
                       {viewingBooking.special_requests}
@@ -1177,7 +1177,7 @@ const Bookings = () => {
                 )}
               </div>
             ) : (
-              <p>No booking selected</p>
+              <p>{t.noBookingSelected}</p>
             )}
           </div>
           <div className="flex justify-end mt-4">
@@ -1186,7 +1186,7 @@ const Bookings = () => {
               onClick={() => setIsViewOpen(false)}
               className="text-sm"
             >
-              Close
+              {t.close}
             </Button>
           </div>
         </DialogContent>
@@ -1197,17 +1197,17 @@ const Bookings = () => {
         <DialogContent className="max-w-[95vw] sm:max-w-4xl rounded-xl sm:rounded-2xl">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">
-              Edit Reservation
+              {t.editBooking}
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Update booking details
+              {t.editBookingDesc}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 sm:gap-6 py-4 max-h-[60vh] overflow-y-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2 sm:space-y-3">
                 <Label htmlFor="editCheckIn" className="text-xs sm:text-sm">
-                  Check-in Date
+                  {t.checkInLabel}
                 </Label>
                 <Input
                   id="editCheckIn"
@@ -1221,7 +1221,7 @@ const Bookings = () => {
               </div>
               <div className="space-y-2 sm:space-y-3">
                 <Label htmlFor="editCheckOut" className="text-xs sm:text-sm">
-                  Check-out Date
+                  {t.checkOutLabel}
                 </Label>
                 <Input
                   id="editCheckOut"
@@ -1237,11 +1237,11 @@ const Bookings = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2 sm:space-y-3">
                 <Label htmlFor="editRoom" className="text-xs sm:text-sm">
-                  Room
+                  {t.room}
                 </Label>
                 <Select>
                   <SelectTrigger id="editRoom" className="text-sm sm:text-base">
-                    <SelectValue placeholder="Select room" />
+                    <SelectValue placeholder={t.selectRoomPlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
                     {(roomsData || []).map((r: Room) => (
@@ -1260,7 +1260,7 @@ const Bookings = () => {
               </div>
               <div className="space-y-2 sm:space-y-3">
                 <Label htmlFor="editGuests" className="text-xs sm:text-sm">
-                  Number of Guests
+                  {t.numberOfGuests}
                 </Label>
                 <Input
                   id="editGuests"
@@ -1279,7 +1279,7 @@ const Bookings = () => {
             </div>
             <div className="space-y-2 sm:space-y-3">
               <Label htmlFor="editSpecial" className="text-xs sm:text-sm">
-                Special Requests
+                {t.specialRequestsLabel}
               </Label>
               <Input
                 id="editSpecial"
@@ -1300,14 +1300,17 @@ const Bookings = () => {
               onClick={() => setIsEditOpen(false)}
               className="text-sm order-2 sm:order-1"
             >
-              Cancel
+              {t.cancel}
             </Button>
             <Button
               onClick={async () => {
                 setFormError(null);
-                if (!editingBooking) return setFormError("No booking selected");
+                if (!editingBooking)
+                  return setFormError(t.noBookingSelected as unknown as string);
                 if (!formData.checkIn || !formData.checkOut)
-                  return setFormError("Please provide dates");
+                  return setFormError(
+                    t.formPleaseProvideDates as unknown as string
+                  );
                 try {
                   await updateBookingMutation.mutateAsync({
                     id: editingBooking.id,
@@ -1326,7 +1329,7 @@ const Bookings = () => {
               }}
               className="text-sm order-1 sm:order-2"
             >
-              {updateBookingMutation.isLoading ? "Saving..." : "Save changes"}
+              {updateBookingMutation.isLoading ? t.saving : t.saveChanges}
             </Button>
           </div>
         </DialogContent>
@@ -1337,11 +1340,10 @@ const Bookings = () => {
         <DialogContent className="max-w-[95vw] sm:max-w-md rounded-xl sm:rounded-2xl">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">
-              Confirm cancellation
+              {t.confirmCancellation}
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Are you sure you want to cancel this reservation? This action
-              cannot be undone.
+              {t.confirmCancellationDesc}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 mt-4">
@@ -1350,7 +1352,7 @@ const Bookings = () => {
               onClick={() => setDeleteDialogOpen(false)}
               className="text-sm order-2 sm:order-1"
             >
-              No, keep booking
+              {t.confirmCancelNo}
             </Button>
             <Button
               className="bg-red-600 text-white text-sm order-1 sm:order-2"
@@ -1367,8 +1369,8 @@ const Bookings = () => {
               }}
             >
               {deleteBookingMutation.isLoading
-                ? "Cancelling..."
-                : "Yes, cancel booking"}
+                ? t.cancelling
+                : t.confirmCancelYes}
             </Button>
           </div>
         </DialogContent>

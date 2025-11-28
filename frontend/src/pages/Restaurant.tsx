@@ -159,6 +159,19 @@ const Restaurant = () => {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "preparing":
+        return t.statusPreparing;
+      case "ready":
+        return t.statusReady;
+      case "delivered":
+        return t.statusDelivered;
+      default:
+        return status.toUpperCase();
+    }
+  };
+
   const getPopularityBadge = (popularity: string) => {
     switch (popularity) {
       case "bestseller":
@@ -187,7 +200,7 @@ const Restaurant = () => {
   if (error)
     return (
       <div className="p-4 sm:p-6 text-red-600 text-sm sm:text-base">
-        Error loading restaurant data: {String(error)}
+        {t.errorLoadingRestaurant}: {String(error)}
       </div>
     );
 
@@ -351,7 +364,7 @@ const Restaurant = () => {
                         <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200 dark:border-slate-600 hidden">
                           <div className="flex justify-between items-center">
                             <span className="font-bold text-base sm:text-lg">
-                              Total Amount:
+                              {t.totalAmount}
                             </span>
                             <span className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
                               0 ETB
@@ -551,7 +564,7 @@ const Restaurant = () => {
                     order.status
                   )} shadow-lg`}
                 >
-                  {order.status.toUpperCase()}
+                  {getStatusLabel(order.status)}
                 </div>
 
                 {/* Priority Indicator */}
