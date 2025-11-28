@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiGet } from "@/lib/api";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Select,
   SelectTrigger,
@@ -48,6 +49,7 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
     staleTime: 1000 * 60 * 5,
   });
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const submit = async (data: Partial<CreateRoomInput>) => {
     // Basic runtime validation
@@ -182,7 +184,7 @@ export default function RoomForm({ initialValues, onSubmit, onCancel }: Props) {
 
       <div className="flex items-center gap-3">
         <Button type="submit" disabled={formState.isSubmitting}>
-          {formState.isSubmitting ? "Saving..." : "Save"}
+          {formState.isSubmitting ? t.saving : t.save}
         </Button>
         <Button variant="ghost" type="button" onClick={onCancel}>
           Cancel

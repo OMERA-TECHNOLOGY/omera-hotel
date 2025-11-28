@@ -439,15 +439,15 @@ const Rooms = () => {
     try {
       await deleteRoom.mutateAsync(toDelete.id);
       toast({
-        title: "Room deleted",
-        description: `Room ${
-          toDelete.room_number || toDelete.number || ""
-        } removed`,
+        title: t.roomDeleted,
+        description: `${toDelete.room_number || toDelete.number || ""} ${
+          t.removed
+        }`,
         variant: "success",
       });
     } catch (e) {
       toast({
-        title: "Delete failed",
+        title: t.deleteFailed,
         description: extractError(e),
         variant: "destructive",
       });
@@ -496,7 +496,7 @@ const Rooms = () => {
                 {t.roomManagement}
               </h1>
               <p className="mt-1 sm:mt-2 text-emerald-200 text-sm sm:text-lg">
-                Premium Room Inventory & Status Management
+                {t.roomsPremiumDescription}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-6">
@@ -506,9 +506,11 @@ const Rooms = () => {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm font-semibold">
-                    Room Analytics
+                    {t.roomAnalytics}
                   </p>
-                  <p className="text-xs text-emerald-200">60 total rooms</p>
+                  <p className="text-xs text-emerald-200">
+                    {totalRooms} {t.total} {t.rooms}
+                  </p>
                 </div>
               </div>
               <Button
@@ -656,34 +658,38 @@ const Rooms = () => {
             <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" />
           </div>
           <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">
-            Advanced Filters:
+            {t.advancedFiltersLabel}
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-4 w-full sm:w-auto">
           <Select value={filterStatus} onValueChange={setFilterStatus}>
             <SelectTrigger className="w-full bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-sm">
-              <SelectValue placeholder="All Statuses" />
+              <SelectValue placeholder={t.allStatuses} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="vacant">Vacant</SelectItem>
-              <SelectItem value="occupied">Occupied</SelectItem>
-              <SelectItem value="cleaning">Cleaning</SelectItem>
-              <SelectItem value="maintenance">Maintenance</SelectItem>
+              <SelectItem value="all">{t.allStatuses}</SelectItem>
+              <SelectItem value="vacant">{t.vacant}</SelectItem>
+              <SelectItem value="occupied">{t.occupied}</SelectItem>
+              <SelectItem value="cleaning">{t.cleaning}</SelectItem>
+              <SelectItem value="maintenance">{t.maintenance}</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger className="w-full bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-xs sm:text-sm">
-              <SelectValue placeholder="All Types" />
+              <SelectValue placeholder={t.allTypes} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="Single">Single Room</SelectItem>
-              <SelectItem value="Deluxe">Deluxe Room</SelectItem>
-              <SelectItem value="Executive Suite">Executive Suite</SelectItem>
-              <SelectItem value="Presidential">Presidential Suite</SelectItem>
+              <SelectItem value="all">{t.allTypes}</SelectItem>
+              <SelectItem value="Single">{t.roomTypeSingle}</SelectItem>
+              <SelectItem value="Deluxe">{t.roomTypeDeluxe}</SelectItem>
+              <SelectItem value="Executive Suite">
+                {t.roomTypeExecutive}
+              </SelectItem>
+              <SelectItem value="Presidential">
+                {t.roomTypePresidential}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -692,7 +698,7 @@ const Rooms = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
-              placeholder="Search room number..."
+              placeholder={t.searchRoomNumber}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -708,7 +714,7 @@ const Rooms = () => {
           className="border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-lg sm:rounded-xl text-xs sm:text-base mt-2 sm:mt-0"
         >
           <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-          Quick Actions
+          {t.quickActions}
         </Button>
       </div>
 
@@ -723,7 +729,7 @@ const Rooms = () => {
       {/* Mobile-Optimized Pagination */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4 sm:mt-6">
         <div className="text-xs sm:text-sm text-slate-500 text-center sm:text-left">
-          Showing {rooms.length} of {totalRooms} rooms
+          {t.showing} {rooms.length} {t.of} {totalRooms} {t.rooms}
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -732,16 +738,18 @@ const Rooms = () => {
             size="sm"
             className="rounded-lg sm:rounded-xl text-xs sm:text-sm"
           >
-            Previous
+            {t.previous}
           </Button>
-          <div className="px-2 sm:px-3 text-xs sm:text-sm">Page {page}</div>
+          <div className="px-2 sm:px-3 text-xs sm:text-sm">
+            {t.page} {page}
+          </div>
           <Button
             disabled={page * pageSize >= totalRooms}
             onClick={() => setPage((p) => p + 1)}
             size="sm"
             className="rounded-lg sm:rounded-xl text-xs sm:text-sm"
           >
-            Next
+            {t.next}
           </Button>
         </div>
       </div>
@@ -751,10 +759,10 @@ const Rooms = () => {
         <DialogContent className="max-w-[95vw] sm:max-w-2xl rounded-xl sm:rounded-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">
-              {editingRoom ? "Edit Room" : "Create Room"}
+              {editingRoom ? t.editRoom : t.createRoom}
             </DialogTitle>
             <DialogDescription className="text-sm sm:text-base">
-              {editingRoom ? "Edit room details" : "Fill in new room"}
+              {editingRoom ? t.editRoomDesc : t.createRoomDesc}
             </DialogDescription>
           </DialogHeader>
           <RoomForm
@@ -768,22 +776,22 @@ const Rooms = () => {
                     body: values,
                   });
                   toast({
-                    title: "Room updated",
-                    description: `Room ${values.room_number} updated`,
+                    title: t.roomUpdated,
+                    description: `${t.room} ${values.room_number} ${t.updated}`,
                     variant: "success",
                   });
                 } else {
                   await createRoom.mutateAsync(values as any);
                   toast({
-                    title: "Room created",
-                    description: `Room ${values.room_number} created`,
+                    title: t.roomCreated,
+                    description: `${t.room} ${values.room_number} ${t.created}`,
                     variant: "success",
                   });
                 }
                 setIsCreateOpen(false);
               } catch (e) {
                 toast({
-                  title: "Save failed",
+                  title: t.saveFailed,
                   description: extractError(e),
                   variant: "destructive",
                 });

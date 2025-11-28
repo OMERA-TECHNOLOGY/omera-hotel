@@ -99,7 +99,7 @@ const Settings = () => {
   if (!settings) {
     return (
       <div className="p-4 sm:p-6 text-red-600 text-sm sm:text-base">
-        Failed to load settings
+        {t.errorLoadingSettings || "Failed to load settings"}
       </div>
     );
   }
@@ -117,11 +117,10 @@ const Settings = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-amber-200 to-orange-200 bg-clip-text text-transparent">
-                    System Configuration
+                    {t.settingsSystemConfiguration}
                   </h1>
                   <p className="text-amber-100 text-sm sm:text-lg mt-2">
-                    Fine-tune your hotel management ecosystem with precision
-                    control
+                    {t.settingsSystemConfigurationDesc}
                   </p>
                 </div>
               </div>
@@ -132,21 +131,27 @@ const Settings = () => {
                   <Database className="h-4 w-4 sm:h-6 sm:w-6 text-emerald-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">98.7%</p>
-                    <p className="text-xs text-amber-200">System Uptime</p>
+                    <p className="text-xs text-amber-200">
+                      {t.settingsSystemUptime}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
                   <Zap className="h-4 w-4 sm:h-6 sm:w-6 text-amber-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">45</p>
-                    <p className="text-xs text-amber-200">Active Services</p>
+                    <p className="text-xs text-amber-200">
+                      {t.settingsActiveServices}
+                    </p>
                   </div>
                 </div>
                 <div className="col-span-2 sm:col-auto flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20 justify-center sm:justify-start">
                   <Network className="h-4 w-4 sm:h-6 sm:w-6 text-blue-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">2.3s</p>
-                    <p className="text-xs text-amber-200">Avg. Response</p>
+                    <p className="text-xs text-amber-200">
+                      {t.settingsAvgResponse}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -166,31 +171,31 @@ const Settings = () => {
             value="general"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Core
+            {t.settingsTabCore}
           </TabsTrigger>
           <TabsTrigger
             value="localization"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Regional
+            {t.settingsTabRegional}
           </TabsTrigger>
           <TabsTrigger
             value="financial"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Financial
+            {t.settingsTabFinancial}
           </TabsTrigger>
           <TabsTrigger
             value="notifications"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Alerts
+            {t.settingsTabAlerts}
           </TabsTrigger>
           <TabsTrigger
             value="security"
             className="rounded-lg sm:rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:dark:bg-slate-700 text-xs sm:text-sm"
           >
-            Security
+            {t.settingsTabSecurity}
           </TabsTrigger>
         </TabsList>
 
@@ -203,10 +208,10 @@ const Settings = () => {
                 </div>
                 <div>
                   <div className="text-lg sm:text-2xl">
-                    Hotel Core Configuration
+                    {t.settingsHotelCoreConfiguration}
                   </div>
                   <CardDescription className="text-sm sm:text-lg">
-                    Essential property information and operational parameters
+                    {t.settingsHotelCoreConfigurationDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -218,7 +223,7 @@ const Settings = () => {
                     htmlFor="hotelName"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Property Name
+                    {t.settingsPropertyName}
                   </Label>
                   <Input
                     id="hotelName"
@@ -234,7 +239,7 @@ const Settings = () => {
                     htmlFor="hotelEmail"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Primary Contact
+                    {t.settingsPrimaryContact}
                   </Label>
                   <Input
                     id="hotelEmail"
@@ -253,7 +258,7 @@ const Settings = () => {
                     htmlFor="hotelPhone"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Contact Number
+                    {t.settingsContactNumber}
                   </Label>
                   <Input
                     id="hotelPhone"
@@ -272,7 +277,7 @@ const Settings = () => {
                     htmlFor="hotelWebsite"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Digital Presence
+                    {t.settingsDigitalPresence}
                   </Label>
                   <Input
                     id="hotelWebsite"
@@ -287,7 +292,7 @@ const Settings = () => {
                   htmlFor="hotelAddress"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Property Address
+                  {t.settingsPropertyAddress}
                 </Label>
                 <Input
                   id="hotelAddress"
@@ -304,7 +309,7 @@ const Settings = () => {
                     htmlFor="totalRooms"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Room Inventory
+                    {t.settingsRoomInventory}
                   </Label>
                   <Input
                     id="totalRooms"
@@ -321,7 +326,7 @@ const Settings = () => {
                     htmlFor="starRating"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Accreditation Level
+                    {t.settingsAccreditationLevel}
                   </Label>
                   <Select
                     value={String(settings?.star_rating || 0)}
@@ -336,11 +341,9 @@ const Settings = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="3">⭐ 3 Star Premium</SelectItem>
-                      <SelectItem value="4">⭐⭐ 4 Star Luxury</SelectItem>
-                      <SelectItem value="5">
-                        ⭐⭐⭐ 5 Star Excellence
-                      </SelectItem>
+                      <SelectItem value="3">{t.settingsStar3}</SelectItem>
+                      <SelectItem value="4">{t.settingsStar4}</SelectItem>
+                      <SelectItem value="5">{t.settingsStar5}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -352,14 +355,14 @@ const Settings = () => {
                   className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-lg sm:rounded-xl text-sm sm:text-base order-1 sm:order-1"
                 >
                   <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  {saving ? "Saving..." : "Apply Configuration"}
+                  {saving ? t.saving : t.settingsApplyConfiguration}
                 </Button>
                 <Button
                   variant="outline"
                   className="rounded-lg sm:rounded-xl border-slate-300 dark:border-slate-600 text-sm sm:text-base order-2 sm:order-2"
                 >
                   <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                  Reset to Defaults
+                  {t.settingsResetDefaults}
                 </Button>
               </div>
             </CardContent>
@@ -375,10 +378,10 @@ const Settings = () => {
                 </div>
                 <div>
                   <div className="text-lg sm:text-2xl">
-                    Regional & Language Configuration
+                    {t.settingsRegionalLanguageConfiguration}
                   </div>
                   <CardDescription className="text-sm sm:text-lg">
-                    Adapt system behavior to local requirements and preferences
+                    {t.settingsRegionalLanguageDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -389,7 +392,7 @@ const Settings = () => {
                   htmlFor="defaultLanguage"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Primary Interface Language
+                  {t.settingsPrimaryInterfaceLanguage}
                 </Label>
                 <Select defaultValue="en">
                   <SelectTrigger
@@ -399,19 +402,19 @@ const Settings = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="en">English (International)</SelectItem>
-                    <SelectItem value="am">አማርኛ (Amharic)</SelectItem>
-                    <SelectItem value="om">Afaan Oromoo (Oromo)</SelectItem>
+                    <SelectItem value="en">{t.languageEnglish}</SelectItem>
+                    <SelectItem value="am">{t.languageAmharic}</SelectItem>
+                    <SelectItem value="om">{t.languageOromo}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg sm:rounded-2xl border border-slate-200 dark:border-slate-600">
                 <div className="space-y-1">
                   <Label className="text-xs sm:text-sm font-semibold">
-                    Multi-language Interface
+                    {t.settingsMultiLanguageInterface}
                   </Label>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                    Enable dynamic language switching for users
+                    {t.settingsMultiLanguageDesc}
                   </p>
                 </div>
                 <Switch defaultChecked />
@@ -421,7 +424,7 @@ const Settings = () => {
                   htmlFor="calendarSystem"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Calendar System Preference
+                  {t.settingsCalendarSystemPreference}
                 </Label>
                 <Select defaultValue="both">
                   <SelectTrigger
@@ -432,12 +435,12 @@ const Settings = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="gregorian">
-                      Gregorian International
+                      {t.calendarGregorian}
                     </SelectItem>
                     <SelectItem value="ethiopian">
-                      Ethiopian Traditional
+                      {t.calendarEthiopian}
                     </SelectItem>
-                    <SelectItem value="both">Dual Calendar Display</SelectItem>
+                    <SelectItem value="both">{t.calendarDual}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -446,7 +449,7 @@ const Settings = () => {
                   htmlFor="timezone"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Operational Time Zone
+                  {t.settingsTimezone}
                 </Label>
                 <Select defaultValue="eat">
                   <SelectTrigger
@@ -456,18 +459,14 @@ const Settings = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="eat">
-                      East Africa Time (EAT) - UTC+3
-                    </SelectItem>
-                    <SelectItem value="utc">
-                      Coordinated Universal Time (UTC)
-                    </SelectItem>
+                    <SelectItem value="eat">{t.timezoneEAT}</SelectItem>
+                    <SelectItem value="utc">{t.timezoneUTC}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-lg sm:rounded-xl text-sm sm:text-base">
                 <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                Update Regional Settings
+                {t.settingsUpdateRegionalSettings}
               </Button>
             </CardContent>
           </Card>
@@ -482,10 +481,10 @@ const Settings = () => {
                 </div>
                 <div>
                   <div className="text-lg sm:text-2xl">
-                    Financial Operations
+                    {t.settingsFinancialOperations}
                   </div>
                   <CardDescription className="text-sm sm:text-lg">
-                    Tax, currency, and financial compliance configuration
+                    {t.settingsFinancialOperationsDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -497,7 +496,7 @@ const Settings = () => {
                     htmlFor="primaryCurrency"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Primary Currency
+                    {t.settingsPrimaryCurrency}
                   </Label>
                   <Select defaultValue="etb">
                     <SelectTrigger
@@ -517,7 +516,7 @@ const Settings = () => {
                     htmlFor="vatRate"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    VAT Rate (%)
+                    {t.settingsVatRate}
                   </Label>
                   <Input
                     id="vatRate"
@@ -533,11 +532,11 @@ const Settings = () => {
                     htmlFor="vatNumber"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    VAT Registration
+                    {t.settingsVatRegistration}
                   </Label>
                   <Input
                     id="vatNumber"
-                    placeholder="Enter VAT registration number"
+                    placeholder={t.placeholderVatNumber}
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                   />
                 </div>
@@ -546,11 +545,11 @@ const Settings = () => {
                     htmlFor="tinNumber"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    Tax Identification
+                    {t.settingsTaxIdentification}
                   </Label>
                   <Input
                     id="tinNumber"
-                    placeholder="Enter Tax Identification Number"
+                    placeholder={t.placeholderTaxId}
                     className="bg-white/50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                   />
                 </div>
@@ -561,7 +560,7 @@ const Settings = () => {
                     htmlFor="exchangeRate"
                     className="text-xs sm:text-sm font-semibold"
                   >
-                    USD/ETB Exchange
+                    {t.settingsUsdEtbExchange}
                   </Label>
                   <Input
                     id="exchangeRate"
@@ -574,10 +573,10 @@ const Settings = () => {
                 <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg sm:rounded-2xl border border-slate-200 dark:border-slate-600">
                   <div className="space-y-1">
                     <Label className="text-xs sm:text-sm font-semibold">
-                      Auto Currency Updates
+                      {t.settingsAutoCurrencyUpdates}
                     </Label>
                     <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                      Fetch live exchange rates
+                      {t.settingsAutoCurrencyUpdatesDesc}
                     </p>
                   </div>
                   <Switch />
@@ -586,17 +585,17 @@ const Settings = () => {
               <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg sm:rounded-2xl border border-slate-200 dark:border-slate-600">
                 <div className="space-y-1">
                   <Label className="text-xs sm:text-sm font-semibold">
-                    Multi-Currency Operations
+                    {t.settingsMultiCurrencyOperations}
                   </Label>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                    Accept payments in ETB and USD simultaneously
+                    {t.settingsMultiCurrencyOperationsDesc}
                   </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <Button className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 rounded-lg sm:rounded-xl text-sm sm:text-base">
                 <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                Update Financial Settings
+                {t.settingsUpdateFinancialSettings}
               </Button>
             </CardContent>
           </Card>
@@ -604,10 +603,10 @@ const Settings = () => {
           <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg sm:shadow-2xl rounded-xl sm:rounded-3xl">
             <CardHeader className="pb-3 sm:pb-4">
               <CardTitle className="text-slate-800 dark:text-white text-lg sm:text-xl">
-                Billing & Invoice Configuration
+                {t.settingsBillingInvoiceConfiguration}
               </CardTitle>
               <CardDescription className="text-sm sm:text-lg">
-                Invoice formatting and compliance requirements
+                {t.settingsBillingInvoiceDesc}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 sm:space-y-6">
@@ -616,7 +615,7 @@ const Settings = () => {
                   htmlFor="invoicePrefix"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Invoice Numbering
+                  {t.settingsInvoiceNumbering}
                 </Label>
                 <Input
                   id="invoicePrefix"
@@ -627,17 +626,17 @@ const Settings = () => {
               <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg sm:rounded-2xl border border-slate-200 dark:border-slate-600">
                 <div className="space-y-1">
                   <Label className="text-xs sm:text-sm font-semibold">
-                    Ethiopian VAT Compliance
+                    {t.settingsEthiopianVatCompliance}
                   </Label>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                    Include all mandatory VAT information on invoices
+                    {t.settingsEthiopianVatComplianceDesc}
                   </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <Button className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 rounded-lg sm:rounded-xl text-sm sm:text-base">
                 <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                Update Billing Settings
+                {t.settingsUpdateBillingSettings}
               </Button>
             </CardContent>
           </Card>
@@ -652,10 +651,10 @@ const Settings = () => {
                 </div>
                 <div>
                   <div className="text-lg sm:text-2xl">
-                    Alert & Notification Center
+                    {t.settingsAlertNotificationCenter}
                   </div>
                   <CardDescription className="text-sm sm:text-lg">
-                    Configure system-wide notification preferences and channels
+                    {t.settingsAlertNotificationDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -663,33 +662,33 @@ const Settings = () => {
             <CardContent className="space-y-4 sm:space-y-6">
               {[
                 {
-                  label: "New Booking Alerts",
-                  desc: "Instant notification for new reservations",
+                  label: t.settingsNewBookingAlerts,
+                  desc: t.settingsNewBookingAlertsDesc,
                   default: true,
                 },
                 {
-                  label: "Arrival/Departure Alerts",
-                  desc: "Front desk notifications for guest movements",
+                  label: t.settingsArrivalDepartureAlerts,
+                  desc: t.settingsArrivalDepartureAlertsDesc,
                   default: true,
                 },
                 {
-                  label: "Inventory Threshold Alerts",
-                  desc: "Notify when supplies reach critical levels",
+                  label: t.settingsInventoryThresholdAlerts,
+                  desc: t.settingsInventoryThresholdAlertsDesc,
                   default: true,
                 },
                 {
-                  label: "Maintenance Request Routing",
-                  desc: "Direct maintenance issues to appropriate teams",
+                  label: t.settingsMaintenanceRequestRouting,
+                  desc: t.settingsMaintenanceRequestRoutingDesc,
                   default: true,
                 },
                 {
-                  label: "SMS Gateway Integration",
-                  desc: "Enable SMS alerts (requires provider setup)",
+                  label: t.settingsSmsGatewayIntegration,
+                  desc: t.settingsSmsGatewayIntegrationDesc,
                   default: false,
                 },
                 {
-                  label: "Telegram Bot Integration",
-                  desc: "Push notifications via Telegram",
+                  label: t.settingsTelegramBotIntegration,
+                  desc: t.settingsTelegramBotIntegrationDesc,
                   default: false,
                 },
               ].map((item, index) => (
@@ -713,7 +712,7 @@ const Settings = () => {
               ))}
               <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-lg sm:rounded-xl text-sm sm:text-base">
                 <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                Update Notification Settings
+                {t.settingsUpdateNotificationSettings}
               </Button>
             </CardContent>
           </Card>
@@ -728,10 +727,10 @@ const Settings = () => {
                 </div>
                 <div>
                   <div className="text-lg sm:text-2xl">
-                    Security & Access Control
+                    {t.settingsSecurityAccessControl}
                   </div>
                   <CardDescription className="text-sm sm:text-lg">
-                    Authentication, authorization, and security protocols
+                    {t.settingsSecurityAccessDesc}
                   </CardDescription>
                 </div>
               </CardTitle>
@@ -740,21 +739,21 @@ const Settings = () => {
               <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg sm:rounded-2xl border border-slate-200 dark:border-slate-600">
                 <div className="space-y-1 flex-1 min-w-0">
                   <Label className="text-xs sm:text-sm font-semibold">
-                    Two-Factor Authentication
+                    {t.settingsTwoFactorAuthentication}
                   </Label>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                    Require 2FA for administrative accounts
+                    {t.settingsRequire2FADesc}
                   </p>
                 </div>
-                <Switch className="ml-2 sm:ml-4 flex-shrink-0" />
+                <Switch defaultChecked />
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg sm:rounded-2xl border border-slate-200 dark:border-slate-600 gap-2 sm:gap-4">
                 <div className="space-y-1 flex-1 min-w-0">
                   <Label className="text-xs sm:text-sm font-semibold">
-                    Session Management
+                    {t.settingsSessionManagement}
                   </Label>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                    Auto logout after inactivity period
+                    {t.settingsSessionManagementDesc}
                   </p>
                 </div>
                 <Select defaultValue="30" className="w-full sm:w-[180px]">
@@ -772,10 +771,10 @@ const Settings = () => {
               <div className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg sm:rounded-2xl border border-slate-200 dark:border-slate-600">
                 <div className="space-y-1 flex-1 min-w-0">
                   <Label className="text-xs sm:text-sm font-semibold">
-                    Activity Auditing
+                    {t.settingsActivityAuditing}
                   </Label>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                    Comprehensive user action tracking
+                    {t.settingsActivityAuditingDesc}
                   </p>
                 </div>
                 <Switch defaultChecked className="ml-2 sm:ml-4 flex-shrink-0" />
@@ -785,7 +784,7 @@ const Settings = () => {
                   htmlFor="minPasswordLength"
                   className="text-xs sm:text-sm font-semibold"
                 >
-                  Password Security Policy
+                  {t.settingsPasswordSecurityPolicy}
                 </Label>
                 <Input
                   id="minPasswordLength"
@@ -798,7 +797,7 @@ const Settings = () => {
               </div>
               <Button className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 rounded-lg sm:rounded-xl text-sm sm:text-base">
                 <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                Update Security Settings
+                {t.settingsUpdateSecuritySettings}
               </Button>
             </CardContent>
           </Card>
