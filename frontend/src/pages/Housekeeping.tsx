@@ -194,21 +194,27 @@ const Housekeeping = () => {
                   <Shield className="h-4 w-4 sm:h-6 sm:w-6 text-emerald-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">98%</p>
-                    <p className="text-xs text-amber-200">{t.statsQualityScore}</p>
+                    <p className="text-xs text-amber-200">
+                      {t.statsQualityScore}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20">
                   <Zap className="h-4 w-4 sm:h-6 sm:w-6 text-amber-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">24m</p>
-                    <p className="text-xs text-amber-200">{t.statsAvgCleanTime}</p>
+                    <p className="text-xs text-amber-200">
+                      {t.statsAvgCleanTime}
+                    </p>
                   </div>
                 </div>
                 <div className="col-span-2 sm:col-auto flex items-center gap-2 sm:gap-3 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/20 justify-center sm:justify-start">
                   <Home className="h-4 w-4 sm:h-6 sm:w-6 text-green-400" />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">45</p>
-                    <p className="text-xs text-amber-200">{t.statsRoomsToday}</p>
+                    <p className="text-xs text-amber-200">
+                      {t.statsRoomsToday}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -227,7 +233,7 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.pendingTasks}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-slate-500/10 rounded-lg sm:rounded-xl">
@@ -254,7 +260,7 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-amber-50 dark:from-slate-800 dark:to-amber-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.inProgress}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-amber-500/10 rounded-lg sm:rounded-xl">
@@ -281,7 +287,7 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-slate-800 dark:to-emerald-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.completedToday}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-emerald-500/10 rounded-lg sm:rounded-xl">
@@ -308,7 +314,7 @@ const Housekeeping = () => {
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-red-50 dark:from-slate-800 dark:to-red-900/20 shadow-lg sm:shadow-xl group rounded-xl sm:rounded-3xl">
           <CardHeader className="pb-2 sm:pb-3">
             <div className="flex items-center justify-between">
-                <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+              <CardTitle className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
                 {t.lowStockItems}
               </CardTitle>
               <div className="p-1.5 sm:p-2 bg-red-500/10 rounded-lg sm:rounded-xl">
@@ -340,10 +346,8 @@ const Housekeeping = () => {
             <div className="p-2 sm:p-3 bg-gradient-to-r from-amber-500 to-emerald-500 rounded-xl sm:rounded-2xl w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
               <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
-              <div>
-              <div className="text-lg sm:text-2xl">
-                {t.todaysCleaningOps}
-              </div>
+            <div>
+              <div className="text-lg sm:text-2xl">{t.todaysCleaningOps}</div>
               <CardDescription className="text-sm sm:text-lg">
                 {t.cleaningOpsDesc}
               </CardDescription>
@@ -391,7 +395,9 @@ const Housekeeping = () => {
                                 task.priority
                               )} text-xs`}
                             >
-                              {task.priority === "high" ? t.highPriority : t.standard}
+                              {task.priority === "high"
+                                ? t.highPriority
+                                : t.standard}
                             </Badge>
                           </div>
                           <CardDescription className="text-slate-600 dark:text-slate-400 text-sm">
@@ -435,7 +441,7 @@ const Housekeeping = () => {
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                        {task.status !== "completed" && (
+                    {task.status !== "completed" && (
                       <Button
                         className={`rounded-lg sm:rounded-xl text-xs sm:text-sm ${
                           task.status === "pending"
@@ -460,7 +466,7 @@ const Housekeeping = () => {
                       </DialogTrigger>
                       <DialogContent className="max-w-[95vw] sm:max-w-md bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-0 shadow-2xl rounded-xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
+                          <DialogTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
                             <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
                             {t.reportRoomIssue}
                           </DialogTitle>

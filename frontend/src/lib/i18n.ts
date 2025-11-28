@@ -396,7 +396,8 @@ export const translations = {
     errorLoadingSettings: "Failed to load settings",
     // Housekeeping
     housekeepingTitle: "Housekeeping Excellence",
-    housekeepingSubtitle: "Maintain pristine standards with precision cleaning operations",
+    housekeepingSubtitle:
+      "Maintain pristine standards with precision cleaning operations",
     statsQualityScore: "Quality Score",
     statsAvgCleanTime: "Avg. Clean Time",
     statsRoomsToday: "Rooms Today",
@@ -409,14 +410,16 @@ export const translations = {
     lowStockItems: "Low Stock Items",
     needsRestocking: "Needs restocking",
     todaysCleaningOps: "Today's Cleaning Operations",
-    cleaningOpsDesc: "Room cleaning assignments and real-time progress tracking",
+    cleaningOpsDesc:
+      "Room cleaning assignments and real-time progress tracking",
     cleaningChecklist: "Cleaning Checklist:",
     startCleaning: "Start Cleaning",
     markComplete: "Mark Complete",
     reportIssue: "Report Issue",
     reportRoomIssue: "Report Room Issue",
     reportRoomIssueDesc: "Document any damages or maintenance issues in",
-    reportIssuePlaceholder: "Describe the issue in detail with specific locations and severity...",
+    reportIssuePlaceholder:
+      "Describe the issue in detail with specific locations and severity...",
     submitReport: "Submit Report",
     lowStock: "Low Stock",
     currentLabel: "Current:",
@@ -798,7 +801,8 @@ export const translations = {
     errorLoadingSettings: "የሴቲንግ እባክዎን ይጫኑ",
     // Housekeeping (Amharic placeholders - update as needed)
     housekeepingTitle: "Housekeeping Excellence",
-    housekeepingSubtitle: "Maintain pristine standards with precision cleaning operations",
+    housekeepingSubtitle:
+      "Maintain pristine standards with precision cleaning operations",
     statsQualityScore: "Quality Score",
     statsAvgCleanTime: "Avg. Clean Time",
     statsRoomsToday: "Rooms Today",
@@ -811,14 +815,16 @@ export const translations = {
     lowStockItems: "Low Stock Items",
     needsRestocking: "Needs restocking",
     todaysCleaningOps: "Today's Cleaning Operations",
-    cleaningOpsDesc: "Room cleaning assignments and real-time progress tracking",
+    cleaningOpsDesc:
+      "Room cleaning assignments and real-time progress tracking",
     cleaningChecklist: "Cleaning Checklist:",
     startCleaning: "Start Cleaning",
     markComplete: "Mark Complete",
     reportIssue: "Report Issue",
     reportRoomIssue: "Report Room Issue",
     reportRoomIssueDesc: "Document any damages or maintenance issues in",
-    reportIssuePlaceholder: "Describe the issue in detail with specific locations and severity...",
+    reportIssuePlaceholder:
+      "Describe the issue in detail with specific locations and severity...",
     submitReport: "Submit Report",
     lowStock: "Low Stock",
     currentLabel: "Current:",
@@ -1212,7 +1218,8 @@ export const translations = {
     errorLoadingSettings: "Dhibdeen to'annoo galmeessuu itti mudate",
     // Housekeeping (Oromo placeholders - update as needed)
     housekeepingTitle: "Housekeeping Excellence",
-    housekeepingSubtitle: "Maintain pristine standards with precision cleaning operations",
+    housekeepingSubtitle:
+      "Maintain pristine standards with precision cleaning operations",
     statsQualityScore: "Quality Score",
     statsAvgCleanTime: "Avg. Clean Time",
     statsRoomsToday: "Rooms Today",
@@ -1225,14 +1232,16 @@ export const translations = {
     lowStockItems: "Low Stock Items",
     needsRestocking: "Needs restocking",
     todaysCleaningOps: "Today's Cleaning Operations",
-    cleaningOpsDesc: "Room cleaning assignments and real-time progress tracking",
+    cleaningOpsDesc:
+      "Room cleaning assignments and real-time progress tracking",
     cleaningChecklist: "Cleaning Checklist:",
     startCleaning: "Start Cleaning",
     markComplete: "Mark Complete",
     reportIssue: "Report Issue",
     reportRoomIssue: "Report Room Issue",
     reportRoomIssueDesc: "Document any damages or maintenance issues in",
-    reportIssuePlaceholder: "Describe the issue in detail with specific locations and severity...",
+    reportIssuePlaceholder:
+      "Describe the issue in detail with specific locations and severity...",
     submitReport: "Submit Report",
     lowStock: "Low Stock",
     currentLabel: "Current:",
