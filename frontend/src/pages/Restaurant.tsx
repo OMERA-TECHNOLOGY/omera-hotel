@@ -172,6 +172,23 @@ const Restaurant = () => {
     }
   };
 
+  const getCategoryLabel = (category?: string) => {
+    if (!category) return "";
+    switch (category) {
+      case "appetizer":
+        return t.catAppetizer;
+      case "main":
+      case "main_course":
+        return t.catMainCourse;
+      case "dessert":
+        return t.catDessert;
+      case "beverage":
+        return t.catBeverage;
+      default:
+        return category;
+    }
+  };
+
   const getPopularityBadge = (popularity: string) => {
     switch (popularity) {
       case "bestseller":
@@ -334,7 +351,7 @@ const Restaurant = () => {
                               </p>
                               <div className="flex items-center gap-3 sm:gap-4 mt-1 sm:mt-2">
                                 <span className="text-base sm:text-lg font-bold text-orange-600 dark:text-orange-400">
-                                  {item.price} ETB
+                                  {item.price} {t.currency}
                                 </span>
                                 <span className="text-xs sm:text-sm text-slate-500">
                                   ⏱️ {item.preparationTime}
@@ -367,7 +384,7 @@ const Restaurant = () => {
                               {t.totalAmount}
                             </span>
                             <span className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                              0 ETB
+                              0 {t.currency}
                             </span>
                           </div>
                         </div>
@@ -620,11 +637,11 @@ const Restaurant = () => {
                                 </p>
                                 <p className="text-xs sm:text-sm text-slate-500">
                                   {t.qtyLabel} {item.quantity} × {item.price}{" "}
-                                  ETB
+                                  {t.currency}
                                 </p>
                               </div>
                               <p className="font-semibold text-slate-800 dark:text-white text-sm sm:text-base ml-2">
-                                {item.quantity * item.price} ETB
+                                {item.quantity * item.price} {t.currency}
                               </p>
                             </div>
                           ))}
@@ -640,7 +657,7 @@ const Restaurant = () => {
                         {t.totalAmount}
                       </p>
                       <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                        {order.total} ETB
+                        {order.total} {t.currency}
                       </p>
                     </div>
                     {order.status !== "delivered" && (
@@ -688,7 +705,7 @@ const Restaurant = () => {
                     variant="outline"
                     className="border-slate-300 dark:border-slate-600 text-xs"
                   >
-                    {item.category}
+                    {getCategoryLabel(item.category)}
                   </Badge>
                 </CardHeader>
                 <CardContent>
@@ -701,7 +718,7 @@ const Restaurant = () => {
                       {item.preparationTime}
                     </div>
                     <p className="text-lg sm:text-xl font-bold text-orange-600 dark:text-orange-400">
-                      {item.price} ETB
+                      {item.price} {t.currency}
                     </p>
                   </div>
                   <div className="flex gap-1.5 sm:gap-2">
