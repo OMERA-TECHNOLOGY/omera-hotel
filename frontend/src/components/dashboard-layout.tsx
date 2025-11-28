@@ -7,8 +7,7 @@ import {
 import { NaturalSidebarContent } from "@/components/natural-sidebar-content";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageSelector } from "@/components/language-selector";
-import { Bell, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { NotificationDropdown, ProfileDropdown } from "./index";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -38,15 +37,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="ml-auto flex items-center gap-2">
               <LanguageSelector />
               <ThemeToggle />
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  3
-                </span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <NotificationDropdown />
+                <ProfileDropdown />
+              </div>
             </div>
           </header>
           <main className="flex-1 p-6 bg-background overflow-auto min-h-0">

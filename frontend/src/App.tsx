@@ -17,6 +17,7 @@ import Restaurant from "./pages/Restaurant";
 import Employees from "./pages/Employees";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import ProfileSettings from "./components/ProfileSettings";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +101,14 @@ const App = () => (
                 element={
                   <DashboardLayout>
                     <Settings />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <DashboardLayout>
+                    <ProfileSettings />
                   </DashboardLayout>
                 }
               />
